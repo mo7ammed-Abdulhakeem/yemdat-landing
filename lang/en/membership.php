@@ -7,8 +7,8 @@ return [
 
     'types_title' => 'Membership Types',
 
-    'individual_title' => 'Core Individual Membership',
-    'individual_desc' => 'For individuals interested in data and AI.',
+    'individual_title' => 'Intern Membership',
+    'individual_desc' => 'For students, fresh graduates, and individuals starting their career in data and AI.',
 
     'expert_title' => 'Expert & Academic Membership',
     'expert_desc' => 'For specialized experts and academics.',
@@ -66,7 +66,7 @@ return [
     'spec_analytics' => 'Data Analytics',
     'spec_other' => 'Other',
 
-    'type_individual' => 'Core Membership',
+    'type_individual' => 'Intern Membership',
     'type_expert' => 'Expert Membership',
     'type_corporate' => 'Corporate Membership',
 ];

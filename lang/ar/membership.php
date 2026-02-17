@@ -7,8 +7,8 @@ return [
 
     'types_title' => 'أنواع العضويات',
 
-    'individual_title' => 'عضوية أساسية للأفراد',
-    'individual_desc' => 'للأفراد المهتمين بمجال البيانات والذكاء الاصطناعي.',
+    'individual_title' => 'عضوية متدرب',
+    'individual_desc' => 'للطلاب والخريجين الجدد والأفراد المهتمين ببدء مسيرتهم في البيانات.',
 
     'expert_title' => 'عضوية الخبراء والأكاديميين',
     'expert_desc' => 'للخبراء والأكاديميين المتخصصين.',
@@ -66,7 +66,7 @@ return [
     'spec_analytics' => 'تحليل البيانات',
     'spec_other' => 'أخرى',
 
-    'type_individual' => 'عضوية أساسية',
+    'type_individual' => 'عضوية متدرب',
     'type_expert' => 'عضوية الخبراء',
     'type_corporate' => 'عضوية مؤسسية',
 ];

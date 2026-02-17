@@ -65,7 +65,7 @@ class AdminController extends Controller
             'country' => 'required|string',
             'education_level' => 'required|string',
             'specialty' => 'required|string',
-            'membership_type' => 'required|in:individual,institution',
+            'membership_type' => 'required|in:intern,institution',
         ]);
 
         $member->update($validated);

@@ -70,7 +70,7 @@ class MembershipController extends Controller
             'specialty' => 'required|string|max:255',
             'specialty_other' => 'nullable|string|max:255|required_if:specialty,other',
             'education_level' => 'required|string|max:255',
-            'membership_type' => 'required|string|in:individual,expert,corporate',
+            'membership_type' => 'required|string|in:intern,expert,corporate',
         ], [
             'email.unique' => 'This email already exists and cannot be saved. Please change the email.',
             'phone_number.unique' => 'This phone number already exists and cannot be saved. Please change the phone number.',

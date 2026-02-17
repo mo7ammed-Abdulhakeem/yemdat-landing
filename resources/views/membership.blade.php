@@ -18,7 +18,7 @@
                 <p class="text-gray-600 text-xl mb-10 max-w-3xl mx-auto">
                     {{ __('membership.subtitle') }}
                 </p>
-                <button @click="openModal('individual')" class="inline-block bg-yemdat-brown text-white px-10 py-4 rounded-md font-medium text-lg hover:bg-yemdat-dark transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                <button @click="openModal('intern')" class="inline-block bg-yemdat-brown text-white px-10 py-4 rounded-md font-medium text-lg hover:bg-yemdat-dark transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                     {{ __('membership.register_now') }}
                 </button>
             </div>
@@ -36,7 +36,7 @@
                         <p class="text-gray-600 text-base leading-relaxed mb-8">
                             {{ __('membership.individual_desc') }}
                         </p>
-                        <button @click="openModal('individual')" class="mt-auto w-full py-3 rounded-lg border-2 border-yemdat-brown text-yemdat-brown font-bold hover:bg-yemdat-brown hover:text-white transition">
+                        <button @click="openModal('intern')" class="mt-auto w-full py-3 rounded-lg border-2 border-yemdat-brown text-yemdat-brown font-bold hover:bg-yemdat-brown hover:text-white transition">
                             {{ __('membership.register_now') }}
                         </button>
                     </div>
@@ -287,7 +287,7 @@
                             <label class="block text-sm font-medium text-yemdat-brown mb-2">{{ __('membership.label_membership_type') }}</label>
                                 <select name="membership_type" x-model="plan" required class="w-full rounded-lg border-gray-300 bg-gray-50 focus:border-yemdat-gold focus:ring-yemdat-gold focus:bg-white transition">
                                 <option value="">{{ __('membership.select_membership_type') }}</option>
-                                <option value="individual">{{ __('membership.type_individual') }}</option>
+                                <option value="intern">{{ __('membership.type_individual') }}</option>
                                 <option value="expert">{{ __('membership.type_expert') }}</option>
                                 <option value="corporate">{{ __('membership.type_corporate') }}</option>
                             </select>
