@@ -80,8 +80,9 @@
                             <div>
                                 <label for="membership_type" class="block text-sm font-medium text-gray-700">Membership Type</label>
                                 <select id="membership_type" name="membership_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold focus:ring-yemdat-gold sm:text-sm" required>
-                                    <option value="individual" {{ old('membership_type', $member->membership_type) == 'individual' ? 'selected' : '' }}>Individual</option>
-                                    <option value="institution" {{ old('membership_type', $member->membership_type) == 'institution' ? 'selected' : '' }}>Institution</option>
+                                    @foreach($membershipTiers as $tier)
+                                        <option value="{{ $tier->slug }}" {{ old('membership_type', $member->membership_type) == $tier->slug ? 'selected' : '' }}>{{ $tier->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>

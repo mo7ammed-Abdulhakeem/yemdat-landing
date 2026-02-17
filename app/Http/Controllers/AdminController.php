@@ -53,7 +53,8 @@ class AdminController extends Controller
             'Zambia', 'Zimbabwe'
         ];
 
-        return view('admin.members.edit', compact('member', 'countries'));
+        $membershipTiers = \App\Models\MembershipTier::all();
+        return view('admin.members.edit', compact('member', 'countries', 'membershipTiers'));
     }
 
     public function updateMember(Request $request, Member $member)
@@ -65,7 +66,7 @@ class AdminController extends Controller
             'country' => 'required|string',
             'education_level' => 'required|string',
             'specialty' => 'required|string',
-            'membership_type' => 'required|in:intern,institution',
+            'membership_type' => 'required|string|exists:membership_tiers,slug',
         ]);
 
         $member->update($validated);

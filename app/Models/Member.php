@@ -20,4 +20,8 @@ class Member extends Model
         'specialty_other',
         'membership_type',
     ];
+    public function membershipTier()
+    {
+        return $this->belongsTo(MembershipTier::class , 'membership_type', 'slug');
+    }
 }

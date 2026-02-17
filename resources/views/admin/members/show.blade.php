@@ -19,7 +19,7 @@
                         <p class="text-gray-500 text-sm mt-1">Joined on {{ $member->created_at->format('F d, Y, h:i A') }}</p>
                     </div>
                     <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 capitalize">
-                        {{ $member->membership_type }}
+                        {{ $member->membershipTier ? $member->membershipTier->name : ucfirst($member->membership_type) }}
                     </span>
                 </div>
 
