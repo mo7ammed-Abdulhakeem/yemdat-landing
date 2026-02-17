@@ -90,6 +90,11 @@ class MembershipTierController extends Controller
      */
     public function destroy(MembershipTier $membershipTier)
     {
+        // Check if any members are using this tier
+        if (\App\Models\Member::where('membership_type', $membershipTier->slug)->exists()) {
+            return back()->with('error', 'Cannot delete this plan because it has members assigned to it. Please reassign them first.');
+        }
+
         $membershipTier->delete();
         return redirect()->route('admin.membership-tiers.index')->with('success', 'Membership Tier deleted successfully.');
     }

@@ -51,13 +51,11 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                                             <a href="{{ route('admin.membership-tiers.edit', $tier) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                            <!--
                                             <form action="{{ route('admin.membership-tiers.destroy', $tier) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure? This might affect existing members assigned to this plan.');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-600 hover:text-red-900 ml-2">Delete</button>
                                             </form>
-                                            -->
                                         </td>
                                     </tr>
                                 @endforeach
