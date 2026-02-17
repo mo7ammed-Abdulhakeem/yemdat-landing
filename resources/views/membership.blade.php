@@ -27,47 +27,49 @@
             <div>
                 <h2 class="text-3xl font-bold text-yemdat-brown text-center mb-16">{{ __('membership.types_title') }}</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                    <!-- Individual -->
-                    <div class="bg-white p-10 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition flex flex-col items-start h-full relative">
-                        <div class="w-16 h-16 bg-yemdat-beige rounded-2xl flex items-center justify-center mb-8 text-yemdat-gold">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                        </div>
-                        <h3 class="font-bold text-2xl text-yemdat-brown mb-4">{{ __('membership.individual_title') }}</h3>
-                        <p class="text-gray-600 text-base leading-relaxed mb-8">
-                            {{ __('membership.individual_desc') }}
-                        </p>
-                        <button @click="openModal('intern')" class="mt-auto w-full py-3 rounded-lg border-2 border-yemdat-brown text-yemdat-brown font-bold hover:bg-yemdat-brown hover:text-white transition">
-                            {{ __('membership.register_now') }}
-                        </button>
-                    </div>
+                    @forelse ($membershipTiers as $tier)
+                        <div class="bg-white p-10 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition flex flex-col items-start h-full relative">
+                            <div class="w-16 h-16 bg-yemdat-beige rounded-2xl flex items-center justify-center mb-8 text-yemdat-gold">
+                                <!-- Icons based on slug -->
+                                @if($tier->slug == 'intern')
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                @elseif($tier->slug == 'expert')
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                                @elseif($tier->slug == 'corporate')
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                                @else
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                                @endif
+                            </div>
+                            <h3 class="font-bold text-2xl text-yemdat-brown mb-4">{{ $tier->name }}</h3>
+                            <p class="text-gray-600 text-base leading-relaxed mb-4">
+                                {{ $tier->description }}
+                            </p>
+                            
+                            <!-- Features List -->
+                            @if($tier->features && count($tier->features) > 0)
+                                <ul class="mb-8 space-y-2">
+                                    @foreach($tier->features as $feature)
+                                        @if(!empty($feature))
+                                        <li class="flex items-start text-gray-600 text-sm">
+                                            <svg class="w-4 h-4 text-yemdat-gold mr-2 mt-1 shrink-0 rtl:ml-2 rtl:mr-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                            {{ $feature }}
+                                        </li>
+                                        @endif
+                                    @endforeach
+                                </ul>
+                            @endif
 
-                    <!-- Expert/Honorary -->
-                    <div class="bg-white p-10 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition flex flex-col items-start h-full">
-                         <div class="w-16 h-16 bg-yemdat-beige rounded-2xl flex items-center justify-center mb-8 text-yemdat-gold">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                            <button @click="openModal('{{ $tier->slug }}')" class="mt-auto w-full py-3 rounded-lg border-2 border-yemdat-brown text-yemdat-brown font-bold hover:bg-yemdat-brown hover:text-white transition">
+                                {{ __('membership.register_now') }}
+                            </button>
                         </div>
-                        <h3 class="font-bold text-2xl text-yemdat-brown mb-4">{{ __('membership.expert_title') }}</h3>
-                        <p class="text-gray-600 text-base leading-relaxed mb-8">
-                           {{ __('membership.expert_desc') }}
-                        </p>
-                         <button @click="openModal('expert')" class="mt-auto w-full py-3 rounded-lg border-2 border-yemdat-brown text-yemdat-brown font-bold hover:bg-yemdat-brown hover:text-white transition">
-                            {{ __('membership.register_now') }}
-                        </button>
-                    </div>
-
-                    <!-- Corporate -->
-                    <div class="bg-white p-10 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition flex flex-col items-start h-full">
-                         <div class="w-16 h-16 bg-yemdat-beige rounded-2xl flex items-center justify-center mb-8 text-yemdat-gold">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                    @empty
+                        <!-- Fallback content if no tiers found (e.g. before migration) -->
+                        <div class="col-span-3 text-center py-10">
+                            <p class="text-xl text-gray-500">Membership plans are loading...</p>
                         </div>
-                        <h3 class="font-bold text-2xl text-yemdat-brown mb-4">{{ __('membership.corporate_title') }}</h3>
-                        <p class="text-gray-600 text-base leading-relaxed mb-8">
-                            {{ __('membership.corporate_desc') }}
-                        </p>
-                         <button @click="openModal('corporate')" class="mt-auto w-full py-3 rounded-lg border-2 border-yemdat-brown text-yemdat-brown font-bold hover:bg-yemdat-brown hover:text-white transition">
-                            {{ __('membership.register_now') }}
-                        </button>
-                    </div>
+                    @endforelse
                 </div>
             </div>
 
@@ -287,9 +289,11 @@
                             <label class="block text-sm font-medium text-yemdat-brown mb-2">{{ __('membership.label_membership_type') }}</label>
                                 <select name="membership_type" x-model="plan" required class="w-full rounded-lg border-gray-300 bg-gray-50 focus:border-yemdat-gold focus:ring-yemdat-gold focus:bg-white transition">
                                 <option value="">{{ __('membership.select_membership_type') }}</option>
-                                <option value="intern">{{ __('membership.type_individual') }}</option>
-                                <option value="expert">{{ __('membership.type_expert') }}</option>
-                                <option value="corporate">{{ __('membership.type_corporate') }}</option>
+                                @forelse ($membershipTiers as $tier)
+                                    <option value="{{ $tier->slug }}">{{ $tier->name }}</option>
+                                @empty
+                                    <option value="intern" x-text="'Intern'"></option>
+                                @endforelse
                             </select>
                         </div>
 

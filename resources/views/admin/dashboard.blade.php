@@ -10,6 +10,7 @@
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <div class="flex gap-4 items-center">
+                        <a href="{{ route('admin.membership-tiers.index') }}" class="text-sm font-medium text-gray-600 hover:text-yemdat-gold underline">Membership Plans</a>
                         <a href="{{ route('admin.settings') }}" class="text-sm font-medium text-gray-600 hover:text-yemdat-gold underline">Site Settings</a>
                         <button type="submit" class="text-sm text-red-600 hover:text-red-800 font-medium bg-white px-4 py-2 rounded-lg border border-red-200 hover:bg-red-50 transition">
                             Logout

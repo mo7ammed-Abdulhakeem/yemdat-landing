@@ -51,6 +51,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admincpanel/messages/{contact}', [App\Http\Controllers\AdminController::class , 'showMessage'])->name('admin.messages.show');
     Route::delete('/admincpanel/messages/{contact}', [App\Http\Controllers\AdminController::class , 'destroyMessage'])->name('admin.messages.destroy');
 
+    // Membership Tiers
+    Route::patch('/admincpanel/membership-tiers/{membershipTier}/toggle', [App\Http\Controllers\Admin\MembershipTierController::class , 'toggle'])->name('admin.membership-tiers.toggle');
+    Route::resource('/admincpanel/membership-tiers', App\Http\Controllers\Admin\MembershipTierController::class)->names('admin.membership-tiers');
+
     // Settings
     Route::get('/admincpanel/settings', [App\Http\Controllers\AdminController::class , 'settings'])->name('admin.settings');
     Route::post('/admincpanel/settings', [App\Http\Controllers\AdminController::class , 'updateSettings'])->name('admin.settings.update');

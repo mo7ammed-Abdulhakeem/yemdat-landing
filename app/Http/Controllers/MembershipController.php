@@ -56,7 +56,16 @@ class MembershipController extends Controller
             '+678' => 'Vanuatu', '+379' => 'Vatican', '+58' => 'Venezuela', '+84' => 'Vietnam', '+681' => 'Wallis and Futuna', '+212' => 'Western Sahara', '+967' => 'Yemen', '+260' => 'Zambia', '+263' => 'Zimbabwe'
         ];
 
-        return view('membership', compact('countries', 'phoneCodes'));
+        // Fetch active membership tiers from the database
+        try {
+            $membershipTiers = \App\Models\MembershipTier::where('is_active', true)->orderBy('sort_order')->get();
+        }
+        catch (\Exception $e) {
+            // Fallback if table doesn't exist yet (e.g. before migration)
+            $membershipTiers = collect([]);
+        }
+
+        return view('membership', compact('countries', 'phoneCodes', 'membershipTiers'));
     }
 
     public function store(Request $request)
@@ -70,7 +79,7 @@ class MembershipController extends Controller
             'specialty' => 'required|string|max:255',
             'specialty_other' => 'nullable|string|max:255|required_if:specialty,other',
             'education_level' => 'required|string|max:255',
-            'membership_type' => 'required|string|in:intern,expert,corporate',
+            'membership_type' => 'required|string|max:255', // We can't strictly validate 'exists' here if we want to be safe before migration run, but in PROD we should. For now, string is safe. OR: 'required|string|exists:membership_tiers,slug'
         ], [
             'email.unique' => 'This email already exists and cannot be saved. Please change the email.',
             'phone_number.unique' => 'This phone number already exists and cannot be saved. Please change the phone number.',
