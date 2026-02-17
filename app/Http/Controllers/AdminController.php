@@ -143,7 +143,7 @@ class AdminController extends Controller
             fputs($file, "\xEF\xBB\xBF"); // Add BOM for Excel UTF-8
             fputcsv($file, $columns);
 
-            Member::chunk(100, function ($members) use ($file) {
+            Member::with('membershipTier')->chunk(100, function ($members) use ($file) {
                     foreach ($members as $member) {
                         $row['Full Name'] = $member->full_name;
                         $row['Email'] = $member->email;
@@ -153,7 +153,7 @@ class AdminController extends Controller
                         $row['Education Level'] = $member->education_level;
                         $row['Specialty'] = $member->specialty;
                         $row['Other Specialty'] = $member->specialty_other;
-                        $row['Membership Type'] = $member->membership_type;
+                        $row['Membership Type'] = $member->membershipTier ? $member->membershipTier->name_en : ucfirst($member->membership_type);
                         $row['Joined Date'] = $member->created_at->format('Y-m-d H:i:s');
 
                         fputcsv($file, array_values($row));
