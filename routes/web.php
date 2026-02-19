@@ -32,12 +32,7 @@ Route::get('lang/{locale}', function ($locale) {
 Route::get('/membership', [MembershipController::class , 'create'])->name('membership');
 Route::post('/membership', [MembershipController::class , 'store'])->name('membership.store');
 Route::get('/training', function () {
-    $upcomingEvents = Event::where('is_active', true)
-        ->where('end_date', '>=', Carbon::now())
-        ->orderBy('start_date', 'asc')
-        ->take(3)
-        ->get();
-    return view('training', compact('upcomingEvents'));
+    return redirect()->route('events.index');
 })->name('training');
 Route::view('/news', 'news')->name('news');
 Route::get('/contact', [ContactController::class , 'index'])->name('contact');
