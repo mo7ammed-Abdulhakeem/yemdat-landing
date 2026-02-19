@@ -93,6 +93,62 @@
         </div>
     </div>
 
+    <!-- Upcoming Events Section -->
+    @if(isset($upcomingEvents) && $upcomingEvents->count() > 0)
+    <div class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-center text-2xl font-bold text-yemdat-brown mb-12">
+                {{ app()->getLocale() == 'ar' ? 'الفعاليات القادمة' : 'Upcoming Events' }}
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                @foreach($upcomingEvents as $event)
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition group">
+                        <div class="relative h-48 bg-yemdat-brown/10">
+                            @if($event->image)
+                                <img src="{{ asset('storage/' . $event->image) }}" alt="{{ $event->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-yemdat-gold/30">
+                                    <svg class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                            @endif
+                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-yemdat-brown shadow-sm">
+                                {{ $event->remaining_time }}
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="text-xs font-bold text-yemdat-gold uppercase tracking-wider mb-2">
+                                {{ $event->start_date->format('M d, Y') }}
+                            </div>
+                            <h3 class="font-bold text-gray-900 text-lg mb-3 line-clamp-2">
+                                <a href="{{ route('events.show', $event->slug) }}" class="hover:text-yemdat-brown transition">
+                                    {{ $event->title }}
+                                </a>
+                            </h3>
+                            <div class="flex items-center text-sm text-gray-500 mb-4">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                <span class="line-clamp-1">{{ $event->location ?? 'Online' }}</span>
+                            </div>
+                            <a href="{{ route('events.show', $event->slug) }}" class="text-sm font-bold text-yemdat-brown hover:text-yemdat-gold transition flex items-center">
+                                {{ app()->getLocale() == 'ar' ? 'التفاصيل' : 'View Details' }}
+                                <svg class="w-4 h-4 ml-1 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            
+            <div class="text-center">
+                <a href="{{ route('events.index') }}" class="inline-block bg-yemdat-brown text-white px-8 py-3 rounded-lg font-bold transition shadow-md hover:bg-yemdat-brown/90">
+                    {{ app()->getLocale() == 'ar' ? 'عرض كل الفعاليات' : 'View All Events' }}
+                </a>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <!-- Latest News -->
     <div class="py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

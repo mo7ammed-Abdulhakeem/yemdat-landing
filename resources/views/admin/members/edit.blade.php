@@ -1,13 +1,15 @@
-<x-app-layout>
-    <div class="py-12 bg-gray-50 min-h-screen">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            
-            <div class="mb-6 flex justify-between items-center">
-                <a href="{{ route('admin.members.index') }}" class="text-yemdat-brown hover:text-yemdat-gold flex items-center gap-2 font-medium">
-                    <svg class="w-5 h-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                    Back to Members List
-                </a>
-            </div>
+<x-admin-layout>
+    <x-slot name="header">
+        Edit Member
+    </x-slot>
+
+    <div>
+        <div class="mb-6 flex justify-between items-center">
+            <a href="{{ route('admin.members.index') }}" class="text-yemdat-brown hover:text-yemdat-gold flex items-center gap-2 font-medium">
+                <svg class="w-5 h-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back to Members List
+            </a>
+        </div>
 
             <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100">
                 <div class="p-8 border-b border-gray-100 bg-gray-50/50">
@@ -58,6 +60,16 @@
                                 </select>
                             </div>
 
+                            <!-- Gender -->
+                            <div>
+                                <label for="gender" class="block text-sm font-medium text-gray-700">{{ __('Gender') }}</label>
+                                <select id="gender" name="gender" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold focus:ring-yemdat-gold sm:text-sm">
+                                    <option value="">{{ __('Select Gender') }}</option>
+                                    <option value="male" {{ old('gender', $member->gender) == 'male' ? 'selected' : '' }}>{{ __('Male') }}</option>
+                                    <option value="female" {{ old('gender', $member->gender) == 'female' ? 'selected' : '' }}>{{ __('Female') }}</option>
+                                </select>
+                            </div>
+
                             <!-- Education Level -->
                             <div>
                                 <label for="education_level" class="block text-sm font-medium text-gray-700">Education Level</label>
@@ -99,6 +111,5 @@
                 </div>
             </div>
 
-        </div>
     </div>
-</x-app-layout>
+</x-admin-layout>

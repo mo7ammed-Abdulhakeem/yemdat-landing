@@ -16,6 +16,7 @@ class Member extends Model
         'phone_number',
         'education_level',
         'country',
+        'gender',
         'specialty',
         'specialty_other',
         'membership_type',

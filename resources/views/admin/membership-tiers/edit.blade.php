@@ -1,14 +1,15 @@
-<x-app-layout>
-    <div class="py-12 bg-gray-50 min-h-screen">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            
-            <div class="mb-6 flex justify-between items-center">
-                 <a href="{{ route('admin.membership-tiers.index') }}" class="text-yemdat-brown hover:text-yemdat-gold flex items-center gap-2 font-medium">
-                    <svg class="w-5 h-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                    Back to Plans
-                </a>
-                <h2 class="text-2xl font-bold text-yemdat-brown">Edit Plan: {{ $membershipTier->name_en }}</h2>
-            </div>
+<x-admin-layout>
+    <x-slot name="header">
+        Edit Plan: {{ $membershipTier->name_en }}
+    </x-slot>
+
+    <div>
+        <div class="mb-6 flex justify-between items-center">
+             <a href="{{ route('admin.membership-tiers.index') }}" class="text-gray-600 hover:text-yemdat-brown flex items-center gap-1">
+                <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back to Plans
+            </a>
+        </div>
 
             <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100">
                 <div class="p-8">
@@ -95,6 +96,5 @@
                     </form>
                 </div>
             </div>
-        </div>
     </div>
-</x-app-layout>
+</x-admin-layout>

@@ -1,34 +1,60 @@
-<x-app-layout>
-    <div class="py-12 bg-gray-50 min-h-screen">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
-            <!-- Header -->
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="font-semibold text-2xl text-yemdat-brown leading-tight">
-                    Admin Dashboard
-                </h2>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <div class="flex gap-4 items-center">
-                        <a href="{{ route('admin.membership-tiers.index') }}" class="text-sm font-medium text-gray-600 hover:text-yemdat-gold underline">Membership Plans</a>
-                        <a href="{{ route('admin.settings') }}" class="text-sm font-medium text-gray-600 hover:text-yemdat-gold underline">Site Settings</a>
-                        <button type="submit" class="text-sm text-red-600 hover:text-red-800 font-medium bg-white px-4 py-2 rounded-lg border border-red-200 hover:bg-red-50 transition">
-                            Logout
-                        </button>
-                    </div>
-                </form>
-            </div>
+<x-admin-layout>
+    <x-slot name="header">
+        Dashboard Overview
+    </x-slot>
+
+    <div>
 
             <!-- KPI Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                 <!-- Total Members -->
-                <div class="bg-white overflow-hidden shadow-sm rounded-xl border-l-4 border-yemdat-brown p-6 flex items-center justify-between">
-                    <div>
-                        <div class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-1">Total Members</div>
-                        <div class="text-3xl font-bold text-yemdat-brown">{{ $totalMembers }}</div>
+                <div class="bg-white overflow-hidden shadow-sm rounded-xl border-l-4 border-yemdat-brown p-6 flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <div class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-1">Total Members</div>
+                            <div class="flex items-baseline gap-2">
+                                <div class="text-3xl font-bold text-yemdat-brown">{{ $totalMembers }}</div>
+                                @if($membersJoinedToday > 0)
+                                    <span class="px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-xs font-bold" title="Joined Today">
+                                        +{{ $membersJoinedToday }} Today
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="p-3 bg-yemdat-beige rounded-full text-yemdat-brown">
+                            <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        </div>
                     </div>
-                    <div class="p-3 bg-yemdat-beige rounded-full text-yemdat-brown">
-                        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    
+                    <!-- Breakdowns -->
+                    <div class="space-y-3 mt-1">
+                        <!-- Membership Tier Breakdown -->
+                        <div class="border-t border-gray-100 pt-3">
+                            <div class="text-xs font-semibold text-gray-400 uppercase mb-2">By Plan</div>
+                            <div class="grid grid-cols-2 gap-2 text-xs">
+                                @foreach($membershipTiers as $tier)
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-gray-600 truncate mr-1" title="{{ $tier->name }}">{{ Str::limit($tier->name, 15) }}</span>
+                                        <span class="font-bold text-yemdat-brown bg-gray-100 px-1.5 py-0.5 rounded">{{ $memberCounts[$tier->slug] ?? 0 }}</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                         <!-- Gender Breakdown -->
+                         <div class="border-t border-gray-100 pt-3">
+                            <div class="text-xs font-semibold text-gray-400 uppercase mb-2">By Gender</div>
+                            <div class="grid grid-cols-2 gap-4 text-xs">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Male</span>
+                                    <span class="font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{{ $genderCounts['male'] ?? 0 }}</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Female</span>
+                                    <span class="font-bold text-pink-600 bg-pink-50 px-1.5 py-0.5 rounded">{{ $genderCounts['female'] ?? 0 }}</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -40,6 +66,28 @@
                     </div>
                     <div class="p-3 bg-yellow-50 rounded-full text-yemdat-gold">
                          <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    </div>
+                </div>
+
+                <!-- Total Events -->
+                <div class="bg-white overflow-hidden shadow-sm rounded-xl border-l-4 border-blue-500 p-6 flex items-center justify-between">
+                    <div>
+                        <div class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-1">Total Events</div>
+                        <div class="text-3xl font-bold text-yemdat-brown">{{ $totalEvents }}</div>
+                    </div>
+                    <div class="p-3 bg-blue-50 rounded-full text-blue-500">
+                        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                </div>
+
+                <!-- Upcoming Events -->
+                <div class="bg-white overflow-hidden shadow-sm rounded-xl border-l-4 border-green-500 p-6 flex items-center justify-between">
+                    <div>
+                        <div class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-1">Upcoming Events</div>
+                        <div class="text-3xl font-bold text-yemdat-brown">{{ $upcomingEventsCount }}</div>
+                    </div>
+                    <div class="p-3 bg-green-50 rounded-full text-green-500">
+                        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
                 </div>
             </div>
@@ -151,6 +199,5 @@
                 </div>
 
             </div>
-        </div>
     </div>
-</x-app-layout>
+</x-admin-layout>

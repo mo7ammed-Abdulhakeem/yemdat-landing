@@ -75,6 +75,7 @@ class MembershipController extends Controller
             'email' => 'required|email|max:255|unique:members,email',
             'phone_code' => 'required|string|max:10',
             'phone_number' => 'required|string|max:20|unique:members,phone_number',
+            'gender' => 'required|in:male,female',
             'country' => 'required|string|max:255',
             'specialty' => 'required|string|max:255',
             'specialty_other' => 'nullable|string|max:255|required_if:specialty,other',

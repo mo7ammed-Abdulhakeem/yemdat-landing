@@ -253,6 +253,18 @@
                                 <option value="Other" {{ old('education_level') == 'Other' ? 'selected' : '' }}>{{ __('membership.edu_other') }}</option>
                             </select>
                         </div>
+                        
+                        <!-- Gender -->
+                        <div>
+                            <label for="gender" class="block text-sm font-medium text-gray-700 mb-1">
+                                {{ __('Gender') }} <span class="text-red-500">*</span>
+                            </label>
+                            <select name="gender" id="gender" required class="w-full rounded-lg border-gray-300 shadow-sm focus:border-yemdat-gold focus:ring-yemdat-gold">
+                                <option value="" disabled selected>{{ __('Select Gender') }}</option>
+                                <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>{{ __('Male') }}</option>
+                                <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>{{ __('Female') }}</option>
+                            </select>
+                        </div>
 
                         <!-- Country -->
                             <div>

@@ -1,18 +1,14 @@
-<x-app-layout>
-    <div class="py-12 bg-gray-50 min-h-screen">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="mb-6 flex justify-between items-center">
-                <div class="flex items-center gap-4">
-                     <a href="{{ route('admin.dashboard') }}" class="text-yemdat-brown hover:text-yemdat-gold flex items-center gap-1 font-medium text-sm">
-                        <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                        Back to Dashboard
-                    </a>
-                    <h2 class="text-2xl font-bold text-yemdat-brown">Membership Plans</h2>
-                </div>
-                <a href="{{ route('admin.membership-tiers.create') }}" class="bg-yemdat-brown hover:bg-yemdat-gold text-white font-bold py-2 px-4 rounded shadow transition">
-                    + Add New Plan
-                </a>
-            </div>
+<x-admin-layout>
+    <x-slot name="header">
+        Membership Plans
+    </x-slot>
+
+    <div>
+        <div class="mb-6 flex justify-end items-center">
+            <a href="{{ route('admin.membership-tiers.create') }}" class="bg-yemdat-brown hover:bg-yemdat-gold text-white font-bold py-2 px-4 rounded shadow transition">
+                + Add New Plan
+            </a>
+        </div>
 
             @if (session('success'))
                 <div class="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
@@ -64,6 +60,5 @@
                     </div>
                 </div>
             </div>
-        </div>
     </div>
-</x-app-layout>
+</x-admin-layout>

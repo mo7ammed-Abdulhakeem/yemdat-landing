@@ -5,8 +5,17 @@ use App\Http\Controllers\MembershipController;
 
 use App\Http\Controllers\ContactController;
 
+use App\Models\Event;
+use Carbon\Carbon;
+
 Route::get('/', function () {
-    return view('welcome');
+    $upcomingEvents = Event::where('is_active', true)
+        ->where('end_date', '>=', Carbon::now()) // Not ended yet
+        ->orderBy('start_date', 'asc')
+        ->take(3)
+        ->get();
+
+    return view('welcome', compact('upcomingEvents'));
 })->name('home');
 
 Route::view('/about', 'about')->name('about');
@@ -22,10 +31,20 @@ Route::get('lang/{locale}', function ($locale) {
 
 Route::get('/membership', [MembershipController::class , 'create'])->name('membership');
 Route::post('/membership', [MembershipController::class , 'store'])->name('membership.store');
-Route::view('/training', 'training')->name('training');
+Route::get('/training', function () {
+    $upcomingEvents = Event::where('is_active', true)
+        ->where('end_date', '>=', Carbon::now())
+        ->orderBy('start_date', 'asc')
+        ->take(3)
+        ->get();
+    return view('training', compact('upcomingEvents'));
+})->name('training');
 Route::view('/news', 'news')->name('news');
 Route::get('/contact', [ContactController::class , 'index'])->name('contact');
 Route::post('/contact', [ContactController::class , 'store'])->name('contact.store');
+
+Route::get('/events', [App\Http\Controllers\EventController::class , 'index'])->name('events.index');
+Route::get('/events/{slug}', [App\Http\Controllers\EventController::class , 'show'])->name('events.show');
 
 // Admin Authentication Routes
 Route::get('/admincpanel/login', [App\Http\Controllers\AuthController::class , 'showLogin'])->name('login');
@@ -58,4 +77,8 @@ Route::middleware(['auth'])->group(function () {
     // Settings
     Route::get('/admincpanel/settings', [App\Http\Controllers\AdminController::class , 'settings'])->name('admin.settings');
     Route::post('/admincpanel/settings', [App\Http\Controllers\AdminController::class , 'updateSettings'])->name('admin.settings.update');
+
+    // Events Management
+    Route::patch('/admincpanel/events/{event}/toggle', [App\Http\Controllers\Admin\EventController::class , 'toggle'])->name('admin.events.toggle');
+    Route::resource('/admincpanel/events', App\Http\Controllers\Admin\EventController::class)->names('admin.events');
 });

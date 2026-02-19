@@ -1,23 +1,20 @@
-<x-app-layout>
-    <div class="py-12 bg-gray-50 min-h-screen">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
-            <div class="mb-6 flex justify-between items-center">
-                <a href="{{ route('admin.dashboard') }}" class="text-yemdat-brown hover:text-yemdat-gold flex items-center gap-2 font-medium">
-                    <svg class="w-5 h-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                    Back to Dashboard
+<x-admin-layout>
+    <x-slot name="header">
+        All Members
+    </x-slot>
+
+    <div>
+        <div class="mb-6 flex justify-end items-center">
+            <div class="flex gap-4 items-center">
+                <form action="{{ route('admin.members.index') }}" method="GET" class="flex items-center">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search members..." class="rounded-l-md border-gray-300 focus:border-yemdat-gold focus:ring-yemdat-gold text-sm">
+                    <button type="submit" class="bg-yemdat-brown text-white px-4 py-2 rounded-r-md hover:bg-yemdat-gold transition text-sm font-medium">Search</button>
+                </form>
+                <a href="{{ route('admin.members.export') }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:ring ring-green-300 disabled:opacity-25 transition ease-in-out duration-150">
+                    Export to CSV
                 </a>
-                <h2 class="text-2xl font-bold text-yemdat-brown">All Members</h2>
-                <div class="flex gap-4 items-center">
-                    <form action="{{ route('admin.members.index') }}" method="GET" class="flex items-center">
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search members..." class="rounded-l-md border-gray-300 focus:border-yemdat-gold focus:ring-yemdat-gold text-sm">
-                        <button type="submit" class="bg-yemdat-brown text-white px-4 py-2 rounded-r-md hover:bg-yemdat-gold transition text-sm font-medium">Search</button>
-                    </form>
-                    <a href="{{ route('admin.members.export') }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:ring ring-green-300 disabled:opacity-25 transition ease-in-out duration-150">
-                        Export to CSV
-                    </a>
-                </div>
             </div>
+        </div>
 
             <!-- Success Message -->
             @if (session('success'))
@@ -83,6 +80,5 @@
                 </div>
             </div>
 
-        </div>
     </div>
-</x-app-layout>
+</x-admin-layout>

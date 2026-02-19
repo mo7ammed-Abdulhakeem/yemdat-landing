@@ -12,11 +12,28 @@ class AdminController extends Controller
     {
         $totalMembers = Member::count();
         $totalMessages = Contact::count();
+        $totalEvents = \App\Models\Event::count();
+        $upcomingEventsCount = \App\Models\Event::where('start_date', '>', now())->count();
+
+        // Membership Breakdown
+        $membershipTiers = \App\Models\MembershipTier::all();
+        $memberCounts = Member::select('membership_type', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+            ->groupBy('membership_type')
+            ->pluck('total', 'membership_type');
+
+        // Gender Breakdown
+        $genderCounts = Member::select('gender', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+            ->whereNotNull('gender')
+            ->groupBy('gender')
+            ->pluck('total', 'gender');
+
+        // Members Joined Today
+        $membersJoinedToday = Member::whereDate('created_at', \Carbon\Carbon::today())->count();
 
         $members = Member::latest()->take(10)->get();
         $messages = Contact::latest()->take(10)->get();
 
-        return view('admin.dashboard', compact('totalMembers', 'totalMessages', 'members', 'messages'));
+        return view('admin.dashboard', compact('totalMembers', 'totalMessages', 'totalEvents', 'upcomingEventsCount', 'members', 'messages', 'membershipTiers', 'memberCounts', 'genderCounts', 'membersJoinedToday'));
     }
 
     public function showMember(Member $member)
@@ -63,6 +80,7 @@ class AdminController extends Controller
             'full_name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:members,email,' . $member->id,
             'phone_number' => 'required|string|max:20|unique:members,phone_number,' . $member->id,
+            'gender' => 'nullable|string|in:male,female',
             'country' => 'required|string',
             'education_level' => 'required|string',
             'specialty' => 'required|string',
@@ -136,7 +154,7 @@ class AdminController extends Controller
             "Expires" => "0"
         ];
 
-        $columns = ['Full Name', 'Email', 'Phone Code', 'Phone Number', 'Country', 'Education Level', 'Specialty', 'Other Specialty', 'Membership Type', 'Joined Date'];
+        $columns = ['Full Name', 'Email', 'Phone Code', 'Phone Number', 'Gender', 'Country', 'Education Level', 'Specialty', 'Other Specialty', 'Membership Type', 'Joined Date'];
 
         $callback = function () use ($columns) {
             $file = fopen('php://output', 'w');
@@ -149,6 +167,7 @@ class AdminController extends Controller
                         $row['Email'] = $member->email;
                         $row['Phone Code'] = $member->phone_code;
                         $row['Phone Number'] = $member->phone_number;
+                        $row['Gender'] = ucfirst($member->gender ?? '');
                         $row['Country'] = $member->country;
                         $row['Education Level'] = $member->education_level;
                         $row['Specialty'] = $member->specialty;
