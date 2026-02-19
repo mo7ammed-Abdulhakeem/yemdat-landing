@@ -80,7 +80,7 @@ class MembershipController extends Controller
             'specialty' => 'required|string|max:255',
             'specialty_other' => 'nullable|string|max:255|required_if:specialty,other',
             'education_level' => 'required|string|max:255',
-            'membership_type' => 'required|string|max:255', // We can't strictly validate 'exists' here if we want to be safe before migration run, but in PROD we should. For now, string is safe. OR: 'required|string|exists:membership_tiers,slug'
+            'membership_type' => 'required|string|exists:membership_tiers,slug',
         ], [
             'email.unique' => 'This email already exists and cannot be saved. Please change the email.',
             'phone_number.unique' => 'This phone number already exists and cannot be saved. Please change the phone number.',

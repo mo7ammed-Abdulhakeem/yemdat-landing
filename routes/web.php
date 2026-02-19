@@ -30,13 +30,13 @@ Route::get('lang/{locale}', function ($locale) {
 })->name('lang.switch');
 
 Route::get('/membership', [MembershipController::class , 'create'])->name('membership');
-Route::post('/membership', [MembershipController::class , 'store'])->name('membership.store');
+Route::post('/membership', [MembershipController::class , 'store'])->name('membership.store')->middleware('throttle:3,1');
 Route::get('/training', function () {
     return redirect()->route('events.index');
 })->name('training');
 Route::view('/news', 'news')->name('news');
 Route::get('/contact', [ContactController::class , 'index'])->name('contact');
-Route::post('/contact', [ContactController::class , 'store'])->name('contact.store');
+Route::post('/contact', [ContactController::class , 'store'])->name('contact.store')->middleware('throttle:3,1');
 
 Route::get('/events', [App\Http\Controllers\EventController::class , 'index'])->name('events.index');
 Route::get('/events/{slug}', [App\Http\Controllers\EventController::class , 'show'])->name('events.show');
