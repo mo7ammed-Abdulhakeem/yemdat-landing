@@ -59,6 +59,10 @@
                                     <span class="ml-2 text-gray-700">Messages/Inbox</span>
                                 </label>
                                 <label class="flex items-center">
+                                    <input type="checkbox" name="permissions[]" value="posts" class="rounded border-gray-300 text-yemdat-brown focus:ring-yemdat-brown" {{ is_array(old('permissions')) && in_array('posts', old('permissions')) ? 'checked' : '' }}>
+                                    <span class="ml-2 text-gray-700">News/Posts Management</span>
+                                </label>
+                                <label class="flex items-center">
                                     <input type="checkbox" name="permissions[]" value="settings" class="rounded border-gray-300 text-yemdat-brown focus:ring-yemdat-brown" {{ is_array(old('permissions')) && in_array('settings', old('permissions')) ? 'checked' : '' }}>
                                     <span class="ml-2 text-gray-700">Global Settings</span>
                                 </label>

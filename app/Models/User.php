@@ -68,4 +68,9 @@ class User extends Authenticatable
 
         return in_array($permission, $this->permissions ?? []);
     }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class , 'created_by');
+    }
 }

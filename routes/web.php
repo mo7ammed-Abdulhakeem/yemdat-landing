@@ -34,7 +34,8 @@ Route::post('/membership', [MembershipController::class , 'store'])->name('membe
 Route::get('/training', function () {
     return redirect()->route('events.index');
 })->name('training');
-Route::view('/news', 'news')->name('news');
+Route::get('/news', [App\Http\Controllers\PostController::class , 'index'])->name('news');
+Route::get('/news/{slug}', [App\Http\Controllers\PostController::class , 'show'])->name('news.show');
 Route::get('/contact', [ContactController::class , 'index'])->name('contact');
 Route::post('/contact', [ContactController::class , 'store'])->name('contact.store')->middleware('throttle:3,1');
 
@@ -76,6 +77,10 @@ Route::middleware(['auth'])->group(function () {
     // Events Management
     Route::patch('/admincpanel/events/{event}/toggle', [App\Http\Controllers\Admin\EventController::class , 'toggle'])->name('admin.events.toggle');
     Route::resource('/admincpanel/events', App\Http\Controllers\Admin\EventController::class)->names('admin.events');
+
+    // Posts & News Management
+    Route::patch('/admincpanel/posts/{post}/toggle', [App\Http\Controllers\Admin\PostController::class , 'toggle'])->name('admin.posts.toggle');
+    Route::resource('/admincpanel/posts', App\Http\Controllers\Admin\PostController::class)->names('admin.posts');
 
     // Admin User Management (Super Admin Only checks inside controller)
     Route::resource('/admincpanel/users', App\Http\Controllers\Admin\UserController::class)->names('admin.users');
