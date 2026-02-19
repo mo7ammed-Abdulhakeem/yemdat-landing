@@ -7,6 +7,8 @@
 
             <!-- KPI Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                
+                @if(auth()->user()->hasPermission('members'))
                 <!-- Total Members -->
                 <div class="bg-white overflow-hidden shadow-sm rounded-xl border-l-4 border-yemdat-brown p-6 flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-4">
@@ -57,7 +59,9 @@
                         </div>
                     </div>
                 </div>
+                @endif
 
+                @if(auth()->user()->hasPermission('messages'))
                 <!-- Total Messages -->
                 <div class="bg-white overflow-hidden shadow-sm rounded-xl border-l-4 border-yemdat-gold p-6 flex items-center justify-between">
                     <div>
@@ -68,7 +72,9 @@
                          <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                     </div>
                 </div>
+                @endif
 
+                @if(auth()->user()->hasPermission('events'))
                 <!-- Total Events -->
                 <div class="bg-white overflow-hidden shadow-sm rounded-xl border-l-4 border-blue-500 p-6 flex items-center justify-between">
                     <div>
@@ -90,10 +96,12 @@
                         <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
                 </div>
+                @endif
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 
+                @if(auth()->user()->hasPermission('members'))
                 <!-- Recent Members -->
                 <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100">
                     <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
@@ -153,7 +161,9 @@
                         </table>
                     </div>
                 </div>
+                @endif
 
+                @if(auth()->user()->hasPermission('messages'))
                 <!-- Recent Messages -->
                 <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100">
                     <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
@@ -197,6 +207,7 @@
                         </table>
                     </div>
                 </div>
+                @endif
 
             </div>
     </div>

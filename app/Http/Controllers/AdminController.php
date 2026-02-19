@@ -10,28 +10,48 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $totalMembers = Member::count();
-        $totalMessages = Contact::count();
-        $totalEvents = \App\Models\Event::count();
-        $upcomingEventsCount = \App\Models\Event::where('start_date', '>', now())->count();
+        $user = auth()->user();
 
-        // Membership Breakdown
-        $membershipTiers = \App\Models\MembershipTier::all();
-        $memberCounts = Member::select('membership_type', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
-            ->groupBy('membership_type')
-            ->pluck('total', 'membership_type');
+        // Defaults
+        $totalMembers = 0;
+        $totalMessages = 0;
+        $totalEvents = 0;
+        $upcomingEventsCount = 0;
+        $membershipTiers = collect();
+        $memberCounts = collect();
+        $genderCounts = collect();
+        $membersJoinedToday = 0;
+        $members = collect();
+        $messages = collect();
 
-        // Gender Breakdown
-        $genderCounts = Member::select('gender', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
-            ->whereNotNull('gender')
-            ->groupBy('gender')
-            ->pluck('total', 'gender');
+        // 1. Members Permission
+        if ($user->hasPermission('members')) {
+            $totalMembers = Member::count();
+            $membershipTiers = \App\Models\MembershipTier::all();
+            $memberCounts = Member::select('membership_type', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+                ->groupBy('membership_type')
+                ->pluck('total', 'membership_type');
 
-        // Members Joined Today
-        $membersJoinedToday = Member::whereDate('created_at', \Carbon\Carbon::today())->count();
+            $genderCounts = Member::select('gender', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+                ->whereNotNull('gender')
+                ->groupBy('gender')
+                ->pluck('total', 'gender');
 
-        $members = Member::latest()->take(10)->get();
-        $messages = Contact::latest()->take(10)->get();
+            $membersJoinedToday = Member::whereDate('created_at', \Carbon\Carbon::today())->count();
+            $members = Member::latest()->take(10)->get();
+        }
+
+        // 2. Messages Permission
+        if ($user->hasPermission('messages')) {
+            $totalMessages = Contact::count();
+            $messages = Contact::latest()->take(10)->get();
+        }
+
+        // 3. Events Permission
+        if ($user->hasPermission('events')) {
+            $totalEvents = \App\Models\Event::count();
+            $upcomingEventsCount = \App\Models\Event::where('start_date', '>', now())->count();
+        }
 
         return view('admin.dashboard', compact('totalMembers', 'totalMessages', 'totalEvents', 'upcomingEventsCount', 'members', 'messages', 'membershipTiers', 'memberCounts', 'genderCounts', 'membersJoinedToday'));
     }
