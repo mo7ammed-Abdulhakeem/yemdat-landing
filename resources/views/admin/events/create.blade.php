@@ -29,7 +29,7 @@
 
             <div class="bg-white overflow-hidden shadow-sm rounded-xl">
                 <div class="p-8 bg-white border-b border-gray-200">
-                    <form action="{{ route('admin.events.store') }}" method="POST" enctype="multipart/form-data">
+                    <form id="createEventForm" action="{{ route('admin.events.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         
                         <!-- Event Details Section -->
@@ -212,7 +212,7 @@
         }
 
         // Sync Quill content to hidden input
-        var form = document.querySelector('form');
+        var form = document.getElementById('createEventForm');
         form.onsubmit = function() {
             var descriptionEn = document.querySelector('input[name=description_en]');
             descriptionEn.value = quillEn.root.innerHTML;
