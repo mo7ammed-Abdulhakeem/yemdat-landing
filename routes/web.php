@@ -76,4 +76,11 @@ Route::middleware(['auth'])->group(function () {
     // Events Management
     Route::patch('/admincpanel/events/{event}/toggle', [App\Http\Controllers\Admin\EventController::class , 'toggle'])->name('admin.events.toggle');
     Route::resource('/admincpanel/events', App\Http\Controllers\Admin\EventController::class)->names('admin.events');
+
+    // Admin User Management (Super Admin Only checks inside controller)
+    Route::resource('/admincpanel/users', App\Http\Controllers\Admin\UserController::class)->names('admin.users');
+
+    // Profile Management
+    Route::get('/admincpanel/profile', [App\Http\Controllers\Admin\ProfileController::class , 'edit'])->name('admin.profile.edit');
+    Route::put('/admincpanel/profile', [App\Http\Controllers\Admin\ProfileController::class , 'update'])->name('admin.profile.update');
 });

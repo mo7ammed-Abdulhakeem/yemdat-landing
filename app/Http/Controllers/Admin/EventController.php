@@ -12,7 +12,7 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::latest()->paginate(10);
+        $events = Event::with('creator')->latest()->paginate(10);
         return view('admin.events.index', compact('events'));
     }
 
@@ -58,6 +58,9 @@ class EventController extends Controller
         if ($request->hasFile('lecturer_image')) {
             $validated['lecturer_image'] = $request->file('lecturer_image')->store('lecturers', 'public');
         }
+
+        // Add creator
+        $validated['created_by'] = auth()->id();
 
         // Checkbox handling
         $validated['is_active'] = $request->has('is_active') ? true : false;

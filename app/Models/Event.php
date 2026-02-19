@@ -24,7 +24,13 @@ class Event extends Model
         'lecturer_linkedin',
         'join_url',
         'is_active',
+        'created_by',
     ];
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class , 'created_by');
+    }
 
     /**
      * Get the dynamic title based on locale
