@@ -118,7 +118,7 @@
                         </div>
 
                         <!-- Join Button (If Join URL is set & Active) -->
-                        @if($event->join_url && $event->end_date >= now())
+                        @if($event->join_url && (!$event->end_date || $event->end_date >= now()))
                             <div class="mt-8 pt-6 border-t border-gray-100">
                                 <a href="{{ $event->join_url }}" target="_blank" class="block w-full py-3 text-center bg-yemdat-gold text-yemdat-brown font-bold rounded-xl hover:bg-yemdat-orange transition shadow-sm hover:shadow-md">
                                     {{ app()->getLocale() == 'ar' ? 'انضم للفعالية الآن' : 'Join Event Now' }}
