@@ -117,8 +117,25 @@
                             </div>
                         </div>
 
-                        <!-- Join Button (If Join URL is set & Active) -->
-                        @if($event->join_url && (!$event->end_date || $event->end_date >= now()))
+                        <!-- Join Button (Logic: Show if URL exists AND (End Date is Future OR (No End Date AND Start Date was less than 3 hours ago))) -->
+                        @php
+                            $showJoinButton = false;
+                            if($event->join_url) {
+                                if($event->end_date) {
+                                    // If End Date exists, button shows until that date passes
+                                    if($event->end_date >= now()) {
+                                        $showJoinButton = true;
+                                    }
+                                } else {
+                                    // If NO End Date, assume event lasts 3 hours from start
+                                    if($event->start_date->addHours(3) >= now()) {
+                                        $showJoinButton = true;
+                                    }
+                                }
+                            }
+                        @endphp
+
+                        @if($showJoinButton)
                             <div class="mt-8 pt-6 border-t border-gray-100">
                                 <a href="{{ $event->join_url }}" target="_blank" class="block w-full py-3 text-center bg-yemdat-gold text-yemdat-brown font-bold rounded-xl hover:bg-yemdat-orange transition shadow-sm hover:shadow-md">
                                     {{ app()->getLocale() == 'ar' ? 'انضم للفعالية الآن' : 'Join Event Now' }}
