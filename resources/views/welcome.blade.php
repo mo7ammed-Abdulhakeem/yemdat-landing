@@ -103,8 +103,9 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
                 @foreach($upcomingEvents as $event)
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition group">
-                        <div class="relative h-48 bg-yemdat-brown/10">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-full hover:shadow-lg transition-all duration-300 group hover:-translate-y-1">
+                        <div class="relative bg-gray-50 overflow-hidden shrink-0" style="height: 14rem; border-bottom: 1px solid #e5e7eb;">
+                            <div class="absolute inset-0 z-10 pointer-events-none" style="box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);"></div>
                             @if($event->image)
                                 <img src="{{ asset('storage/' . $event->image) }}" alt="{{ $event->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                             @else
@@ -155,28 +156,83 @@
             <h2 class="text-center text-2xl font-bold text-yemdat-brown mb-12">{{ __('home.news_title') }}</h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                 <!-- News Item 1 -->
-                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
-                    <div class="flex flex-col gap-4">
-                        <div class="flex justify-between items-start">
-                             <h3 class="font-bold text-yemdat-brown text-lg">{{ __('home.news_1_title') }}</h3>
-                             <!-- Optional: Badge could go here -->
-                        </div>
-                        <p class="text-gray-400 text-sm dir-ltr">{{ __('home.news_1_date') }}</p>
-                        <p class="text-gray-600 text-sm leading-relaxed">{{ __('home.news_1_desc') }}</p>
-                    </div>
-                </div>
+                @foreach($latestNews as $post)
+                    <article class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-full hover:shadow-lg transition-all duration-300 group hover:-translate-y-1">
+                        <!-- Image container with fixed aspect ratio -->
+                        <a href="{{ route('news.show', $post->slug) }}" class="relative block h-56 bg-gray-50 overflow-hidden shrink-0 border-b border-gray-100" style="height: 14rem; border-bottom: 1px solid #e5e7eb;">
+                            <div class="absolute inset-0 z-10 pointer-events-none" style="box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);"></div>
+                            @if($post->image)
+                                <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700 ease-in-out">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-gray-300 bg-yemdat-beige/30">
+                                     <svg class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                            @endif
 
-                 <!-- News Item 2 -->
-                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
-                     <div class="flex flex-col gap-4">
-                        <div class="flex justify-between items-start">
-                             <h3 class="font-bold text-yemdat-brown text-lg">{{ __('home.news_2_title') }}</h3>
+                            <!-- Type Badge -->
+                            <div class="absolute top-4 right-4 rtl:right-auto rtl:left-4">
+                                @php
+                                    $badgeClass = 'bg-yemdat-gold text-white';
+                                    $badgeStyle = '';
+                                    if($post->type === 'announcement') {
+                                        $badgeClass = 'text-white';
+                                        $badgeStyle = 'background-color: #2563eb; border: none;';
+                                    } elseif($post->type === 'update') {
+                                        $badgeClass = 'text-white';
+                                        $badgeStyle = 'background-color: #16a34a; border: none;';
+                                    }
+                                @endphp
+                                <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-md backdrop-blur-sm opacity-90 {{ $badgeClass }}" style="{{ $badgeStyle }}">
+                                    {{ app()->getLocale() == 'ar' ? __("global.{$post->type}") : ucfirst($post->type) }}
+                                </span>
+                            </div>
+                        </a>
+
+                        <!-- Content -->
+                        <div class="p-6 flex-grow flex flex-col">
+                            <!-- Meta (Date) -->
+                            <div class="flex items-center text-sm text-gray-500 mb-4 gap-4">
+                                <time class="flex items-center">
+                                    <svg class="w-4 h-4 mr-1.5 rtl:ml-1.5 text-yemdat-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    {{ $post->created_at->format('M d, Y') }}
+                                </time>
+                            </div>
+
+                            <h3 class="text-xl font-bold text-gray-900 mb-3 flex-grow line-clamp-2 leading-tight group-hover:text-yemdat-brown transition-colors">
+                                <a href="{{ route('news.show', $post->slug) }}">
+                                    {{ $post->title }}
+                                </a>
+                            </h3>
+
+                            <!-- Excerpt -->
+                            <p class="text-gray-600 text-sm mb-6" style="min-height: 4.5rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                                 {{ Str::limit(strip_tags($post->content), 120) }}
+                            </p>
+
+                            <!-- Tags & Read More -->
+                           <div class="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
+                                <div class="flex gap-2 font-medium">
+                                    <a href="{{ route('news.show', $post->slug) }}" class="text-yemdat-brown hover:text-yemdat-gold text-sm font-bold flex items-center gap-1 transition">
+                                        {{ app()->getLocale() == 'ar' ? 'اقرأ المزيد' : 'Read More' }}
+                                        <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                    </a>
+                                </div>
+                                @php
+                                    $tags = is_string($post->tags) ? json_decode($post->tags, true) : $post->tags;
+                                @endphp
+                                @if(is_array($tags) && count($tags) > 0)
+                                    <div class="flex flex-wrap gap-1 justify-end max-w-[50%]">
+                                        @foreach(array_slice($tags, 0, 2) as $tag)
+                                            <span class="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded truncate max-w-full">#{{ trim($tag) }}</span>
+                                        @endforeach
+                                    </div>
+                                @endif
+                           </div>
                         </div>
-                        <p class="text-gray-400 text-sm dir-ltr">{{ __('home.news_2_date') }}</p>
-                        <p class="text-gray-600 text-sm leading-relaxed">{{ __('home.news_2_desc') }}</p>
-                    </div>
-                </div>
+                    </article>
+                @endforeach
             </div>
 
             <div class="text-center mt-12">

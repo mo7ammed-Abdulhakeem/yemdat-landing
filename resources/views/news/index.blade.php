@@ -19,9 +19,10 @@
             @if($posts->count() > 0)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     @foreach($posts as $post)
-                        <article class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-full hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
+                        <article class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-full hover:shadow-lg transition-all duration-300 group hover:-translate-y-1">
                             <!-- Image container with fixed aspect ratio -->
-                            <a href="{{ route('news.show', $post->slug) }}" class="relative block h-56 bg-gray-100 overflow-hidden shrink-0">
+                            <a href="{{ route('news.show', $post->slug) }}" class="relative block h-56 bg-gray-50 overflow-hidden shrink-0 border-b border-gray-100" style="height: 14rem; border-bottom: 1px solid #e5e7eb;">
+                                <div class="absolute inset-0 z-10 pointer-events-none" style="box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);"></div>
                                 @if($post->image)
                                     <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700 ease-in-out">
                                 @else
@@ -36,10 +37,16 @@
                                 <div class="absolute top-4 right-4 rtl:right-auto rtl:left-4">
                                     @php
                                         $badgeClass = 'bg-yemdat-gold text-white';
-                                        if($post->type === 'announcement') $badgeClass = 'bg-blue-600 text-white';
-                                        elseif($post->type === 'update') $badgeClass = 'bg-green-600 text-white';
+                                        $badgeStyle = '';
+                                        if($post->type === 'announcement') {
+                                            $badgeClass = 'text-white';
+                                            $badgeStyle = 'background-color: #2563eb; border: none;';
+                                        } elseif($post->type === 'update') {
+                                            $badgeClass = 'text-white';
+                                            $badgeStyle = 'background-color: #16a34a; border: none;';
+                                        }
                                     @endphp
-                                    <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-md backdrop-blur-sm opacity-90 {{ $badgeClass }}">
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-md backdrop-blur-sm opacity-90 {{ $badgeClass }}" style="{{ $badgeStyle }}">
                                         {{ app()->getLocale() == 'ar' ? __("global.{$post->type}") : ucfirst($post->type) }}
                                     </span>
                                 </div>
@@ -62,7 +69,7 @@
                                 </h3>
 
                                 <!-- Excerpt -->
-                                <p class="text-gray-600 text-sm line-clamp-3 mb-6">
+                                <p class="text-gray-600 text-sm mb-6" style="min-height: 4.5rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
                                      {{ Str::limit(strip_tags($post->content), 120) }}
                                 </p>
 
@@ -74,9 +81,12 @@
                                             <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                                         </a>
                                     </div>
-                                    @if($post->tags && count($post->tags) > 0)
+                                    @php
+                                        $tags = is_string($post->tags) ? json_decode($post->tags, true) : $post->tags;
+                                    @endphp
+                                    @if(is_array($tags) && count($tags) > 0)
                                         <div class="flex flex-wrap gap-1 justify-end max-w-[50%]">
-                                            @foreach(array_slice($post->tags, 0, 2) as $tag)
+                                            @foreach(array_slice($tags, 0, 2) as $tag)
                                                 <span class="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded truncate max-w-full">#{{ trim($tag) }}</span>
                                             @endforeach
                                         </div>

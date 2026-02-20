@@ -41,13 +41,38 @@ class PostController extends Controller
             ->with('author')
             ->firstOrFail();
 
-        // Get related posts (same type, excluding current)
+        // Get related posts (matching tags, exclude current)
+        $tags = is_string($post->tags) ? json_decode($post->tags, true) : $post->tags;
+
         $relatedPosts = Post::where('is_published', true)
-            ->where('type', $post->type)
             ->where('id', '!=', $post->id)
+            ->where(function ($query) use ($tags, $post) {
+            if (is_array($tags) && count($tags) > 0) {
+                foreach ($tags as $tag) {
+                    $query->orWhereJsonContains('tags', $tag);
+                }
+            }
+            else {
+                $query->where('type', $post->type);
+            }
+        })
             ->latest()
             ->take(3)
             ->get();
+
+        // If we didn't get enough related posts by tag, backfill with same type
+        if ($relatedPosts->count() < 3) {
+            $excludeIds = $relatedPosts->pluck('id')->push($post->id)->toArray();
+
+            $morePosts = Post::where('is_published', true)
+                ->whereNotIn('id', $excludeIds)
+                ->where('type', $post->type)
+                ->latest()
+                ->take(3 - $relatedPosts->count())
+                ->get();
+
+            $relatedPosts = $relatedPosts->merge($morePosts);
+        }
 
         return view('news.show', compact('post', 'relatedPosts'));
     }

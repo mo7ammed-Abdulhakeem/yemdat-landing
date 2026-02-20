@@ -63,7 +63,13 @@
                             <!-- Tags -->
                             <div>
                                 <label for="tags" class="block text-sm font-medium text-gray-700">Tags (Comma separated)</label>
-                                <input type="text" name="tags" id="tags" value="{{ old('tags', $post->tags ? implode(', ', $post->tags) : '') }}" placeholder="e.g. SEO, Medicine, News" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-brown focus:ring focus:ring-yemdat-gold focus:ring-opacity-50">
+                                @php
+                                    $tagsVal = $post->tags;
+                                    if(is_string($tagsVal)) {
+                                        $tagsVal = json_decode($tagsVal, true);
+                                    }
+                                @endphp
+                                <input type="text" name="tags" id="tags" value="{{ old('tags', $tagsVal && is_array($tagsVal) ? implode(', ', $tagsVal) : '') }}" placeholder="e.g. SEO, Medicine, News" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-brown focus:ring focus:ring-yemdat-gold focus:ring-opacity-50">
                                 @error('tags') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                             </div>
 

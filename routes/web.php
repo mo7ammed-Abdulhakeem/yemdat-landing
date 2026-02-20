@@ -15,7 +15,12 @@ Route::get('/', function () {
         ->take(3)
         ->get();
 
-    return view('welcome', compact('upcomingEvents'));
+    $latestNews = \App\Models\Post::where('is_published', true)
+        ->latest()
+        ->take(2)
+        ->get();
+
+    return view('welcome', compact('upcomingEvents', 'latestNews'));
 })->name('home');
 
 Route::view('/about', 'about')->name('about');

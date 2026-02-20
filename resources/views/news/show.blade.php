@@ -29,7 +29,9 @@
                 
                 <!-- Post Cover Image -->
                 @if($post->image)
-                    <div class="w-full h-80 sm:h-96 md:h-[500px] relative">
+                    <div class="w-full h-80 sm:h-96 md:h-[500px] relative border-b border-gray-100" style="border-bottom: 1px solid #e5e7eb;">
+                         <!-- Inner ring for bounding white images -->
+                         <div class="absolute inset-0 z-10 pointer-events-none" style="box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);"></div>
                          <!-- Cover Image scaling behavior controlled via object-cover. 
                               Note: the object handles arbitrary dimensioned uploads nicely. -->
                          <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover">
@@ -40,10 +42,16 @@
                          <div class="absolute bottom-6 left-6 rtl:left-auto rtl:right-6">
                             @php
                                 $badgeClass = 'bg-yemdat-gold text-white';
-                                if($post->type === 'announcement') $badgeClass = 'bg-blue-600 text-white';
-                                elseif($post->type === 'update') $badgeClass = 'bg-green-600 text-white';
+                                $badgeStyle = '';
+                                if($post->type === 'announcement') {
+                                    $badgeClass = 'text-white';
+                                    $badgeStyle = 'background-color: #2563eb; border: none;';
+                                } elseif($post->type === 'update') {
+                                    $badgeClass = 'text-white';
+                                    $badgeStyle = 'background-color: #16a34a; border: none;';
+                                }
                             @endphp
-                            <span class="px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider shadow-lg backdrop-blur-md opacity-95 {{ $badgeClass }}">
+                            <span class="px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider shadow-lg backdrop-blur-md opacity-95 {{ $badgeClass }}" style="{{ $badgeStyle }}">
                                 {{ app()->getLocale() == 'ar' ? __("global.{$post->type}") : ucfirst($post->type) }}
                             </span>
                          </div>
@@ -54,10 +62,16 @@
                          <div class="absolute bottom-6 left-6 rtl:left-auto rtl:right-6">
                             @php
                                 $badgeClass = 'bg-yemdat-gold text-white';
-                                if($post->type === 'announcement') $badgeClass = 'bg-blue-600 text-white';
-                                elseif($post->type === 'update') $badgeClass = 'bg-green-600 text-white';
+                                $badgeStyle = '';
+                                if($post->type === 'announcement') {
+                                    $badgeClass = 'text-white';
+                                    $badgeStyle = 'background-color: #2563eb; border: none;';
+                                } elseif($post->type === 'update') {
+                                    $badgeClass = 'text-white';
+                                    $badgeStyle = 'background-color: #16a34a; border: none;';
+                                }
                             @endphp
-                            <span class="px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider shadow-sm {{ $badgeClass }}">
+                            <span class="px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider shadow-sm {{ $badgeClass }}" style="{{ $badgeStyle }}">
                                 {{ app()->getLocale() == 'ar' ? __("global.{$post->type}") : ucfirst($post->type) }}
                             </span>
                          </div>
@@ -81,11 +95,7 @@
                             <span class="text-xs">{{ $post->created_at->format('h:i A') }}</span>
                         </div>
                         
-                        <!-- Author -->
-                        <div class="flex items-center text-gray-600">
-                            <svg class="w-4 h-4 mr-2 rtl:ml-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                            <span>{{ $post->author->name ?? 'System' }}</span>
-                        </div>
+
                     </div>
                 </header>
 
@@ -98,10 +108,13 @@
                 <footer class="p-6 sm:px-10 sm:py-8 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
                     <!-- Tags -->
                     <div class="flex-grow">
-                        @if($post->tags && count($post->tags) > 0)
+                        @php
+                            $tags = is_string($post->tags) ? json_decode($post->tags, true) : $post->tags;
+                        @endphp
+                        @if(is_array($tags) && count($tags) > 0)
                             <div class="flex items-center gap-2 flex-wrap">
                                 <span class="text-xs font-bold text-gray-500 uppercase tracking-wider mr-2 rtl:ml-2">TAGS:</span>
-                                @foreach($post->tags as $tag)
+                                @foreach($tags as $tag)
                                     <span class="px-3 py-1 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:text-yemdat-brown hover:border-yemdat-gold transition cursor-default shadow-sm">
                                         {{ trim($tag) }}
                                     </span>
@@ -124,15 +137,16 @@
 
             <!-- Related Posts Section (if any) -->
             @if($relatedPosts->count() > 0)
-            <div class="max-w-4xl mx-auto mt-16 pb-8">
+            <div class="max-w-4xl mx-auto mt-24 pt-8 border-t border-gray-200 pb-8">
                 <h3 class="text-2xl font-bold text-gray-900 mb-8 border-l-4 rtl:border-l-0 rtl:border-r-4 border-yemdat-gold pl-4 rtl:pl-0 rtl:pr-4">
                     {{ app()->getLocale() == 'ar' ? 'أخبار ذات صلة' : 'Related Posts' }}
                 </h3>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    @foreach($relatedPosts as $related)
-                         <a href="{{ route('news.show', $related->slug) }}" class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 group flex flex-col">
-                            <div class="h-32 bg-gray-100 overflow-hidden shrink-0">
+                     @foreach($relatedPosts as $related)
+                         <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 group flex flex-col">
+                            <a href="{{ route('news.show', $related->slug) }}" class="block relative h-32 bg-gray-100 overflow-hidden shrink-0 border-b border-gray-100" style="height: 8rem; border-bottom: 1px solid #e5e7eb;">
+                                 <div class="absolute inset-0 z-10 pointer-events-none" style="box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);"></div>
                                 @if($related->image)
                                     <img src="{{ asset('storage/' . $related->image) }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                                 @else
@@ -143,19 +157,21 @@
                                     </div>
                                 @endif
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
-                            </div>
+                            </a>
                             <div class="p-5 flex-grow flex flex-col">
                                 <span class="text-[10px] font-bold text-yemdat-gold uppercase tracking-wider mb-2 block">
                                     {{ $related->created_at->format('M d, Y') }}
                                 </span>
                                 <h4 class="font-bold text-gray-900 mb-2 line-clamp-2 leading-tight group-hover:text-yemdat-brown flex-grow">
-                                    {{ $related->title }}
+                                    <a href="{{ route('news.show', $related->slug) }}" class="before:absolute before:inset-0">
+                                        {{ $related->title }}
+                                    </a>
                                 </h4>
                                  <span class="text-xs font-bold text-yemdat-brown flex items-center gap-1 mt-auto">
-                                    {{ app()->getLocale() == 'ar' ? 'اقرأ' : 'Read' }} &rarr;
+                                    <a href="{{ route('news.show', $related->slug) }}">{{ app()->getLocale() == 'ar' ? 'اقرأ' : 'Read' }} &rarr;</a>
                                 </span>
                             </div>
-                         </a>
+                         </div>
                     @endforeach
                 </div>
             </div>

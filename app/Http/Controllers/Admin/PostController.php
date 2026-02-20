@@ -57,8 +57,7 @@ class PostController extends Controller
 
         // Parse tags if they exist (assuming a simple comma-separated input for now)
         if (!empty($validated['tags'])) {
-            $tagsArray = array_map('trim', explode(',', $validated['tags']));
-            $validated['tags'] = json_encode($tagsArray);
+            $validated['tags'] = array_map('trim', explode(',', $validated['tags']));
         }
         else {
             $validated['tags'] = null;
@@ -124,8 +123,7 @@ class PostController extends Controller
 
         // Handle Tags
         if (!empty($validated['tags'])) {
-            $tagsArray = array_map('trim', explode(',', $validated['tags']));
-            $validated['tags'] = json_encode($tagsArray);
+            $validated['tags'] = array_map('trim', explode(',', $validated['tags']));
         }
         else {
             $validated['tags'] = null;

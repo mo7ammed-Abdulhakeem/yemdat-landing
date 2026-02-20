@@ -25,9 +25,10 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         @foreach($happeningNow as $event)
-                            <div class="bg-white rounded-xl shadow-lg border-2 border-red-100 hover:border-red-300 transition-all duration-300 overflow-hidden flex flex-col h-full group">
+                            <div class="bg-white rounded-2xl shadow-lg border-2 border-red-100 hover:border-red-300 transition-all duration-300 flex flex-col h-full group hover:-translate-y-1 overflow-hidden">
                                 <!-- Image & Countup -->
-                                <div class="relative h-48 bg-gray-200 overflow-hidden">
+                                <div class="relative bg-gray-50 overflow-hidden shrink-0 border-b border-gray-100" style="height: 14rem; border-bottom: 1px solid #e5e7eb;">
+                                     <div class="absolute inset-0 z-10 pointer-events-none" style="box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);"></div>
                                     @if($event->image)
                                         <img src="{{ asset('storage/' . $event->image) }}" alt="{{ $event->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                                     @else
@@ -98,9 +99,10 @@
                 @if($upcomingEvents->count() > 0)
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         @foreach($upcomingEvents as $event)
-                            <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100 flex flex-col h-full group">
+                            <div class="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 flex flex-col h-full group hover:-translate-y-1">
                                 <!-- Image & Countdown -->
-                                <div class="relative h-48 bg-gray-200 overflow-hidden">
+                                <div class="relative bg-gray-50 overflow-hidden shrink-0 border-b border-gray-100" style="height: 14rem; border-bottom: 1px solid #e5e7eb;">
+                                     <div class="absolute inset-0 z-10 pointer-events-none" style="box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);"></div>
                                      @if($event->image)
                                         <img src="{{ asset('storage/' . $event->image) }}" alt="{{ $event->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                                     @else
@@ -193,9 +195,10 @@
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                          @foreach($pastEvents as $event)
-                            <div class="bg-gray-50 rounded-xl overflow-hidden border border-gray-200 flex flex-col h-full grayscale hover:grayscale-0 transition duration-500 group">
+                            <div class="bg-gray-50 rounded-2xl overflow-hidden border border-gray-200 flex flex-col h-full grayscale hover:grayscale-0 transition duration-500 group hover:-translate-y-1">
                                 <!-- Image & Badge -->
-                                <div class="relative h-48 bg-gray-200 overflow-hidden">
+                                <div class="relative bg-gray-50 overflow-hidden shrink-0 border-b border-gray-100" style="height: 14rem; border-bottom: 1px solid #e5e7eb;">
+                                     <div class="absolute inset-0 z-10 pointer-events-none" style="box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);"></div>
                                      @if($event->image)
                                         <img src="{{ asset('storage/' . $event->image) }}" alt="{{ $event->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                                     @else
