@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
 {
@@ -51,6 +52,28 @@ class EventController extends Controller
     public function show($slug)
     {
         $event = Event::where('slug', $slug)->where('is_active', true)->firstOrFail();
-        return view('events.show', compact('event'));
+
+        $similarEvents = Event::where('is_active', true)
+            ->where('id', '!=', $event->id)
+            ->where('start_date', '>=', now())
+            ->orderBy('start_date', 'asc')
+            ->take(3)
+            ->get();
+
+        return view('events.show', compact('event', 'similarEvents'));
+    }
+
+    public function register(Request $request, $slug)
+    {
+        $event = Event::where('slug', $slug)->where('is_active', true)->firstOrFail();
+        $member = Auth::guard('member')->user();
+
+        // Attach if not already registered
+        if (!$event->members()->where('member_id', $member->id)->exists()) {
+            $event->members()->attach($member->id);
+        }
+
+        $message = app()->getLocale() == 'ar' ? 'تم تسجيلك بنجاح في الفعالية!' : 'You have successfully registered for the event!';
+        return redirect()->back()->with('success', $message);
     }
 }

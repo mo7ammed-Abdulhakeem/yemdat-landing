@@ -12,6 +12,7 @@ return [
     'placeholder_name' => 'Enter your name',
     'label_email' => 'Email Address',
     'placeholder_email' => 'example@email.com',
+    'label_phone' => 'Phone Number',
     'label_subject' => 'Subject',
     'placeholder_subject' => 'Message subject',
     'label_message' => 'Message',

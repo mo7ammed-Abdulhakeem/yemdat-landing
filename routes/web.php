@@ -46,6 +46,31 @@ Route::post('/contact', [ContactController::class , 'store'])->name('contact.sto
 
 Route::get('/events', [App\Http\Controllers\EventController::class , 'index'])->name('events.index');
 Route::get('/events/{slug}', [App\Http\Controllers\EventController::class , 'show'])->name('events.show');
+Route::post('/events/{slug}/register', [App\Http\Controllers\EventController::class , 'register'])
+    ->name('events.register')
+    ->middleware('auth:member');
+
+// Public Authentication Routes
+Route::middleware(['guest'])->group(function () {
+    Route::get('/login', [App\Http\Controllers\Auth\PublicLoginController::class , 'showLogin'])->name('public.login');
+    Route::post('/login', [App\Http\Controllers\Auth\PublicLoginController::class , 'login'])->name('public.login.post');
+
+    Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class , 'showRegistrationForm'])->name('register');
+    Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class , 'register'])->name('register.post');
+
+    Route::get('/claim-profile', [App\Http\Controllers\Auth\ClaimProfileController::class , 'showClaimForm'])->name('claim.profile');
+    Route::post('/claim-profile', [App\Http\Controllers\Auth\ClaimProfileController::class , 'verifyEmail'])->name('claim.profile.verify');
+    Route::get('/claim-profile/set-password/{token}', [App\Http\Controllers\Auth\ClaimProfileController::class , 'showSetPasswordForm'])->name('claim.profile.set-password');
+    Route::post('/claim-profile/set-password', [App\Http\Controllers\Auth\ClaimProfileController::class , 'setPassword'])->name('claim.profile.set-password.post');
+});
+
+// Authenticated Community Member Routes
+Route::middleware(['auth:member'])->group(function () {
+    Route::post('/logout', [App\Http\Controllers\Auth\PublicLoginController::class , 'logout'])->name('public.logout');
+    Route::get('/my-profile', [App\Http\Controllers\ProfileController::class , 'show'])->name('profile.show');
+    Route::get('/my-profile/edit', [App\Http\Controllers\ProfileController::class , 'edit'])->name('profile.edit');
+    Route::put('/my-profile', [App\Http\Controllers\ProfileController::class , 'update'])->name('profile.update');
+});
 
 // Admin Authentication Routes
 Route::get('/admincpanel/login', [App\Http\Controllers\AuthController::class , 'showLogin'])->name('login');
@@ -80,6 +105,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admincpanel/settings', [App\Http\Controllers\AdminController::class , 'updateSettings'])->name('admin.settings.update');
 
     // Events Management
+    Route::get('/admincpanel/events/{event}/export', [App\Http\Controllers\Admin\EventController::class , 'exportMembers'])->name('admin.events.export');
     Route::patch('/admincpanel/events/{event}/toggle', [App\Http\Controllers\Admin\EventController::class , 'toggle'])->name('admin.events.toggle');
     Route::resource('/admincpanel/events', App\Http\Controllers\Admin\EventController::class)->names('admin.events');
 

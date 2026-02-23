@@ -60,7 +60,7 @@
                             <div>
                                 <dt class="text-sm font-medium text-gray-500">Specialty</dt>
                                 <dd class="mt-1 text-sm text-gray-900">
-                                    {{ $member->specialty === 'other' ? ($member->specialty_other ?? 'Other') : $member->specialty }}
+                                    {{ $member->specialty === 'Other' ? ($member->specialty_other ?? 'Other') : $member->specialty }}
                                 </dd>
                             </div>
                         </dl>

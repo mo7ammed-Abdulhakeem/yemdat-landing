@@ -16,6 +16,63 @@ class EventController extends Controller
         return view('admin.events.index', compact('events'));
     }
 
+    public function show(Event $event)
+    {
+        $event->load('members.membershipTier');
+        return view('admin.events.show', compact('event'));
+    }
+
+    public function exportMembers(Event $event)
+    {
+        $event->load('members.membershipTier');
+
+        $filename = 'event_' . Str::slug($event->title_en) . '_registrations_' . date('Y-m-d') . '.csv';
+
+        $headers = [
+            'Content-type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=$filename",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
+
+        $callback = function () use ($event) {
+            $file = fopen('php://output', 'w');
+
+            // Add UTF-8 BOM for proper Arabic/Unicode display in Excel
+            fputs($file, "\xEF\xBB\xBF");
+
+            // Headers
+            fputcsv($file, [
+                'Member Name',
+                'Email',
+                'Phone',
+                'Tier',
+                'Specialty',
+                'Registration Date'
+            ]);
+
+            // Data rows
+            foreach ($event->members as $member) {
+                $phone = $member->phone_code . ' ' . $member->phone_number;
+                $specialty = $member->specialty === 'Other' ? ($member->specialty_other ?? 'Other') : $member->specialty;
+
+                fputcsv($file, [
+                    $member->full_name,
+                    $member->email,
+                    $phone,
+                    $member->membershipTier ? $member->membershipTier->name_en : 'Member',
+                    $specialty,
+                    $member->pivot->created_at->format('Y-m-d H:i:s')
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
     public function create()
     {
         return view('admin.events.create');

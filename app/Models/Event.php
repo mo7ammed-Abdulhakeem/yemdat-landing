@@ -131,4 +131,12 @@ class Event extends Model
 
         return intval($days) . ' Days Left';
     }
+
+    /**
+     * The members that are registered for the event.
+     */
+    public function members()
+    {
+        return $this->belongsToMany(Member::class , 'event_member')->withTimestamps();
+    }
 }

@@ -15,8 +15,8 @@
                 <p class="text-gray-300 text-sm leading-relaxed mb-6">
                     A voluntary community dedicated to developing data and AI professionals' capabilities.
                 </p>
-                <a href="{{ route('membership') }}" class="inline-block bg-yemdat-gold text-yemdat-brown font-bold px-6 py-2 rounded-lg hover:bg-white transition shadow-md">
-                    {{ __('home.btn_join') }}
+                <a href="{{ auth()->guard('member')->check() ? route('profile.show') : route('register') }}" class="inline-block bg-yemdat-gold text-yemdat-brown font-bold px-6 py-2 rounded-lg hover:bg-white transition shadow-md">
+                    {{ auth()->guard('member')->check() ? (app()->getLocale() == 'ar' ? 'ملفي الشخصي' : 'My Profile') : __('home.btn_join') }}
                 </a>
             </div>
 

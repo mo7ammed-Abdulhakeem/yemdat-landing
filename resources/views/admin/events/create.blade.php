@@ -140,12 +140,12 @@
                             <!-- Join URL (Meeting Link) -->
                             <div class="col-span-2">
                                 <div class="mt-6 border-t border-gray-200 pt-6">
-                                    <h3 class="text-lg font-medium text-yemdat-brown mb-4">Event Joining Link</h3>
+                                    <h3 class="text-lg font-medium text-yemdat-brown mb-4">Event Registration / Joining Link</h3>
                                     <div>
-                                        <label for="join_url" class="block text-sm font-medium text-gray-700">{{ __('Join URL (Zoom, Teams, etc.)') }}</label>
-                                        <input id="join_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-brown focus:ring focus:ring-yemdat-gold focus:ring-opacity-50" type="url" name="join_url" value="{{ old('join_url') }}" placeholder="https://zoom.us/j/..." />
-                                        <p class="mt-1 text-sm text-gray-500">Add link to event once event starts so people can join.</p>
-                                        <p class="text-sm text-gray-500" dir="rtl">أضف رابط الفعالية عند بدئها ليتمكن الناس من الانضمام.</p>
+                                        <label for="join_url" class="block text-sm font-medium text-gray-700">{{ __('Registration or Join Link (Google Form, Zoom, etc.)') }}</label>
+                                        <input id="join_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-brown focus:ring focus:ring-yemdat-gold focus:ring-opacity-50" type="url" name="join_url" value="{{ old('join_url') }}" placeholder="https://..." />
+                                        <p class="mt-1 text-sm text-gray-500">Add a link for users to register (before event starts) or to join the stream (when event starts).</p>
+                                        <p class="text-sm text-gray-500" dir="rtl">أضف رابطاً لتسجيل المستخدمين (قبل بدئها) أو للانضمام للبث (عند بدئها).</p>
                                         @error('join_url') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                                     </div>
                                 </div>

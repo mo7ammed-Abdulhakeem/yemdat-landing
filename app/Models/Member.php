@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Member extends Model
+class Member extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         'full_name',
@@ -20,7 +21,30 @@ class Member extends Model
         'specialty',
         'specialty_other',
         'membership_type',
+        'password',
+        'bio',
     ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'password' => 'hashed',
+        ];
+    }
+
+    /**
+     * Get the events the member has registered for.
+     */
+    public function events()
+    {
+        return $this->belongsToMany(Event::class)->withTimestamps();
+    }
+
     public function membershipTier()
     {
         return $this->belongsTo(MembershipTier::class , 'membership_type', 'slug');

@@ -73,4 +73,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Post::class , 'created_by');
     }
+
+    public function member()
+    {
+        return $this->hasOne(Member::class);
+    }
 }

@@ -40,6 +40,9 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">{{ $message->name }}</div>
                                     <div class="text-sm text-gray-500">{{ $message->email }}</div>
+                                    @if($message->phone_number)
+                                        <div class="text-xs text-gray-400 mt-1" dir="ltr">{{ $message->phone_number }}</div>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <a href="{{ route('admin.messages.show', $message) }}" class="hover:text-yemdat-gold hover:underline">

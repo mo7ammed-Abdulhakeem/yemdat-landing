@@ -46,8 +46,8 @@
 
             <!-- Action Buttons -->
             <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="{{ route('membership') }}" class="bg-yemdat-brown text-white hover:bg-yemdat-brown/90 px-8 py-3 rounded-lg font-bold transition shadow-md hover:shadow-lg">
-                    {{ __('home.btn_join') }}
+                <a href="{{ auth()->guard('member')->check() ? route('profile.show') : route('register') }}" class="bg-yemdat-brown text-white hover:bg-yemdat-brown/90 px-8 py-3 rounded-lg font-bold transition shadow-md hover:shadow-lg">
+                    {{ auth()->guard('member')->check() ? (app()->getLocale() == 'ar' ? 'ملفي الشخصي' : 'My Profile') : __('home.btn_join') }}
                 </a>
                  <a href="{{ route('training') }}" class="bg-white text-yemdat-brown border border-gray-200 hover:border-yemdat-gold px-8 py-3 rounded-lg font-bold transition shadow-sm hover:shadow-md">
                     {{ __('home.btn_explore') }}

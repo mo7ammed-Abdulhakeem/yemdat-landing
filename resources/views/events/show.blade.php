@@ -117,29 +117,52 @@
                             </div>
                         </div>
 
-                        <!-- Join Button (Logic: Show if URL exists AND (End Date is Future OR (No End Date AND Start Date was less than 3 hours ago))) -->
+                        <!-- Registration Button Logic -->
                         @php
-                            $showJoinButton = false;
-                            if($event->join_url) {
-                                if($event->end_date) {
-                                    // If End Date exists, button shows until that date passes
-                                    if($event->end_date >= now()) {
-                                        $showJoinButton = true;
-                                    }
-                                } else {
-                                    // If NO End Date, assume event lasts 3 hours from start
-                                    if($event->start_date->addHours(3) >= now()) {
-                                        $showJoinButton = true;
-                                    }
+                            $isUpcoming = false;
+                            if($event->end_date) {
+                                if($event->end_date >= now()) {
+                                    $isUpcoming = true;
+                                }
+                            } else {
+                                if($event->start_date->addHours(3) >= now()) {
+                                    $isUpcoming = true;
                                 }
                             }
+                            
+                            $member = auth()->guard('member')->user();
+                            $isRegistered = $member ? $event->members->contains($member->id) : false;
                         @endphp
 
-                        @if($showJoinButton)
+                        @if($isUpcoming)
                             <div class="mt-8 pt-6 border-t border-gray-100">
-                                <a href="{{ $event->join_url }}" target="_blank" class="block w-full py-3 text-center bg-yemdat-gold text-yemdat-brown font-bold rounded-xl hover:bg-yemdat-orange transition shadow-sm hover:shadow-md">
-                                    {{ app()->getLocale() == 'ar' ? 'انضم للفعالية الآن' : 'Join Event Now' }}
-                                </a>
+                                @if(!$member)
+                                    <div class="space-y-3">
+                                        <p class="text-sm text-center text-gray-500">{{ app()->getLocale() == 'ar' ? 'يجب تسجيل الدخول للتسجيل في الفعالية' : 'Please sign in to register for this event.' }}</p>
+                                        <a href="{{ route('public.login') }}" class="block w-full py-3 text-center bg-gray-100 text-yemdat-brown font-bold rounded-xl hover:bg-gray-200 transition">
+                                            {{ app()->getLocale() == 'ar' ? 'تسجيل الدخول / إنشاء حساب' : 'Sign In / Join Community' }}
+                                        </a>
+                                    </div>
+                                @elseif($isRegistered)
+                                    <div class="p-4 bg-green-50 border border-green-200 rounded-xl text-center">
+                                        <p class="text-green-700 font-bold mb-3 flex items-center justify-center gap-2">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                            {{ app()->getLocale() == 'ar' ? 'تم تسجيلك بنجاح في الفعالية' : 'You are successfully registered' }}
+                                        </p>
+                                        @if($event->join_url)
+                                            <a href="{{ $event->join_url }}" target="_blank" class="block w-full py-3 text-center bg-yemdat-gold text-yemdat-brown font-bold rounded-xl hover:bg-yemdat-orange transition shadow-sm">
+                                                {{ app()->getLocale() == 'ar' ? 'رابط حضور الفعالية' : 'Event Join Link' }}
+                                            </a>
+                                        @endif
+                                    </div>
+                                @else
+                                    <form action="{{ route('events.register', $event->slug) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="w-full block py-3 text-center bg-yemdat-gold text-yemdat-brown font-bold rounded-xl hover:bg-yemdat-orange transition shadow-sm hover:shadow-md">
+                                            {{ app()->getLocale() == 'ar' ? 'تأكيد التسجيل في الفعالية' : 'Confirm Event Registration' }}
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         @endif
                     </div>
@@ -180,6 +203,57 @@
                 </div>
 
             </div>
+            
+            @if(isset($similarEvents) && $similarEvents->count() > 0)
+                <div class="mt-16 pt-8 border-t border-gray-200 w-full col-span-1 lg:col-span-3">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-8 border-b border-gray-100 pb-4">
+                        {{ app()->getLocale() == 'ar' ? 'فعاليات أخرى قد تهمك' : 'More Upcoming Events' }}
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        @foreach($similarEvents as $simEvent)
+                            <div class="bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group overflow-hidden">
+                                <div class="relative h-56 w-full shrink-0 overflow-hidden bg-gray-100">
+                                    @if($simEvent->image)
+                                        <img src="{{ asset('storage/' . $simEvent->image) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    @else
+                                        <div class="w-full h-full flex flex-col items-center justify-center text-gray-300">
+                                            <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <div class="p-6 flex-grow flex flex-col">
+                                    <h4 class="text-xl font-bold text-gray-900 mb-4 flex-grow line-clamp-2">
+                                        <a href="{{ route('events.show', $simEvent->slug) }}" class="hover:text-yemdat-gold transition">
+                                            {{ $simEvent->title }}
+                                        </a>
+                                    </h4>
+
+                                    <div class="space-y-2 mb-4 text-sm">
+                                        <div class="flex items-center text-gray-700">
+                                            <svg class="w-4 h-4 mr-2 rtl:ml-2 text-yemdat-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                            <span dir="ltr">{{ $simEvent->start_date->format('M d, Y | h:i A') }}</span>
+                                        </div>
+                                        @if($simEvent->location)
+                                        <div class="flex items-center text-gray-500">
+                                            <svg class="w-4 h-4 mr-2 rtl:ml-2 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                            <span class="truncate">{{ $simEvent->location }}</span>
+                                        </div>
+                                        @endif
+                                    </div>
+                                    
+                                    <a href="{{ route('events.show', $simEvent->slug) }}" class="mt-auto pt-4 border-t border-gray-100 flex items-center text-yemdat-brown font-bold hover:text-yemdat-gold transition">
+                                        {{ app()->getLocale() == 'ar' ? 'التفاصيل والتسجيل' : 'Details & Register' }}
+                                        <svg class="w-5 h-5 ml-2 rtl:mr-2 rtl:ml-0 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                                    </a>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 </x-app-layout>

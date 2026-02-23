@@ -33,6 +33,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lecturer</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created By</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reg's</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Active</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -67,6 +68,9 @@
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-bold text-gray-900">{{ $event->members()->count() }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
                                             @php
                                                 $status = $event->status;
                                                 $color = $status === 'Upcoming' ? 'bg-blue-100 text-blue-800' : ($status === 'Ongoing' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800');
@@ -86,7 +90,8 @@
                                             </form>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                            <a href="{{ route('admin.events.edit', $event) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                                            <a href="{{ route('admin.events.show', $event) }}" class="text-green-600 hover:text-green-900 border border-green-200 bg-green-50 px-2 py-1 rounded">View</a>
+                                            <a href="{{ route('admin.events.edit', $event) }}" class="text-indigo-600 hover:text-indigo-900 ml-2 border border-indigo-200 bg-indigo-50 px-2 py-1 rounded">Edit</a>
                                             <form action="{{ route('admin.events.destroy', $event) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this event?');">
                                                 @csrf
                                                 @method('DELETE')

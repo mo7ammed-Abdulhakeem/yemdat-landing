@@ -12,6 +12,7 @@ return [
     'placeholder_name' => 'أدخل اسمك',
     'label_email' => 'البريد الإلكتروني',
     'placeholder_email' => 'example@email.com',
+    'label_phone' => 'رقم الهاتف',
     'label_subject' => 'الموضوع',
     'placeholder_subject' => 'موضوع الرسالة',
     'label_message' => 'الرسالة',
