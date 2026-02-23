@@ -49,11 +49,10 @@ class ProfileController extends Controller
             'specialty' => 'nullable|string|max:255',
             'specialty_other' => 'nullable|string|max:255',
             'bio' => 'nullable|string',
-            // Notice: 'email' is intentionally excluded from validation and update
+            'password' => ['nullable', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
         ]);
 
-        // Update the member directly
-        $member->update([
+        $updateData = [
             'full_name' => $validated['full_name'],
             'phone_code' => $validated['phone_code'],
             'phone_number' => $validated['phone_number'],
@@ -63,7 +62,14 @@ class ProfileController extends Controller
             'specialty' => $validated['specialty'] ?? null,
             'specialty_other' => $validated['specialty_other'] ?? null,
             'bio' => $validated['bio'] ?? null,
-        ]);
+        ];
+
+        if ($request->filled('password')) {
+            $updateData['password'] = \Illuminate\Support\Facades\Hash::make($validated['password']);
+        }
+
+        // Update the member directly
+        $member->update($updateData);
 
         return redirect()->route('profile.show')->with('success', app()->getLocale() == 'ar' ? 'تم تحديث البيانات بنجاح.' : 'Profile updated successfully.');
     }

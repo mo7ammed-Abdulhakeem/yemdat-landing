@@ -144,7 +144,32 @@
 
                 </div>
 
-                <div class="px-8 py-5 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
+                <div class="px-8 space-y-8 mt-8 border-t border-gray-100 pt-8">
+                    <!-- Update Password -->
+                    <div>
+                        <h3 class="text-lg font-bold text-yemdat-brown mb-4 border-b border-gray-100 pb-2">
+                            {{ app()->getLocale() == 'ar' ? 'تحديث كلمة المرور' : 'Update Password' }}
+                        </h3>
+                        <p class="text-xs text-gray-500 mb-4">{{ app()->getLocale() == 'ar' ? 'اترك هذه الحقول فارغة إذا كنت لا ترغب في تغيير كلمة المرور.' : 'Leave these fields blank if you do not wish to change your password.' }}</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            
+                            <!-- New Password -->
+                            <div>
+                                <label for="password" class="block text-sm font-bold text-gray-700">{{ app()->getLocale() == 'ar' ? 'كلمة المرور الجديدة' : 'New Password' }}</label>
+                                <input type="password" name="password" id="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-brown focus:ring focus:ring-yemdat-gold focus:ring-opacity-50" autocomplete="new-password">
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div>
+                                <label for="password_confirmation" class="block text-sm font-bold text-gray-700">{{ app()->getLocale() == 'ar' ? 'تأكيد كلمة المرور' : 'Confirm Password' }}</label>
+                                <input type="password" name="password_confirmation" id="password_confirmation" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-brown focus:ring focus:ring-yemdat-gold focus:ring-opacity-50" autocomplete="new-password">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-8 py-5 bg-gray-50 mt-8 border-t border-gray-100 flex justify-end gap-3">
                     <a href="{{ route('profile.show') }}" class="px-6 py-2 bg-white border border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 transition">
                         {{ app()->getLocale() == 'ar' ? 'إلغاء' : 'Cancel' }}
                     </a>

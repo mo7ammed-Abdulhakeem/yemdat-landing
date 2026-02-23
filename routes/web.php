@@ -62,6 +62,9 @@ Route::middleware(['guest'])->group(function () {
     Route::post('/claim-profile', [App\Http\Controllers\Auth\ClaimProfileController::class , 'verifyEmail'])->name('claim.profile.verify');
     Route::get('/claim-profile/set-password/{token}', [App\Http\Controllers\Auth\ClaimProfileController::class , 'showSetPasswordForm'])->name('claim.profile.set-password');
     Route::post('/claim-profile/set-password', [App\Http\Controllers\Auth\ClaimProfileController::class , 'setPassword'])->name('claim.profile.set-password.post');
+
+    Route::get('/forgot-password', [App\Http\Controllers\Auth\ForgotPasswordController::class , 'showLinkRequestForm'])->name('password.request');
+    Route::post('/forgot-password', [App\Http\Controllers\Auth\ForgotPasswordController::class , 'verifyIdentity'])->name('password.verify');
 });
 
 // Authenticated Community Member Routes

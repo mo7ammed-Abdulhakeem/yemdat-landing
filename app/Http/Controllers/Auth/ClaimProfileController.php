@@ -43,15 +43,18 @@ class ClaimProfileController extends Controller
         return redirect()->route('claim.profile.set-password', ['token' => 'verify-phone']);
     }
 
-    public function showSetPasswordForm(Request $request)
+    public function showSetPasswordForm(Request $request, $token)
     {
         $memberId = session('claim_member_id');
         if (!$memberId) {
-            return redirect()->route('claim.profile')->withErrors(['email' => 'Session expired. Please try again.']);
+            $redirectRoute = $token === 'reset-password' ? 'password.request' : 'claim.profile';
+            return redirect()->route($redirectRoute)->withErrors(['email' => app()->getLocale() == 'ar' ? 'انتهت الجلسة. يرجى المحاولة مرة أخرى.' : 'Session expired. Please try again.']);
         }
 
         $member = Member::findOrFail($memberId);
-        return view('auth.set-password', compact('member'));
+        $isPasswordReset = $token === 'reset-password';
+
+        return view('auth.set-password', compact('member', 'isPasswordReset'));
     }
 
     public function setPassword(Request $request)

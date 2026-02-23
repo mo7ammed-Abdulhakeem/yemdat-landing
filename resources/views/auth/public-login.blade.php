@@ -43,9 +43,14 @@
 
                     <!-- Password -->
                     <div>
-                        <label for="password" class="block text-sm font-bold text-gray-700">
-                            {{ app()->getLocale() == 'ar' ? 'كلمة المرور' : 'Password' }}
-                        </label>
+                        <div class="flex justify-between items-center">
+                            <label for="password" class="block text-sm font-bold text-gray-700">
+                                {{ app()->getLocale() == 'ar' ? 'كلمة المرور' : 'Password' }}
+                            </label>
+                            <a href="{{ route('password.request') }}" class="text-sm font-bold text-yemdat-brown hover:text-yemdat-gold transition">
+                                {{ app()->getLocale() == 'ar' ? 'نسيت كلمة المرور؟' : 'Forgot Password?' }}
+                            </a>
+                        </div>
                         <div class="mt-1">
                             <input id="password" name="password" type="password" autocomplete="current-password" required
                                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-yemdat-gold focus:border-yemdat-brown sm:text-sm">
