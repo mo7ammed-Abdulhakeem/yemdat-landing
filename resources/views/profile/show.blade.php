@@ -17,9 +17,51 @@
             </div>
 
             @if(session('success'))
-                <div class="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl relative flex items-center gap-3">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <span class="block sm:inline font-medium">{{ session('success') }}</span>
+                <!-- Success Popup Modal -->
+                <div 
+                    x-data="{ show: true }"
+                    x-show="show"
+                    x-transition.opacity.duration.300ms
+                    class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+                    style="display: none;"
+                >
+                    <div 
+                        x-show="show"
+                        x-transition:enter="transition ease-out duration-300 transform"
+                        x-transition:enter-start="opacity-0 scale-90 translate-y-4"
+                        x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-200 transform"
+                        x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 scale-95 translate-y-4"
+                        @click.away="show = false"
+                        class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 text-center relative overflow-hidden"
+                    >
+                        <div class="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-green-400 to-green-500"></div>
+                        
+                        <!-- Close Button -->
+                        <button @click="show = false" class="absolute top-4 right-4 rtl:left-4 rtl:right-auto text-gray-400 hover:text-gray-600 transition bg-gray-50 rounded-full p-1 border border-gray-100 shadow-sm hover:shadow">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                        
+                        <!-- Icon -->
+                        <div class="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-5 border-4 border-white shadow-sm relative">
+                            <div class="absolute inset-0 bg-green-100 rounded-full animate-ping opacity-25"></div>
+                            <svg class="w-10 h-10 text-green-500 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        
+                        <!-- Text Content -->
+                        <h3 class="text-2xl font-extrabold text-gray-900 mb-2 font-sans tracking-tight">
+                            {{ app()->getLocale() == 'ar' ? 'تم بنجاح!' : 'Success!' }}
+                        </h3>
+                        <p class="text-gray-600 mb-8 leading-relaxed font-medium">
+                            {{ session('success') }}
+                        </p>
+                        
+                        <!-- Action -->
+                        <button @click="show = false" class="w-full py-3 bg-green-50 text-green-700 font-bold rounded-xl border border-green-100 hover:bg-green-500 hover:text-white hover:border-green-500 hover:shadow-lg transition-all transform active:scale-95">
+                            {{ app()->getLocale() == 'ar' ? 'حسناً، إغلاق' : 'Okay, Close' }}
+                        </button>
+                    </div>
                 </div>
             @endif
 
