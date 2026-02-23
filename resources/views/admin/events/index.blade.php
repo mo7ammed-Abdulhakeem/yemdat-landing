@@ -89,14 +89,16 @@
                                                 </button>
                                             </form>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                            <a href="{{ route('admin.events.show', $event) }}" class="text-green-600 hover:text-green-900 border border-green-200 bg-green-50 px-2 py-1 rounded">View</a>
-                                            <a href="{{ route('admin.events.edit', $event) }}" class="text-indigo-600 hover:text-indigo-900 ml-2 border border-indigo-200 bg-indigo-50 px-2 py-1 rounded">Edit</a>
-                                            <form action="{{ route('admin.events.destroy', $event) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this event?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900 ml-2">Delete</button>
-                                            </form>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <div class="flex flex-wrap items-center gap-2">
+                                                <a href="{{ route('admin.events.show', $event) }}" class="text-green-600 hover:text-green-900 border border-green-200 bg-green-50 px-2 py-1 rounded">View</a>
+                                                <a href="{{ route('admin.events.edit', $event) }}" class="text-indigo-600 hover:text-indigo-900 border border-indigo-200 bg-indigo-50 px-2 py-1 rounded">Edit</a>
+                                                <form action="{{ route('admin.events.destroy', $event) }}" method="POST" class="inline-flex m-0 p-0" onsubmit="return confirm('Are you sure you want to delete this event?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-600 hover:text-red-900 border border-red-200 bg-red-50 px-2 py-1 rounded">Delete</button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
