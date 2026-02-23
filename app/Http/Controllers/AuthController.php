@@ -19,23 +19,21 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        // Explicitly check for admin status if needed here, but the guard 'admin' should suffice 
-        // if only admins are in the users table and members are in members. 
-        // Let's enforce that:
-        if (Auth::guard('admin')->attempt($credentials)) {
-            $user = Auth::guard('admin')->user();
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
 
             // Only allow super admins (if you are differentiating between members and admins in the same table)
-            // However, Yemdat uses two tables (`users` for admins, `members` for community) 
+            // However, Yemdat uses two tables (`users` for admins, `members` for community)
             // We just need to make sure this user is actually an admin by checking a property if one exists,
             // or simply the fact they are in the `users` table via the admin guard.
             if (isset($user->is_super_admin) && !$user->is_super_admin) {
-                Auth::guard('admin')->logout();
+                Auth::logout();
                 return redirect()->route('login')->withErrors([
                     'email' => 'You do not have administrative privileges.',
                 ]);
             }
 
+            $request->session()->regenerate();
             return redirect()->intended('/admincpanel/dashboard');
         }
 
