@@ -36,7 +36,7 @@ return [
     'placeholder_phone' => 'xxx xxx xxx',
     'label_country' => 'Country',
     'select_country' => 'Select Country',
-    'label_speciality' => 'Specialty',
+    'label_speciality' => 'University Specialty',
     'select_speciality' => 'Select Specialty',
     'specialty_other' => 'Other Specialty',
     'specialty_placeholder' => 'Please specify your specialty',

@@ -36,7 +36,7 @@ return [
     'placeholder_phone' => 'xxx xxx xxx',
     'label_country' => 'الدولة',
     'select_country' => 'اختر الدولة',
-    'label_speciality' => 'التخصص',
+    'label_speciality' => 'التخصص الجامعي',
     'select_speciality' => 'اختر التخصص',
     'specialty_other' => 'تخصص آخر',
     'specialty_placeholder' => 'يرجى تحديد تخصصك',
