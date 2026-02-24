@@ -22,6 +22,48 @@ class EventController extends Controller
         return view('admin.events.show', compact('event'));
     }
 
+    public function exportAll()
+    {
+        $events = Event::with('creator')->withCount('members')->latest()->get();
+        $filename = 'all_events_' . date('Y-m-d') . '.csv';
+
+        $headers = [
+            'Content-type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=$filename",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
+
+        $callback = function () use ($events) {
+            $file = fopen('php://output', 'w');
+            fputs($file, "\xEF\xBB\xBF");
+
+            fputcsv($file, [
+                'ID', 'Title (EN)', 'Title (AR)', 'Start Date', 'End Date',
+                'Lecturer Name', 'Status', 'Total Registrations', 'Created By', 'Created At'
+            ]);
+
+            foreach ($events as $event) {
+                fputcsv($file, [
+                    $event->id,
+                    $event->title_en,
+                    $event->title_ar,
+                    $event->start_date->format('Y-m-d H:i:s'),
+                    $event->end_date ? $event->end_date->format('Y-m-d H:i:s') : 'N/A',
+                    $event->lecturer_name_en,
+                    $event->status,
+                    $event->members_count,
+                    $event->creator->name ?? 'System',
+                    $event->created_at->format('Y-m-d H:i:s')
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
     public function exportMembers(Event $event)
     {
         $event->load('members.membershipTier');
