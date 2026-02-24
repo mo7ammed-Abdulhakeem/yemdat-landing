@@ -88,6 +88,7 @@ Route::middleware(['auth'])->group(function () {
     // Members
     Route::get('/admincpanel/members', [App\Http\Controllers\AdminController::class , 'members'])->name('admin.members.index');
     Route::get('/admincpanel/members/export', [App\Http\Controllers\AdminController::class , 'exportMembers'])->name('admin.members.export');
+    Route::get('/admincpanel/members/{member}/export-single', [App\Http\Controllers\AdminController::class , 'exportSingleMember'])->name('admin.members.export_single');
     Route::get('/admincpanel/members/{member}', [App\Http\Controllers\AdminController::class , 'showMember'])->name('admin.members.show');
     Route::get('/admincpanel/members/{member}/edit', [App\Http\Controllers\AdminController::class , 'editMember'])->name('admin.members.edit');
     Route::put('/admincpanel/members/{member}', [App\Http\Controllers\AdminController::class , 'updateMember'])->name('admin.members.update');

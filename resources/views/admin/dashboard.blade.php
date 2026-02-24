@@ -10,10 +10,10 @@
                 
                 @if(auth()->user()->hasPermission('members'))
                 <!-- Total Members -->
-                <div class="bg-white overflow-hidden shadow-sm rounded-xl border-l-4 border-yemdat-brown p-6 flex flex-col justify-between">
+                <a href="{{ route('admin.members.index') }}" class="group bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow rounded-xl border-l-4 border-yemdat-brown p-6 flex flex-col justify-between block relative">
                     <div class="flex items-center justify-between mb-4">
                         <div>
-                            <div class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-1">Total Members</div>
+                            <div class="text-sm font-medium text-gray-500 group-hover:text-yemdat-brown transition-colors uppercase tracking-wider mb-1">Total Members</div>
                             <div class="flex items-baseline gap-2">
                                 <div class="text-3xl font-bold text-yemdat-brown">{{ $totalMembers }}</div>
                                 @if($membersJoinedToday > 0)
@@ -23,7 +23,7 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="p-3 bg-yemdat-beige rounded-full text-yemdat-brown">
+                        <div class="p-3 bg-yemdat-beige group-hover:bg-yemdat-brown group-hover:text-white transition-colors rounded-full text-yemdat-brown">
                             <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                         </div>
                     </div>
@@ -58,44 +58,52 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                    
+                    <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-yemdat-gold to-yemdat-brown transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                </a>
                 @endif
 
                 @if(auth()->user()->hasPermission('messages'))
                 <!-- Total Messages -->
-                <div class="bg-white overflow-hidden shadow-sm rounded-xl border-l-4 border-yemdat-gold p-6 flex items-center justify-between">
-                    <div>
-                        <div class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-1">Total Messages</div>
-                        <div class="text-3xl font-bold text-yemdat-brown">{{ $totalMessages }}</div>
+                <a href="{{ route('admin.messages.index') }}" class="group bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow rounded-xl border-l-4 border-yemdat-gold p-6 flex flex-col justify-center relative block">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-sm font-medium text-gray-500 group-hover:text-yemdat-gold transition-colors uppercase tracking-wider mb-1">Total Messages</div>
+                            <div class="text-3xl font-bold text-yemdat-brown">{{ $totalMessages }}</div>
+                        </div>
+                        <div class="p-3 bg-yellow-50 group-hover:bg-yemdat-gold group-hover:text-white transition-colors rounded-full text-yemdat-gold">
+                            <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        </div>
                     </div>
-                    <div class="p-3 bg-yellow-50 rounded-full text-yemdat-gold">
-                         <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                    </div>
-                </div>
+                </a>
                 @endif
 
                 @if(auth()->user()->hasPermission('events'))
                 <!-- Total Events -->
-                <div class="bg-white overflow-hidden shadow-sm rounded-xl border-l-4 border-blue-500 p-6 flex items-center justify-between">
-                    <div>
-                        <div class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-1">Total Events</div>
-                        <div class="text-3xl font-bold text-yemdat-brown">{{ $totalEvents }}</div>
+                <a href="{{ route('admin.events.index') }}" class="group bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow rounded-xl border-l-4 border-blue-500 p-6 flex flex-col justify-center relative block">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-sm font-medium text-gray-500 group-hover:text-blue-500 transition-colors uppercase tracking-wider mb-1">Total Events</div>
+                            <div class="text-3xl font-bold text-yemdat-brown">{{ $totalEvents }}</div>
+                        </div>
+                        <div class="p-3 bg-blue-50 group-hover:bg-blue-500 group-hover:text-white transition-colors rounded-full text-blue-500">
+                            <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        </div>
                     </div>
-                    <div class="p-3 bg-blue-50 rounded-full text-blue-500">
-                        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    </div>
-                </div>
+                </a>
 
                 <!-- Upcoming Events -->
-                <div class="bg-white overflow-hidden shadow-sm rounded-xl border-l-4 border-green-500 p-6 flex items-center justify-between">
-                    <div>
-                        <div class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-1">Upcoming Events</div>
-                        <div class="text-3xl font-bold text-yemdat-brown">{{ $upcomingEventsCount }}</div>
+                <a href="{{ route('admin.events.index') }}?filter=upcoming" class="group bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow rounded-xl border-l-4 border-green-500 p-6 flex flex-col justify-center relative block">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-sm font-medium text-gray-500 group-hover:text-green-500 transition-colors uppercase tracking-wider mb-1">Upcoming Events</div>
+                            <div class="text-3xl font-bold text-yemdat-brown">{{ $upcomingEventsCount }}</div>
+                        </div>
+                        <div class="p-3 bg-green-50 group-hover:bg-green-500 group-hover:text-white transition-colors rounded-full text-green-500">
+                            <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
                     </div>
-                    <div class="p-3 bg-green-50 rounded-full text-green-500">
-                        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </div>
-                </div>
+                </a>
                 @endif
             </div>
 

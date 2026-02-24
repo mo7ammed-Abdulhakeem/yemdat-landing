@@ -58,7 +58,60 @@ class AdminController extends Controller
 
     public function showMember(Member $member)
     {
+        $member->load('events');
         return view('admin.members.show', compact('member'));
+    }
+
+    public function exportSingleMember(Member $member)
+    {
+        $member->load('events');
+        $fileName = 'member_' . \Illuminate\Support\Str::slug($member->full_name) . '_' . date('Y_m_d') . '.csv';
+
+        // Add BOM for Excel UTF-8 Arabic support
+        $headers = [
+            "Content-type" => "text/csv; charset=UTF-8",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+        $columns = [
+            'ID', 'Full Name', 'Email', 'Phone Code', 'Phone Number',
+            'Gender', 'Country', 'Education Level', 'Specialty', 'Other Specialty',
+            'Membership Type', 'Bio', 'Joined Date', 'Total Registered Events', 'Event Names'
+        ];
+
+        $callback = function () use ($member, $columns) {
+            $file = fopen('php://output', 'w');
+            fputs($file, "\xEF\xBB\xBF"); // BOM for utf-8
+            fputcsv($file, $columns);
+
+            $eventsJoined = $member->events->pluck('title_en')->implode(' | ');
+
+            $row = [
+                $member->id,
+                $member->full_name,
+                $member->email,
+                $member->phone_code,
+                $member->phone_number,
+                $member->gender ?? 'N/A',
+                $member->country,
+                $member->education_level,
+                $member->specialty,
+                $member->specialty_other ?? '',
+                $member->membershipTier ? $member->membershipTier->name : ucfirst($member->membership_type),
+                $member->bio ?? '',
+                $member->created_at->format('Y-m-d H:i:s'),
+                $member->events->count(),
+                $eventsJoined
+            ];
+
+            fputcsv($file, $row);
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     public function editMember(Member $member)
