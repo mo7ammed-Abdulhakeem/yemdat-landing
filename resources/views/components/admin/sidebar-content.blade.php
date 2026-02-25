@@ -17,6 +17,16 @@
                     Dashboard
                 </a>
 
+                <div class="pt-4 pb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider px-4">Analytics</div>
+                <a href="{{ route('admin.analytics.members') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('admin.analytics.members') ? 'bg-yemdat-gold text-yemdat-brown font-bold' : 'text-gray-300 hover:bg-white/10 hover:text-white' }}">
+                    <svg class="w-5 h-5 mr-3 rtl:ml-3 rtl:mr-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    Member Stats
+                </a>
+                <a href="{{ route('admin.analytics.events') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('admin.analytics.events') ? 'bg-yemdat-gold text-yemdat-brown font-bold' : 'text-gray-300 hover:bg-white/10 hover:text-white' }}">
+                    <svg class="w-5 h-5 mr-3 rtl:ml-3 rtl:mr-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
+                    Event Reports
+                </a>
+
                 @if(auth()->user()->hasPermission('events') || auth()->user()->hasPermission('posts'))
                 <div class="pt-4 pb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider px-4">Content</div>
 

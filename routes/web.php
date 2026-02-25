@@ -85,6 +85,12 @@ Route::post('/admincpanel/logout', [App\Http\Controllers\AuthController::class ,
 Route::middleware(['auth'])->group(function () {
     Route::get('/admincpanel/dashboard', [App\Http\Controllers\AdminController::class , 'index'])->name('admin.dashboard');
 
+    // Analytics Dashboards
+    Route::get('/admincpanel/analytics/members', [App\Http\Controllers\Admin\AnalyticsController::class , 'members'])->name('admin.analytics.members');
+    Route::get('/admincpanel/analytics/events', [App\Http\Controllers\Admin\AnalyticsController::class , 'events'])->name('admin.analytics.events');
+    Route::get('/admincpanel/analytics/api/member-data', [App\Http\Controllers\Admin\AnalyticsController::class , 'memberData'])->name('admin.analytics.api.members');
+    Route::get('/admincpanel/analytics/api/event-data', [App\Http\Controllers\Admin\AnalyticsController::class , 'eventData'])->name('admin.analytics.api.events');
+
     // Members
     Route::get('/admincpanel/members', [App\Http\Controllers\AdminController::class , 'members'])->name('admin.members.index');
     Route::get('/admincpanel/members/export', [App\Http\Controllers\AdminController::class , 'exportMembers'])->name('admin.members.export');
