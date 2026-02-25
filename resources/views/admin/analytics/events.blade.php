@@ -6,7 +6,7 @@
     <div x-data="eventAnalytics()" x-init="fetchData()" class="space-y-6">
         
         <!-- Top Filters (Slicers) -->
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 items-end">
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 items-end">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Event Date (From) / تاريخ الفعالية (من)</label>
                 <input type="date" x-model="filters.start_date" @change="fetchData()" class="w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold focus:ring-yemdat-gold text-sm">
@@ -46,7 +46,17 @@
                 </select>
             </div>
 
-            <div class="sm:col-span-2 lg:col-span-5 flex justify-end mt-2">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Gender / الجنس</label>
+                <select x-model="filters.gender" @change="fetchData()" class="w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold focus:ring-yemdat-gold">
+                    <option value="">All Genders</option>
+                    <template x-for="g in availableFilters.genders" :key="g">
+                        <option :value="g" x-text="g"></option>
+                    </template>
+                </select>
+            </div>
+
+            <div class="sm:col-span-2 lg:col-span-6 flex justify-end mt-2">
                 <button @click="resetFilters()" class="text-sm font-semibold text-gray-600 hover:text-yemdat-brown px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md border border-gray-200 transition">
                     Reset Filters / إعادة ضبط الفلاتر
                 </button>
@@ -54,10 +64,10 @@
         </div>
 
         <!-- Charts Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
             <!-- Event Attendance -->
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-2">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-3">
                 <h3 class="text-lg font-bold text-gray-900 mb-4">Event Attendance (Top 10) / حضور الفعاليات</h3>
                 <div class="relative h-72">
                     <canvas id="attendanceChart"></canvas>
@@ -80,8 +90,16 @@
                 </div>
             </div>
 
+            <!-- Gender Distribution -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">Gender Audience / جمهور الجنس</h3>
+                <div class="relative h-64">
+                    <canvas id="genderChart"></canvas>
+                </div>
+            </div>
+
             <!-- Registration Pace -->
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-2">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-3">
                 <h3 class="text-lg font-bold text-gray-900 mb-4">Global Event Registration Pace / وتيرة تسجيل الفعاليات</h3>
                 <div class="relative h-72">
                     <canvas id="paceChart"></canvas>
@@ -89,7 +107,7 @@
             </div>
 
             <!-- Events Timeline -->
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-2">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-3">
                 <h3 class="text-lg font-bold text-gray-900 mb-4">Events Volume Timeline (By Month) / حجم الفعاليات شهرياً</h3>
                 <div class="relative h-64">
                     <canvas id="timelineChart"></canvas>
@@ -114,16 +132,18 @@
                     end_date: '',
                     event_id: '',
                     location_type: '',
-                    lecturer: ''
+                    lecturer: '',
+                    gender: ''
                 },
                 availableFilters: {
                     lecturers: [],
-                    eventsList: []
+                    eventsList: [],
+                    genders: []
                 },
                 charts: {}, // Store chart instances
 
                 resetFilters() {
-                    this.filters = { start_date: '', end_date: '', event_id: '', location_type: '', lecturer: '' };
+                    this.filters = { start_date: '', end_date: '', event_id: '', location_type: '', lecturer: '', gender: '' };
                     this.fetchData();
                 },
 
@@ -170,6 +190,19 @@
                     }, {
                         responsive: true,
                         maintainAspectRatio: false
+                    });
+
+                    // 2.5 Gender Chart (Doughnut)
+                    this.initChart('genderChart', 'doughnut', {
+                        labels: data.genderDist.map(d => d.gender),
+                        datasets: [{
+                            data: data.genderDist.map(d => d.count),
+                            backgroundColor: ['#593E2D', '#F2CB57', '#C88D16', '#ccc']
+                        }]
+                    }, {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '60%'
                     });
 
                     // 3. Lecturer Chart (Horizontal Bar)

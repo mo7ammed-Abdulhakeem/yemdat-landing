@@ -139,9 +139,20 @@ class AnalyticsController extends Controller
             $query->where('lecturer_name_en', $request->input('lecturer'));
         }
 
+        $genderFilter = $request->input('gender');
+        $memberFilter = function ($q) use ($genderFilter) {
+            if ($genderFilter) {
+                $q->where('gender', $genderFilter);
+            }
+        };
+
+        if ($genderFilter) {
+            $query->whereHas('members', $memberFilter);
+        }
+
         // 1. Event Attendance (Registrations count per event)
         $attendance = (clone $query)
-            ->withCount('members')
+            ->withCount(['members' => $memberFilter])
             ->orderByDesc('members_count')
             ->limit(10)
             ->get()
@@ -172,19 +183,33 @@ class AnalyticsController extends Controller
         ];
 
         // 5. Registration Pace
-        // This requires joining Pivot, which is complex for a simple query.
-        // Let's get the daily registration counts for the events currently matched in $query.
         $eventIds = (clone $query)->pluck('id');
         $regPace = DB::table('event_member')
-            ->whereIn('event_id', $eventIds)
-            ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
+            ->join('members', 'event_member.member_id', '=', 'members.id')
+            ->whereIn('event_member.event_id', $eventIds)
+            ->when($genderFilter, function ($q) use ($genderFilter) {
+            $q->where('members.gender', $genderFilter);
+        })
+            ->selectRaw('DATE(event_member.created_at) as date, COUNT(*) as count')
             ->groupBy('date')
             ->orderBy('date')
+            ->get();
+
+        // 6. Gender Distribution
+        $genderDist = DB::table('event_member')
+            ->join('members', 'event_member.member_id', '=', 'members.id')
+            ->whereIn('event_member.event_id', $eventIds)
+            ->when($genderFilter, function ($q) use ($genderFilter) {
+            $q->where('members.gender', $genderFilter);
+        })
+            ->selectRaw('COALESCE(members.gender, "Not Specified") as gender, COUNT(*) as count')
+            ->groupBy('gender')
             ->get();
 
         // Filter Options for Slicers
         $availableLecturers = Event::select('lecturer_name_en')->distinct()->whereNotNull('lecturer_name_en')->pluck('lecturer_name_en');
         $availableEvents = Event::select('id', 'title_en')->orderByDesc('start_date')->get();
+        $availableGenders = Member::select('gender')->distinct()->whereNotNull('gender')->pluck('gender');
 
         return response()->json([
             'attendance' => $attendance,
@@ -192,9 +217,11 @@ class AnalyticsController extends Controller
             'timeline' => $timeline,
             'activeVsPast' => $activeVsPast,
             'regPace' => $regPace,
+            'genderDist' => $genderDist,
             'filters' => [
                 'lecturers' => $availableLecturers,
-                'eventsList' => $availableEvents
+                'eventsList' => $availableEvents,
+                'genders' => $availableGenders
             ]
         ]);
     }
