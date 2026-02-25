@@ -53,10 +53,18 @@ class EventController extends Controller
     {
         $event = Event::where('slug', $slug)->where('is_active', true)->firstOrFail();
 
-        $similarEvents = Event::where('is_active', true)
+        $similarEventsQuery = Event::where('is_active', true)
             ->where('id', '!=', $event->id)
-            ->where('start_date', '>=', now())
-            ->orderBy('start_date', 'asc')
+            ->where('start_date', '>=', now());
+
+        if (\Illuminate\Support\Facades\Auth::guard('member')->check()) {
+            $memberId = \Illuminate\Support\Facades\Auth::guard('member')->id();
+            $similarEventsQuery->whereDoesntHave('members', function ($q) use ($memberId) {
+                $q->where('members.id', $memberId);
+            });
+        }
+
+        $similarEvents = $similarEventsQuery->orderBy('start_date', 'asc')
             ->take(3)
             ->get();
 
