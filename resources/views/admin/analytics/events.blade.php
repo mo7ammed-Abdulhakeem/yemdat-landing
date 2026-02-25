@@ -92,7 +92,7 @@
 
             <!-- Gender Distribution -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <h3 class="text-lg font-bold text-gray-900 mb-4">Gender Audience / جمهور الجنس</h3>
+                <h3 class="text-lg font-bold text-gray-900 mb-4">Gender / الجنس</h3>
                 <div class="relative h-64">
                     <canvas id="genderChart"></canvas>
                 </div>
