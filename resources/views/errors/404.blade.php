@@ -1,5 +1,15 @@
-<x-app-layout>
-    <div class="relative flex min-h-screen items-center justify-center bg-[#faf9f8] py-24">
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ __('Data Not Found') }} - YEMDAT</title>
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
+    @vite(['resources/css/app.css'])
+</head>
+<body class="font-sans antialiased bg-[#faf9f8] text-yemdat-brown">
+    <div class="relative flex min-h-screen items-center justify-center py-24">
         <div class="absolute inset-0 overflow-hidden pointer-events-none flex items-center justify-center">
             <span class="text-[#f0ece6] text-[18rem] sm:text-[24rem] font-black leading-none select-none" style="font-family: 'Arial Black', Impact, sans-serif;">
                 404
@@ -84,4 +94,5 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</body>
+</html>

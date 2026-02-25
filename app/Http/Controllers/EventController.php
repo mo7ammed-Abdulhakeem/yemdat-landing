@@ -60,7 +60,7 @@ class EventController extends Controller
         if (\Illuminate\Support\Facades\Auth::guard('member')->check()) {
             $memberId = \Illuminate\Support\Facades\Auth::guard('member')->id();
             $similarEventsQuery->whereDoesntHave('members', function ($q) use ($memberId) {
-                $q->where('members.id', $memberId);
+                $q->where('id', $memberId);
             });
         }
 
