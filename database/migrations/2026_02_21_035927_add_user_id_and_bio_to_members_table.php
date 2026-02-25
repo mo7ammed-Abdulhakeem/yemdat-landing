@@ -12,9 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('members', function (Blueprint $table) {
-            $table->string('password')->nullable()->after('email');
-            $table->rememberToken()->after('password');
-            $table->text('bio')->nullable()->after('membership_type');
+            if (!Schema::hasColumn('members', 'password')) {
+                $table->string('password')->nullable()->after('email');
+            }
+            if (!Schema::hasColumn('members', 'remember_token')) {
+                $table->rememberToken()->after('password');
+            }
+            if (!Schema::hasColumn('members', 'bio')) {
+                $table->text('bio')->nullable()->after('membership_type');
+            }
         });
     }
 
@@ -24,7 +30,17 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('members', function (Blueprint $table) {
-            $table->dropColumn(['password', 'remember_token', 'bio']);
+            $columnsToDrop = [];
+            if (Schema::hasColumn('members', 'password'))
+                $columnsToDrop[] = 'password';
+            if (Schema::hasColumn('members', 'remember_token'))
+                $columnsToDrop[] = 'remember_token';
+            if (Schema::hasColumn('members', 'bio'))
+                $columnsToDrop[] = 'bio';
+
+            if (!empty($columnsToDrop)) {
+                $table->dropColumn($columnsToDrop);
+            }
         });
     }
 };

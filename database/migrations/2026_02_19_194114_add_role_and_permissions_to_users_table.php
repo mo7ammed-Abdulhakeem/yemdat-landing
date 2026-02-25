@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('role')->default('admin')->after('email'); // 'super_admin' or 'admin'
-            $table->text('permissions')->nullable()->after('role'); // JSON array of allowed menus
+            if (!Schema::hasColumn('users', 'role')) {
+                $table->string('role')->default('admin')->after('email'); // 'super_admin' or 'admin'
+            }
+            if (!Schema::hasColumn('users', 'permissions')) {
+                $table->text('permissions')->nullable()->after('role'); // JSON array of allowed menus
+            }
         });
     }
 
@@ -23,7 +27,15 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['role', 'permissions']);
+            $columnsToDrop = [];
+            if (Schema::hasColumn('users', 'role'))
+                $columnsToDrop[] = 'role';
+            if (Schema::hasColumn('users', 'permissions'))
+                $columnsToDrop[] = 'permissions';
+
+            if (!empty($columnsToDrop)) {
+                $table->dropColumn($columnsToDrop);
+            }
         });
     }
 };

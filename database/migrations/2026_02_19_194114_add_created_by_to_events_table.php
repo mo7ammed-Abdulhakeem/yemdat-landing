@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('events', function (Blueprint $table) {
-            $table->foreignId('created_by')->nullable()->after('id')->constrained('users')->onDelete('set null');
-        });
+        if (!Schema::hasColumn('events', 'created_by')) {
+            Schema::table('events', function (Blueprint $table) {
+                $table->foreignId('created_by')->nullable()->after('id')->constrained('users')->onDelete('set null');
+            });
+        }
     }
 
     /**
@@ -21,9 +23,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('events', function (Blueprint $table) {
-            $table->dropForeign(['created_by']);
-            $table->dropColumn('created_by');
-        });
+        if (Schema::hasColumn('events', 'created_by')) {
+            Schema::table('events', function (Blueprint $table) {
+                $table->dropForeign(['created_by']);
+                $table->dropColumn('created_by');
+            });
+        }
     }
 };
