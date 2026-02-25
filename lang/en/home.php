@@ -2,7 +2,7 @@
 
 return [
     // Hero
-    'hero_title' => 'Yemeni Data Hub – YEMDAT',
+    'hero_title' => 'Yemeni Data Hub',
     'hero_subtitle' => 'Towards building a professional community specialized in Data Management, Governance, and AI in Yemen.',
     'hero_desc' => 'YEMDAT is a voluntary community aiming to gather expertise, develop capabilities, and build an effective professional network between specialists and enthusiasts in the field of data and AI inside and outside Yemen.',
     'hero_quote' => 'We believe that data is the foundation of digital transformation, and that real investment starts with people and knowledge.',
@@ -14,7 +14,7 @@ return [
 
     // Buttons
     'btn_join' => 'Join the Community',
-    'btn_explore' => 'Explore Courses',
+    'btn_explore' => 'Explore events',
     'btn_about' => 'About Us',
 
     // Features

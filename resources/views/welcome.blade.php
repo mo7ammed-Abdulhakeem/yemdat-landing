@@ -1,59 +1,29 @@
 <x-app-layout>
-    <!-- Hero Section -->
-    <div class="py-20 text-center px-4 sm:px-6 lg:px-8">
-        <div class="max-w-4xl mx-auto">
-            <div class="mb-8 flex justify-center">
-                 <div class="text-yemdat-gold text-sm font-semibold tracking-wider uppercase">YEMDAT</div>
+<!-- Hero Section -->
+    <div class="text-center px-4 sm:px-6 lg:px-8" style="background-color: #f7f4f0; border-bottom: 1px solid #e8e3dc; padding-top: 6rem; padding-bottom: 9rem;">
+        <div class="max-w-5xl mx-auto">
+            <div class="mb-5 flex justify-center">
+                 <div style="color: #c99320; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">YEMDAT</div>
             </div>
 
-            <h1 class="text-4xl sm:text-5xl font-bold text-yemdat-brown mb-6">
+            <h1 style="color: #4b392a; font-size: 5rem; font-weight: 900; line-height: 1.05; letter-spacing: -0.02em; font-family: 'Arial Black', Impact, 'Segoe UI Black', Roboto, Helvetica, Arial, sans-serif; margin-bottom: 1.5rem;">
                 {{ __('home.hero_title') }}
             </h1>
 
-            <p class="text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl mx-auto font-medium">
-                {{ __('home.hero_subtitle') }}
-            </p>
-
-            <p class="text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+            <p style="color: #4b5e71; font-size: 1.35rem; font-weight: 400; line-height: 1.6; max-width: 52rem; margin: 0 auto; margin-bottom: 2.5rem; padding: 0 1rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
                 {{ __('home.hero_desc') }}
             </p>
-             <p class="text-yemdat-brown/80 text-lg mb-12 max-w-2xl mx-auto font-medium">
-               {{ __('home.hero_quote') }}
-            </p>
-
-
-            <!-- Key Points Cards -->
-            <div class="space-y-4 max-w-2xl mx-auto mb-12 text-start rtl:text-right">
-                <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-100 flex items-center gap-4">
-                    <div class="w-6 h-6 rounded-full border border-yemdat-gold flex items-center justify-center text-yemdat-gold shrink-0">
-                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                    </div>
-                    <span class="text-gray-700 font-medium">{{ __('home.checklist_1') }}</span>
-                </div>
-                 <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-100 flex items-center gap-4">
-                    <div class="w-6 h-6 rounded-full border border-yemdat-gold flex items-center justify-center text-yemdat-gold shrink-0">
-                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                    </div>
-                    <span class="text-gray-700 font-medium">{{ __('home.checklist_2') }}</span>
-                </div>
-                 <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-100 flex items-center gap-4">
-                    <div class="w-6 h-6 rounded-full border border-yemdat-gold flex items-center justify-center text-yemdat-gold shrink-0">
-                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                    </div>
-                    <span class="text-gray-700 font-medium">{{ __('home.checklist_3') }}</span>
-                </div>
-            </div>
 
             <!-- Action Buttons -->
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="{{ auth()->guard('member')->check() ? route('profile.show') : route('register') }}" class="bg-yemdat-brown text-white hover:bg-yemdat-brown/90 px-8 py-3 rounded-lg font-bold transition shadow-md hover:shadow-lg">
+            <div class="flex flex-col sm:flex-row justify-center items-center" style="gap: 1.25rem;">
+                <a href="{{ auth()->guard('member')->check() ? route('profile.show') : route('register') }}" class="flex items-center justify-center transition" style="background-color: #4b392a; color: #ffffff; width: 260px; height: 58px; border-radius: 6px; font-weight: 700; font-size: 1.15rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;" onmouseover="this.style.backgroundColor='#37291e'" onmouseout="this.style.backgroundColor='#4b392a'">
                     {{ auth()->guard('member')->check() ? (app()->getLocale() == 'ar' ? 'ملفي الشخصي' : 'My Profile') : __('home.btn_join') }}
+                    @if(!auth()->guard('member')->check())
+                    <svg style="width: 1.25rem; height: 1.25rem; margin-left: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    @endif
                 </a>
-                 <a href="{{ route('training') }}" class="bg-white text-yemdat-brown border border-gray-200 hover:border-yemdat-gold px-8 py-3 rounded-lg font-bold transition shadow-sm hover:shadow-md">
+                 <a href="{{ route('events.index') }}" class="flex items-center justify-center transition shadow-sm" style="background-color: #ffffff; color: #4b5e71; border: 1.5px solid #d4a742; width: 260px; height: 58px; border-radius: 6px; font-weight: 700; font-size: 1.15rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;" onmouseover="this.style.backgroundColor='#fafafa'" onmouseout="this.style.backgroundColor='#ffffff'">
                     {{ __('home.btn_explore') }}
-                </a>
-                 <a href="{{ route('about') }}" class="bg-white text-yemdat-brown border border-gray-200 hover:border-yemdat-gold px-8 py-3 rounded-lg font-bold transition shadow-sm hover:shadow-md">
-                    {{ __('home.btn_about') }}
                 </a>
             </div>
         </div>
