@@ -73,7 +73,7 @@
                         <div>
                             <label class="block text-sm font-medium text-yemdat-brown mb-2">{{ __('membership.label_phone') }} <span class="text-red-500">*</span></label>
                             <div class="flex gap-2" dir="ltr">
-                                <input type="text" name="phone_code" value="{{ old('phone_code', '+967') }}" required placeholder="+967" class="w-1/4 sm:w-1/5 text-center rounded-lg border-gray-300 bg-gray-50 focus:border-yemdat-gold focus:ring-yemdat-gold focus:bg-white transition">
+                                <input type="text" name="phone_code" value="{{ old('phone_code', '+967') }}" required placeholder="+967" class="w-20 text-center rounded-lg border-gray-300 bg-gray-50 focus:border-yemdat-gold focus:ring-yemdat-gold focus:bg-white transition">
                                 <input type="tel" name="phone_number" value="{{ old('phone_number') }}" required class="flex-1 rounded-lg border-gray-300 bg-gray-50 focus:border-yemdat-gold focus:ring-yemdat-gold focus:bg-white transition" placeholder="{{ __('membership.placeholder_phone') }}">
                             </div>
                         </div>

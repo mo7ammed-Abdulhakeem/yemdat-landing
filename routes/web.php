@@ -131,3 +131,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admincpanel/profile', [App\Http\Controllers\Admin\ProfileController::class , 'edit'])->name('admin.profile.edit');
     Route::put('/admincpanel/profile', [App\Http\Controllers\Admin\ProfileController::class , 'update'])->name('admin.profile.update');
 });
+
+// Fallback Route for true 404 handling with active Sessions (Arabic Localization support)
+Route::fallback(function () {
+    abort(404);
+});

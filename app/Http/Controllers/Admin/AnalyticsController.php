@@ -15,6 +15,9 @@ class AnalyticsController extends Controller
      */
     public function members()
     {
+        if (!auth()->user()->hasPermission('analytics')) {
+            abort(403, 'Unauthorized action.');
+        }
         return view('admin.analytics.members');
     }
 
@@ -23,6 +26,9 @@ class AnalyticsController extends Controller
      */
     public function events()
     {
+        if (!auth()->user()->hasPermission('analytics')) {
+            abort(403, 'Unauthorized action.');
+        }
         return view('admin.analytics.events');
     }
 
@@ -31,6 +37,9 @@ class AnalyticsController extends Controller
      */
     public function memberData(Request $request)
     {
+        if (!auth()->user()->hasPermission('analytics')) {
+            abort(403, 'Unauthorized action.');
+        }
         $query = Member::query();
 
         // Apply Slicer Filters
@@ -111,6 +120,9 @@ class AnalyticsController extends Controller
      */
     public function eventData(Request $request)
     {
+        if (!auth()->user()->hasPermission('analytics')) {
+            abort(403, 'Unauthorized action.');
+        }
         $query = clone Event::query();
 
         // Apply Slicer Filters

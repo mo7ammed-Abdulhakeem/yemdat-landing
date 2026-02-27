@@ -52,13 +52,13 @@
                         <!-- Name -->
                         <div>
                             <label class="block text-sm font-medium text-yemdat-brown mb-2">{{ __('contact.label_name') }}</label>
-                            <input type="text" name="name" value="{{ old('name') }}" required class="w-full rounded-lg border-gray-300 bg-gray-50 focus:border-yemdat-gold focus:ring-yemdat-gold focus:bg-white transition" placeholder="{{ __('contact.placeholder_name') }}">
+                            <input type="text" name="name" value="{{ old('name', auth()->guard('member')->user()->full_name ?? '') }}" required class="w-full rounded-lg border-gray-300 bg-gray-50 focus:border-yemdat-gold focus:ring-yemdat-gold focus:bg-white transition" placeholder="{{ __('contact.placeholder_name') }}">
                         </div>
 
                         <!-- Email -->
                         <div>
                             <label class="block text-sm font-medium text-yemdat-brown mb-2">{{ __('contact.label_email') }}</label>
-                            <input type="email" name="email" value="{{ old('email') }}" required class="w-full rounded-lg border-gray-300 bg-gray-50 focus:border-yemdat-gold focus:ring-yemdat-gold focus:bg-white rtl:text-right transition" placeholder="{{ __('contact.placeholder_email') }}">
+                            <input type="email" name="email" value="{{ old('email', auth()->guard('member')->user()->email ?? '') }}" required class="w-full rounded-lg border-gray-300 bg-gray-50 focus:border-yemdat-gold focus:ring-yemdat-gold focus:bg-white rtl:text-right transition" placeholder="{{ __('contact.placeholder_email') }}">
                         </div>
 
                         <!-- Phone Number -->
@@ -67,7 +67,7 @@
                                 {{ __('contact.label_phone') }}
                                 <span class="text-xs text-gray-400 font-normal mx-2">({{ app()->getLocale() == 'ar' ? 'إختياري' : 'Optional' }})</span>
                             </label>
-                            <input type="text" name="phone_number" value="{{ old('phone_number') }}" class="w-full rounded-lg border-gray-300 bg-gray-50 focus:border-yemdat-gold focus:ring-yemdat-gold focus:bg-white transition" placeholder="{{ app()->getLocale() == 'ar' ? 'مثال: +966500000000' : 'e.g. +1234567890' }}" dir="ltr">
+                            <input type="text" name="phone_number" value="{{ old('phone_number', auth()->guard('member')->user()->phone_number ?? '') }}" class="w-full rounded-lg border-gray-300 bg-gray-50 focus:border-yemdat-gold focus:ring-yemdat-gold focus:bg-white transition" placeholder="{{ app()->getLocale() == 'ar' ? 'مثال: +966500000000' : 'e.g. +1234567890' }}" dir="ltr">
                         </div>
 
                         <!-- Subject -->

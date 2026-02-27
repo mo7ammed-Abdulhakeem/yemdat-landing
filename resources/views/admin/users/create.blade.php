@@ -66,6 +66,10 @@
                                     <input type="checkbox" name="permissions[]" value="settings" class="rounded border-gray-300 text-yemdat-brown focus:ring-yemdat-brown" {{ is_array(old('permissions')) && in_array('settings', old('permissions')) ? 'checked' : '' }}>
                                     <span class="ml-2 text-gray-700">Global Settings</span>
                                 </label>
+                                <label class="flex items-center mt-2 pt-2 border-t border-gray-100">
+                                    <input type="checkbox" name="permissions[]" value="analytics" class="rounded border-gray-300 text-blue-600 focus:ring-blue-600" {{ is_array(old('permissions')) && in_array('analytics', old('permissions')) ? 'checked' : '' }}>
+                                    <span class="ml-2 text-gray-700 font-bold">Analytics & Reports</span>
+                                </label>
                             </div>
                         </div>
 

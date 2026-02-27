@@ -28,7 +28,16 @@
                             {{ substr($contact->name, 0, 1) }}
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-gray-900">{{ $contact->name }}</h3>
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-lg font-bold text-gray-900">{{ $contact->name }}</h3>
+                                @if($contact->member_id)
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Registered Member</span>
+                                    <a href="{{ route('admin.members.show', $contact->member_id) }}" class="text-yemdat-gold text-sm font-medium hover:underline flex items-center gap-1">
+                                        View Profile
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                    </a>
+                                @endif
+                            </div>
                             <a href="mailto:{{ $contact->email }}" class="text-yemdat-gold hover:text-yemdat-brown text-sm font-medium block">{{ $contact->email }}</a>
                             @if($contact->phone_number)
                                 <a href="tel:{{ $contact->phone_number }}" class="text-gray-500 hover:text-gray-700 text-sm font-medium mt-1 inline-flex items-center gap-1" dir="ltr">

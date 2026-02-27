@@ -49,4 +49,12 @@ class Member extends Authenticatable
     {
         return $this->belongsTo(MembershipTier::class , 'membership_type', 'slug');
     }
+
+    /**
+     * Get the contact messages sent by the member.
+     */
+    public function contacts()
+    {
+        return $this->hasMany(Contact::class);
+    }
 }

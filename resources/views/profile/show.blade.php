@@ -222,6 +222,61 @@
                 @endif
             </div>
 
+            <!-- Sent Messages -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mt-8">
+                <div class="p-8 border-b border-gray-100 flex items-center gap-3">
+                    <svg class="w-6 h-6 text-yemdat-brown" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    <div>
+                        <h3 class="text-lg font-bold text-yemdat-brown mb-1">
+                            {{ app()->getLocale() == 'ar' ? 'الرسائل المرسلة' : 'My Sent Messages' }}
+                        </h3>
+                        <p class="text-gray-500 text-sm">
+                            {{ app()->getLocale() == 'ar' ? 'سجل رسائلك إلى إدارة الموقع عبر اتصل بنا.' : 'A record of your messages sent via Contact Us.' }}
+                        </p>
+                    </div>
+                </div>
+                
+                @if($member->contacts && $member->contacts->count() > 0)
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">{{ app()->getLocale() == 'ar' ? 'الموضوع' : 'Subject' }}</th>
+                                    <th class="px-6 py-3 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">{{ app()->getLocale() == 'ar' ? 'تاريخ الإرسال' : 'Date Sent' }}</th>
+                                    <th class="px-6 py-3 text-start text-xs font-bold text-gray-500 uppercase tracking-wider">{{ app()->getLocale() == 'ar' ? 'نص الرسالة' : 'Message' }}</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @foreach($member->contacts()->orderBy('created_at', 'desc')->get() as $message)
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
+                                        {{ Str::limit($message->subject, 40) }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <div dir="ltr" class="text-start inline-block">
+                                            {{ $message->created_at->format('M d, Y h:i A') }}
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">
+                                        {{ Str::limit($message->message, 80) }}
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="p-8 text-center text-gray-500">
+                        {{ app()->getLocale() == 'ar' ? 'لم تقم بإرسال أي رسائل تواصل بعد.' : 'You have not sent any contact messages yet.' }}
+                        <div class="mt-4">
+                            <a href="{{ route('contact') }}" class="inline-block px-6 py-2 bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition shadow-sm border border-gray-200">
+                                {{ app()->getLocale() == 'ar' ? 'تواصل معنا' : 'Contact Us' }}
+                            </a>
+                        </div>
+                    </div>
+                @endif
+            </div>
+
             <!-- Logout Button -->
             <div class="mt-8 flex justify-end">
                 <form action="{{ route('public.logout') }}" method="POST">

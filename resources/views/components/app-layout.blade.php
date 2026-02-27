@@ -15,7 +15,8 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         
         <!-- Favicon -->
-        <link rel="icon" href="{{ asset('favicon.ico') }}">
+        <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 50 50' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='10' y='5' width='30' height='8' rx='2' fill='%23F2CB57'/%3E%3Crect x='5' y='16' width='35' height='8' rx='2' fill='%23C88D16'/%3E%3Crect x='0' y='27' width='40' height='8' rx='2' fill='%23593E2D'/%3E%3C/svg%3E">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('logo.png') }}" onerror="this.onerror=null; this.href='/favicon.ico';">
     </head>
     <body class="font-sans antialiased bg-yemdat-beige text-yemdat-brown">
         <div class="min-h-screen">
