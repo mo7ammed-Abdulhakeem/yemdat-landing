@@ -63,7 +63,7 @@
                             <div class="col-span-1">
                                 <label class="block text-sm font-bold text-gray-700">{{ app()->getLocale() == 'ar' ? 'رقم الهاتف' : 'Phone Number' }} <span class="text-red-500">*</span></label>
                                 <div class="mt-1 flex gap-2" dir="ltr">
-                                    <input type="text" name="phone_code" value="{{ old('phone_code', $member->phone_code) }}" placeholder="+967" class="w-20 text-center rounded-md border-gray-300 shadow-sm focus:border-yemdat-brown focus:ring focus:ring-yemdat-gold focus:ring-opacity-50" required>
+                                    <input type="text" name="phone_code" value="{{ old('phone_code', $member->phone_code) }}" placeholder="+967" class="text-center px-2 rounded-md border-gray-300 shadow-sm focus:border-yemdat-brown focus:ring focus:ring-yemdat-gold focus:ring-opacity-50" required style="width: 80px; flex: none;">
                                     <input type="text" name="phone_number" value="{{ old('phone_number', $member->phone_number) }}" class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-yemdat-brown focus:ring focus:ring-yemdat-gold focus:ring-opacity-50" required>
                                 </div>
                             </div>
