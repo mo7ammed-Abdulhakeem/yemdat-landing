@@ -113,23 +113,26 @@ class Event extends Model
 
         if ($this->start_date->isPast()) {
             if ($this->end_date && $now->lt($this->end_date)) {
-                return 'Happening Now';
+                return app()->getLocale() == 'ar' ? 'يحدث الآن' : 'Happening Now';
             }
-            return 'Passed';
+            return app()->getLocale() == 'ar' ? 'انتهى' : 'Passed';
         }
 
         if ($this->start_date->isToday()) {
-            return 'Today';
+            return app()->getLocale() == 'ar' ? 'اليوم' : 'Today';
         }
 
-        $days = $now->diffInDays($this->start_date, false);
-        $days = ceil($days); // Round up partial days
-
-        if ($days <= 1) {
-            return 'Tomorrow';
+        if ($this->start_date->isTomorrow()) {
+            return app()->getLocale() == 'ar' ? 'غداً' : 'Tomorrow';
         }
 
-        return intval($days) . ' Days Left';
+        $days = $now->copy()->startOfDay()->diffInDays($this->start_date->copy()->startOfDay());
+
+        if (app()->getLocale() == 'ar') {
+            return $days == 2 ? 'يومين متبقيين' : $days . ' أيام متبقية';
+        }
+
+        return $days . ' Days Left';
     }
 
     /**
