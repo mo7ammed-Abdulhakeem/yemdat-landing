@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Models\Member;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules\Password;
 use App\Models\MembershipTier;
 
@@ -49,14 +51,25 @@ class RegisterController extends Controller
             'membership_type' => $validated['membership_type'],
         ]);
 
-        // 2. Log the member in explicitly using the custom guard
-        Auth::guard('member')->login($member);
+        // 2. Generate OTP and store in member table
+        $otp = str_pad(mt_rand(1, 999999), 6, '0', STR_PAD_LEFT);
+        $member->otp_code = Hash::make($otp);
+        $member->otp_expires_at = now()->addMinutes(10);
+        $member->save();
 
-        // 3. Redirect to dashboard with explicit message requested by user
-        if (app()->getLocale() == 'ar') {
-            return redirect()->route('profile.show')->with('success', 'تم إنشاء حسابك بنجاح! نأخذك الآن إلى ملفك الشخصي لتحديث بياناتك.');
+        // 3. Dispatch OTP Email
+        try {
+            \Illuminate\Support\Facades\Mail::to($member->email)->send(new \App\Mail\SignupOtpEmail([
+                'name' => $member->full_name,
+                'otp' => $otp,
+            ]));
+        }
+        catch (\Exception $e) {
+            \Log::error('OTP Email failed during registration: ' . $e->getMessage());
         }
 
-        return redirect()->route('profile.show')->with('success', 'Taking you to your profile to update it.');
+        // 4. Redirect to OTP screen
+        session(['verify_member_id' => $member->id]);
+        return redirect()->route('verification.notice');
     }
 }

@@ -40,6 +40,9 @@
                 <a href="{{ route('contact') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('contact') ? 'border-yemdat-brown' : 'border-transparent hover:border-gray-300' }} text-sm font-medium leading-5 text-gray-500 hover:text-yemdat-brown focus:outline-none focus:text-yemdat-brown focus:border-gray-300 transition duration-150 ease-in-out">
                     {{ __('nav.contact') }}
                 </a>
+                <a href="{{ route('trainer.create') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('trainer.*') ? 'border-yemdat-brown' : 'border-transparent hover:border-gray-300' }} text-sm font-medium leading-5 text-gray-500 hover:text-yemdat-brown focus:outline-none focus:text-yemdat-brown focus:border-gray-300 transition duration-150 ease-in-out">
+                    {{ app()->getLocale() == 'ar' ? 'كن مدرباً' : 'Be A Trainer' }}
+                </a>
             </div>
 
             <!-- Language Switcher & Desktop Buttons -->
@@ -135,6 +138,11 @@
                 {{ __('nav.news') }}
             </a>
             <a href="{{ route('contact') }}" class="block pl-3 pr-4 py-2 border-l-4 {{ request()->routeIs('contact') ? 'border-yemdat-brown text-yemdat-brown bg-indigo-50' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300' }} text-base font-medium focus:outline-none transition duration-150 ease-in-out">
+                {{ __('nav.contact') }}
+            </a>
+             <a href="{{ route('trainer.create') }}" class="block pl-3 pr-4 py-2 border-l-4 {{ request()->routeIs('trainer.*') ? 'border-yemdat-brown text-yemdat-brown bg-indigo-50' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300' }} text-base font-medium focus:outline-none transition duration-150 ease-in-out">
+                {{ app()->getLocale() == 'ar' ? 'كن مدرباً' : 'Be A Trainer' }}
+            </a>
         <!-- Mobile Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             @if(auth()->guard('web')->check() && (auth()->guard('web')->user()->isSuperAdmin() || auth()->guard('web')->user()->role === 'admin'))

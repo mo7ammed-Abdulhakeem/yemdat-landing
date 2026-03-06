@@ -48,6 +48,7 @@ class ProfileController extends Controller
             'education_level' => 'nullable|string|max:255',
             'specialty' => 'nullable|string|max:255',
             'specialty_other' => 'nullable|string|max:255',
+            'linkedin_url' => 'nullable|url|max:255',
             'bio' => 'nullable|string',
             'password' => ['nullable', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
         ]);
@@ -61,6 +62,7 @@ class ProfileController extends Controller
             'education_level' => $validated['education_level'] ?? null,
             'specialty' => $validated['specialty'] ?? null,
             'specialty_other' => $validated['specialty_other'] ?? null,
+            'linkedin_url' => $validated['linkedin_url'] ?? null,
             'bio' => $validated['bio'] ?? null,
         ];
 

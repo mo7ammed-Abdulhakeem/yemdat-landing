@@ -64,6 +64,10 @@
                                     <span class="ml-2 text-gray-700">News/Posts Management</span>
                                 </label>
                                 <label class="flex items-center">
+                                    <input type="checkbox" name="permissions[]" value="trainers" class="rounded border-gray-300 text-yemdat-brown focus:ring-yemdat-brown" {{ in_array('trainers', $user->permissions ?? []) ? 'checked' : '' }}>
+                                    <span class="ml-2 text-gray-700">Trainer Requests</span>
+                                </label>
+                                <label class="flex items-center">
                                     <input type="checkbox" name="permissions[]" value="settings" class="rounded border-gray-300 text-yemdat-brown focus:ring-yemdat-brown" {{ in_array('settings', $user->permissions ?? []) ? 'checked' : '' }}>
                                     <span class="ml-2 text-gray-700">Global Settings</span>
                                 </label>

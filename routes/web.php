@@ -44,6 +44,9 @@ Route::get('/news/{slug}', [App\Http\Controllers\PostController::class , 'show']
 Route::get('/contact', [ContactController::class , 'index'])->name('contact');
 Route::post('/contact', [ContactController::class , 'store'])->name('contact.store')->middleware('throttle:3,1');
 
+Route::get('/be-a-trainer', [App\Http\Controllers\TrainerController::class , 'create'])->name('trainer.create');
+Route::post('/be-a-trainer', [App\Http\Controllers\TrainerController::class , 'store'])->name('trainer.store')->middleware('throttle:3,1');
+
 Route::get('/events', [App\Http\Controllers\EventController::class , 'index'])->name('events.index');
 Route::get('/events/{slug}', [App\Http\Controllers\EventController::class , 'show'])->name('events.show');
 Route::post('/events/{slug}/register', [App\Http\Controllers\EventController::class , 'register'])
@@ -52,6 +55,10 @@ Route::post('/events/{slug}/register', [App\Http\Controllers\EventController::cl
 
 // Public Authentication Routes
 Route::middleware(['guest'])->group(function () {
+    Route::get('/verify-email', [App\Http\Controllers\Auth\VerificationController::class , 'show'])->name('verification.notice');
+    Route::post('/verify-email', [App\Http\Controllers\Auth\VerificationController::class , 'verify'])->name('verification.verify');
+    Route::post('/verify-email/resend', [App\Http\Controllers\Auth\VerificationController::class , 'resend'])->name('verification.resend');
+
     Route::get('/login', [App\Http\Controllers\Auth\PublicLoginController::class , 'showLogin'])->name('public.login');
     Route::post('/login', [App\Http\Controllers\Auth\PublicLoginController::class , 'login'])->name('public.login.post');
 
@@ -65,6 +72,8 @@ Route::middleware(['guest'])->group(function () {
 
     Route::get('/forgot-password', [App\Http\Controllers\Auth\ForgotPasswordController::class , 'showLinkRequestForm'])->name('password.request');
     Route::post('/forgot-password', [App\Http\Controllers\Auth\ForgotPasswordController::class , 'verifyIdentity'])->name('password.verify');
+    Route::get('/forgot-password/verify', [App\Http\Controllers\Auth\ForgotPasswordController::class , 'showOtpVerificationForm'])->name('password.verify.otp');
+    Route::post('/forgot-password/verify', [App\Http\Controllers\Auth\ForgotPasswordController::class , 'verifyOtp'])->name('password.verify.otp.post');
 });
 
 // Authenticated Community Member Routes
@@ -73,6 +82,11 @@ Route::middleware(['auth:member'])->group(function () {
     Route::get('/my-profile', [App\Http\Controllers\ProfileController::class , 'show'])->name('profile.show');
     Route::get('/my-profile/edit', [App\Http\Controllers\ProfileController::class , 'edit'])->name('profile.edit');
     Route::put('/my-profile', [App\Http\Controllers\ProfileController::class , 'update'])->name('profile.update');
+
+    // Secure Account Deletion
+    Route::post('/my-profile/delete/request', [App\Http\Controllers\AccountDeletionController::class , 'requestOtp'])->name('profile.delete.request');
+    Route::get('/my-profile/delete/confirm', [App\Http\Controllers\AccountDeletionController::class , 'showConfirm'])->name('profile.delete.confirm');
+    Route::post('/my-profile/delete/confirm', [App\Http\Controllers\AccountDeletionController::class , 'confirm'])->name('profile.delete.confirm.post');
 });
 
 // Admin Authentication Routes
@@ -114,6 +128,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admincpanel/settings', [App\Http\Controllers\AdminController::class , 'settings'])->name('admin.settings');
     Route::post('/admincpanel/settings', [App\Http\Controllers\AdminController::class , 'updateSettings'])->name('admin.settings.update');
 
+    // Email Templates
+    Route::resource('/admincpanel/emails', App\Http\Controllers\Admin\EmailTemplateController::class)->only(['index', 'edit', 'update'])->names('admin.emails');
+
+    // Trainer Requests
+    Route::get('/admincpanel/trainers', [App\Http\Controllers\Admin\TrainerRequestController::class , 'index'])->name('admin.trainers.index');
+    Route::get('/admincpanel/trainers/{trainerRequest}', [App\Http\Controllers\Admin\TrainerRequestController::class , 'show'])->name('admin.trainers.show');
+    Route::delete('/admincpanel/trainers/{trainerRequest}', [App\Http\Controllers\Admin\TrainerRequestController::class , 'destroy'])->name('admin.trainers.destroy');
+
     // Events Management
     Route::get('/admincpanel/events/export-all', [App\Http\Controllers\Admin\EventController::class , 'exportAll'])->name('admin.events.export_all');
     Route::get('/admincpanel/events/{event}/export', [App\Http\Controllers\Admin\EventController::class , 'exportMembers'])->name('admin.events.export');
@@ -131,6 +153,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admincpanel/profile', [App\Http\Controllers\Admin\ProfileController::class , 'edit'])->name('admin.profile.edit');
     Route::put('/admincpanel/profile', [App\Http\Controllers\Admin\ProfileController::class , 'update'])->name('admin.profile.update');
 });
+
+if (app()->environment('local')) {
+    Route::get('/testemail', [\App\Http\Controllers\TestEmailController::class , 'index'])->name('testemail.index');
+    Route::get('/testemail/{id}', [\App\Http\Controllers\TestEmailController::class , 'show'])->name('testemail.show');
+    Route::post('/testemail/clear', [\App\Http\Controllers\TestEmailController::class , 'clear'])->name('testemail.clear');
+}
 
 // Fallback Route for true 404 handling with active Sessions (Arabic Localization support)
 Route::fallback(function () {
