@@ -43,9 +43,15 @@
                         <!-- Contact Information -->
                         <div class="space-y-4">
                             <h4 class="text-md font-semibold text-yemdat-brown border-b pb-2">Contact Information</h4>
-                            <div>
-                                <label for="site_email" class="block text-sm font-medium text-gray-700">Contact Email Address</label>
-                                <input type="email" name="site_email" id="site_email" value="{{ $settings['site_email'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold focus:ring-yemdat-gold sm:text-sm" placeholder="contact@yemdat.com">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="site_email" class="block text-sm font-medium text-gray-700">Public Contact Email Adress</label>
+                                    <input type="email" name="site_email" id="site_email" value="{{ $settings['site_email'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold focus:ring-yemdat-gold sm:text-sm" placeholder="contact@yemdat.com">
+                                </div>
+                                <div>
+                                    <label for="admin_email" class="block text-sm font-medium text-gray-700">Internal Admin Email Address (Receives form submissions)</label>
+                                    <input type="email" name="admin_email" id="admin_email" value="{{ $settings['admin_email'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold focus:ring-yemdat-gold sm:text-sm" placeholder="admin@yemdat.com">
+                                </div>
                             </div>
                         </div>
 
@@ -78,6 +84,70 @@
                                     <label for="site_whatsapp" class="block text-sm font-medium text-gray-700">WhatsApp URL</label>
                                     <input type="url" name="site_whatsapp" id="site_whatsapp" value="{{ $settings['site_whatsapp'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold focus:ring-yemdat-gold sm:text-sm" placeholder="https://wa.me/96777xxxxxx">
                                     <p class="mt-1 text-xs text-gray-500">Format: https://wa.me/PHONE_NUMBER_WITH_COUNTRY_CODE (e.g., https://wa.me/96777123456)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Trainer Form Settings -->
+                        <div class="space-y-4">
+                            <h4 class="text-md font-semibold text-yemdat-brown border-b pb-2">"Be a Trainer" Form Settings</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Form Title (English)</label>
+                                    <input type="text" name="trainer_form_title_en" value="{{ $settings['trainer_form_title_en'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm" required>
+                                </div>
+                                <div dir="rtl">
+                                    <label class="block text-sm font-medium text-gray-700">Form Title (Arabic)</label>
+                                    <input type="text" name="trainer_form_title_ar" value="{{ $settings['trainer_form_title_ar'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right" required>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700">Form Notes / Requirements (English)</label>
+                                    <textarea name="trainer_form_notes_en" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm" required>{{ $settings['trainer_form_notes_en'] ?? '' }}</textarea>
+                                </div>
+                                <div class="md:col-span-2" dir="rtl">
+                                    <label class="block text-sm font-medium text-gray-700">Form Notes / Requirements (Arabic)</label>
+                                    <textarea name="trainer_form_notes_ar" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right" required>{{ $settings['trainer_form_notes_ar'] ?? '' }}</textarea>
+                                </div>
+                                <!-- Input Labels -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Name Label (English)</label>
+                                    <input type="text" name="trainer_label_name_en" value="{{ $settings['trainer_label_name_en'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm" required>
+                                </div>
+                                <div dir="rtl">
+                                    <label class="block text-sm font-medium text-gray-700">Name Label (Arabic)</label>
+                                    <input type="text" name="trainer_label_name_ar" value="{{ $settings['trainer_label_name_ar'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Email Label (English)</label>
+                                    <input type="text" name="trainer_label_email_en" value="{{ $settings['trainer_label_email_en'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm" required>
+                                </div>
+                                <div dir="rtl">
+                                    <label class="block text-sm font-medium text-gray-700">Email Label (Arabic)</label>
+                                    <input type="text" name="trainer_label_email_ar" value="{{ $settings['trainer_label_email_ar'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Phone Label (English)</label>
+                                    <input type="text" name="trainer_label_phone_en" value="{{ $settings['trainer_label_phone_en'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm" required>
+                                </div>
+                                <div dir="rtl">
+                                    <label class="block text-sm font-medium text-gray-700">Phone Label (Arabic)</label>
+                                    <input type="text" name="trainer_label_phone_ar" value="{{ $settings['trainer_label_phone_ar'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Country Label (English)</label>
+                                    <input type="text" name="trainer_label_country_en" value="{{ $settings['trainer_label_country_en'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm" required>
+                                </div>
+                                <div dir="rtl">
+                                    <label class="block text-sm font-medium text-gray-700">Country Label (Arabic)</label>
+                                    <input type="text" name="trainer_label_country_ar" value="{{ $settings['trainer_label_country_ar'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Help Topic Label (English)</label>
+                                    <input type="text" name="trainer_label_help_en" value="{{ $settings['trainer_label_help_en'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm" required>
+                                </div>
+                                <div dir="rtl">
+                                    <label class="block text-sm font-medium text-gray-700">Help Topic Label (Arabic)</label>
+                                    <input type="text" name="trainer_label_help_ar" value="{{ $settings['trainer_label_help_ar'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right" required>
                                 </div>
                             </div>
                         </div>

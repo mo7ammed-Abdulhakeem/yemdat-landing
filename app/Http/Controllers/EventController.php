@@ -6,6 +6,9 @@ use App\Models\Event;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use App\Mail\EventConfirmationEmail;
 
 class EventController extends Controller
 {
@@ -79,6 +82,23 @@ class EventController extends Controller
         // Attach if not already registered
         if (!$event->members()->where('member_id', $member->id)->exists()) {
             $event->members()->attach($member->id);
+
+            // Dispatch Event Confirmation Email
+            try {
+                $eventName = app()->getLocale() == 'ar' ? $event->title_ar : $event->title_en;
+                $eventDate = $event->start_date->format('l, F j, Y g:i A');
+                $eventLocation = app()->getLocale() == 'ar' ? $event->location_ar : $event->location_en;
+
+                Mail::to($member->email)->send(new EventConfirmationEmail([
+                    'name' => $member->full_name,
+                    'event_name' => $eventName,
+                    'event_date' => $eventDate,
+                    'event_location' => $eventLocation,
+                ]));
+            }
+            catch (\Exception $e) {
+                Log::error('Event Confirmation Email failed: ' . $e->getMessage());
+            }
         }
 
         $message = app()->getLocale() == 'ar' ? 'تم تسجيلك بنجاح في الفعالية!' : 'You have successfully registered for the event!';

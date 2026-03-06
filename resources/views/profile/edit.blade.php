@@ -139,6 +139,19 @@
                                 <input type="text" name="specialty_other" id="specialty_other" value="{{ old('specialty_other', $member->specialty_other) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-brown focus:ring focus:ring-yemdat-gold focus:ring-opacity-50">
                             </div>
 
+                            <!-- LinkedIn Profile -->
+                            <div class="md:col-span-2">
+                                <label for="linkedin_url" class="block text-sm font-bold text-gray-700">{{ app()->getLocale() == 'ar' ? 'رابط حساب لينكد إن (اختياري)' : 'LinkedIn Profile URL (Optional)' }}</label>
+                                <div class="mt-1 flex rounded-md shadow-sm">
+                                    <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                                        <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd" />
+                                        </svg>
+                                    </span>
+                                    <input type="url" name="linkedin_url" id="linkedin_url" value="{{ old('linkedin_url', $member->linkedin_url) }}" placeholder="https://linkedin.com/in/username" class="flex-1 block w-full min-w-0 rounded-none rounded-r-md sm:text-sm border-gray-300 focus:border-yemdat-brown focus:ring focus:ring-yemdat-gold focus:ring-opacity-50">
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
@@ -169,7 +182,7 @@
                     </div>
                 </div>
 
-                <div class="px-8 py-5 bg-gray-50 mt-8 border-t border-gray-100 flex justify-end gap-3">
+                <div class="px-8 py-5 bg-gray-50 mt-8 border-t border-gray-100 flex justify-end gap-3 rounded-b-2xl">
                     <a href="{{ route('profile.show') }}" class="px-6 py-2 bg-white border border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 transition">
                         {{ app()->getLocale() == 'ar' ? 'إلغاء' : 'Cancel' }}
                     </a>
@@ -178,6 +191,25 @@
                     </button>
                 </div>
             </form>
+
+            <!-- Account Deletion -->
+            <div class="mt-8 bg-white rounded-2xl shadow-sm overflow-hidden mb-8" style="border: 1px solid #fee2e2;">
+                <div class="p-8">
+                    <h3 class="text-lg font-bold mb-2" style="color: #dc2626;">
+                        {{ app()->getLocale() == 'ar' ? 'حذف حسابك (سيتم مسح بياناتك نهائياً)' : 'Delete your account and your data will be deleted' }}
+                    </h3>
+                    <p class="text-sm text-gray-500 mb-6">
+                        {{ app()->getLocale() == 'ar' ? 'بمجرد حذف حسابك، سيتم مسح جميع بياناتك بشكل نهائي. للمتابعة، انقر على الزر أدناه وسنرسل لك رمز تحقق إلى بريدك الإلكتروني.' : 'Once your account is deleted, all of its resources and data will be permanently deleted. To proceed, click the button below and we will send a verification code to your email.' }}
+                    </p>
+                    <form action="{{ route('profile.delete.request') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="w-full md:w-auto px-6 py-3 text-white font-bold rounded-xl transition shadow-sm inline-flex justify-center items-center gap-2" style="background-color: #dc2626; border: 1px solid #b91c1c;" onclick="return confirm('{{ app()->getLocale() == 'ar' ? 'هل أنت متأكد أنك تريد طلب حذف الحساب؟' : 'Are you sure you want to request account deletion?' }}');">
+                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            {{ app()->getLocale() == 'ar' ? 'طلب حذف الحساب' : 'Request Account Deletion' }}
+                        </button>
+                    </form>
+                </div>
+            </div>
 
         </div>
     </div>

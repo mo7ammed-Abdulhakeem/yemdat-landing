@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class PublicLoginController extends Controller
 {
@@ -21,6 +23,8 @@ class PublicLoginController extends Controller
         ]);
 
         if (Auth::guard('member')->attempt($credentials)) {
+            $member = Auth::guard('member')->user();
+
             $request->session()->regenerate();
 
             return redirect()->route('profile.show');
