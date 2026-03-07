@@ -160,6 +160,25 @@ if (app()->environment('local')) {
     Route::post('/testemail/clear', [\App\Http\Controllers\TestEmailController::class , 'clear'])->name('testemail.clear');
 }
 
+// Live Event Pivot Synchronization - Absolute Nuclear Version
+Route::get('/test-trainer-email', function () {
+    try {
+        $dummyRequest = new \App\Models\TrainerRequest([
+            'name' => 'John Doe Trace',
+            'phone_number' => '123456789',
+            'email' => 'test@example.com',
+            'country' => 'USA',
+            'help_topic' => 'Testing System',
+        ]);
+
+        $mail = new \App\Mail\TrainerAutoReplyEmail($dummyRequest);
+        return "SUCCESS: TrainerAutoReplyEmail instantiated properly! The autoloader found it. The HTML is: " . $mail->render();
+    }
+    catch (\Throwable $e) {
+        return "CRASH THROWABLE: " . get_class($e) . " -> " . $e->getMessage() . " at Line " . $e->getLine() . " inside File: " . $e->getFile();
+    }
+});
+
 // Live Database Diagnostic Route
 Route::get('/check-db-schema', function () {
     try {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Setting;
 use App\Models\TrainerRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TrainerController extends Controller
 {
