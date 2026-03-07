@@ -172,6 +172,17 @@ Route::get('/update-v297', function () {
     }
 });
 
+// Clear Blade View Cache for Email Templates
+Route::get('/clear-views', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('view:clear');
+        return "SUCCESS: Blade View Cache cleared! The new Admin Email template is now active.";
+    }
+    catch (\Throwable $e) {
+        return "ERROR: " . $e->getMessage();
+    }
+});
+
 // Live Database Diagnostic Route
 Route::get('/check-db-schema', function () {
     try {
