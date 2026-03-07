@@ -52,6 +52,13 @@ class EmailTemplateSeeder extends Seeder
                 'body_en' => 'Hi {name},<br><br>Thank you for getting in touch with us. We have received your message and our team will get back to you as soon as possible.<br><br>Best regards,<br>Yemdat Team',
                 'body_ar' => 'مرحباً {name}،<br><br>شكراً لتواصلك معنا. لقد استلمنا رسالتك وسيقوم فريقنا بالرد عليك في أقرب وقت ممكن.<br><br>أطيب التحيات،<br>فريق يمدات',
             ],
+            [
+                'mailable_class' => 'TrainerAutoReplyEmail',
+                'subject_en' => 'Thank you for your interest in becoming a Trainer - Yemdat',
+                'subject_ar' => 'شكراً لاهتمامك بالانضمام كمدرب - يمدات',
+                'body_en' => 'Hi {name},<br><br>We have successfully received your application to become a Trainer at <strong>Yemdat</strong>.<br><br>Our administrative team is currently reviewing your submission regarding <em>"{help_topic}"</em>.<br><br>We appreciate the time you took to share your expertise with us, and we will be in touch soon at <strong>{email}</strong> or <strong>{phone_number}</strong>.<br><br>Best regards,<br>Yemdat Team',
+                'body_ar' => 'مرحباً {name}،<br><br>لقد استلمنا بنجاح طلبك للانضمام كمدرب في <strong>يمدات</strong>.<br><br>يقوم فريقنا الإداري حالياً بمراجعة طلبك بخصوص <em>"{help_topic}"</em>.<br><br>نقدر وقتك الذي أمضيته لمشاركة خبراتك معنا، وسنتواصل معك قريباً عبر <strong>{email}</strong> أو <strong>{phone_number}</strong>.<br><br>أطيب التحيات،<br>فريق يمدات',
+            ],
         ];
 
         foreach ($templates as $template) {

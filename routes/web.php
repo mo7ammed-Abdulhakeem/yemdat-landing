@@ -160,22 +160,14 @@ if (app()->environment('local')) {
     Route::post('/testemail/clear', [\App\Http\Controllers\TestEmailController::class , 'clear'])->name('testemail.clear');
 }
 
-// Live Event Pivot Synchronization - Absolute Nuclear Version
-Route::get('/test-trainer-email', function () {
+// Live Email Template Synchronization
+Route::get('/seed-trainer-template', function () {
     try {
-        $dummyRequest = new \App\Models\TrainerRequest([
-            'name' => 'John Doe Trace',
-            'phone_number' => '123456789',
-            'email' => 'test@example.com',
-            'country' => 'USA',
-            'help_topic' => 'Testing System',
-        ]);
-
-        $mail = new \App\Mail\TrainerAutoReplyEmail($dummyRequest);
-        return "SUCCESS: TrainerAutoReplyEmail instantiated properly! The autoloader found it. The HTML is: " . $mail->render();
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'Database\Seeders\EmailTemplateSeeder', '--force' => true]);
+        return "SUCCESS: The Trainer Auto-Reply email template has been successfully generated inside your Database. You can now edit it via the Admin Email panel.";
     }
     catch (\Throwable $e) {
-        return "CRASH THROWABLE: " . get_class($e) . " -> " . $e->getMessage() . " at Line " . $e->getLine() . " inside File: " . $e->getFile();
+        return "ERROR: " . $e->getMessage();
     }
 });
 

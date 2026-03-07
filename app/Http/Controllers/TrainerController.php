@@ -30,20 +30,28 @@ class TrainerController extends Controller
 
         // Send auto-reply to the applicant
         try {
-            \Illuminate\Support\Facades\Mail::to($validated['email'])->send(new \App\Mail\TrainerAutoReplyEmail($trainerRequest));
+            \Illuminate\Support\Facades\Log::info('Attempting to send Applicant Auto-Reply to: ' . $validated['email']);
+            \Illuminate\Support\Facades\Mail::to($validated['email'])->send(new \App\Mail\TrainerAutoReplyEmail([
+                'name' => $trainerRequest->name,
+                'email' => $trainerRequest->email,
+                'phone_number' => $trainerRequest->phone_number,
+                'country' => $trainerRequest->country,
+                'help_topic' => strip_tags($trainerRequest->help_topic),
+            ]));
         }
-        catch (\Exception $e) {
-            \Log::error('Failed to send trainer auto-reply: ' . $e->getMessage());
+        catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('CRITICAL: Failed to send trainer auto-reply: ' . $e->getMessage() . ' at Line: ' . $e->getLine());
         }
 
         // Send notification to Admin
         $adminEmail = Setting::where('key', 'admin_email')->value('value') ?? config('mail.from.address');
         if ($adminEmail) {
             try {
+                \Illuminate\Support\Facades\Log::info('Attempting to send Admin Alert to: ' . $adminEmail);
                 \Illuminate\Support\Facades\Mail::to($adminEmail)->send(new \App\Mail\TrainerRequestNotification($trainerRequest));
             }
-            catch (\Exception $e) {
-                \Log::error('Failed to send trainer admin alert: ' . $e->getMessage());
+            catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('CRITICAL: Failed to send trainer admin alert: ' . $e->getMessage() . ' at Line: ' . $e->getLine());
             }
         }
 
