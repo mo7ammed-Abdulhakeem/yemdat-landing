@@ -4,7 +4,7 @@
     <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
         <tr>
             <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold; width: 120px;">Name</td>
-            <td style="padding: 10px; border: 1px solid #ddd;">{{ $contact->name }}</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">{{ $contact->firstname }} {{ $contact->surname }}</td>
         </tr>
         <tr>
             <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Email</td>

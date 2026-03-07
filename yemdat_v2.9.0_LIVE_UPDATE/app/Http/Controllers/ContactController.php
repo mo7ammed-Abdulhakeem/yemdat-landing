@@ -34,7 +34,7 @@ class ContactController extends Controller
             $validated['member_id'] = auth()->guard('member')->id();
         }
 
-        $contact = Contact::create($validated);
+        Contact::create($validated);
 
         try {
             Mail::to($validated['email'])->send(new ContactUsAutoReplyEmail([
@@ -52,7 +52,7 @@ class ContactController extends Controller
 
         if ($adminEmail) {
             try {
-                Mail::to($adminEmail)->send(new ContactUsAdminAlert($contact));
+                Mail::to($adminEmail)->send(new ContactUsAdminAlert($validated));
             }
             catch (\Exception $e) {
                 \Log::error('Failed to send contact admin alert: ' . $e->getMessage());

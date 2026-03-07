@@ -27,23 +27,10 @@ class TrainerController extends Controller
 
         $trainerRequest = TrainerRequest::create($validated);
 
-        // Send auto-reply to the applicant
-        try {
-            \Illuminate\Support\Facades\Mail::to($validated['email'])->send(new \App\Mail\TrainerAutoReplyEmail($trainerRequest));
-        }
-        catch (\Exception $e) {
-            \Log::error('Failed to send trainer auto-reply: ' . $e->getMessage());
-        }
-
         // Send notification to Admin
         $adminEmail = Setting::where('key', 'admin_email')->value('value') ?? config('mail.from.address');
         if ($adminEmail) {
-            try {
-                \Illuminate\Support\Facades\Mail::to($adminEmail)->send(new \App\Mail\TrainerRequestNotification($trainerRequest));
-            }
-            catch (\Exception $e) {
-                \Log::error('Failed to send trainer admin alert: ' . $e->getMessage());
-            }
+            \Illuminate\Support\Facades\Mail::to($adminEmail)->send(new \App\Mail\TrainerRequestNotification($trainerRequest));
         }
 
         return back()->with('success', app()->getLocale() == 'ar' ? 'تم إرسال طلبك بنجاح! سنتواصل معك قريباً.' : 'Your request has been submitted successfully! We will contact you soon.');
