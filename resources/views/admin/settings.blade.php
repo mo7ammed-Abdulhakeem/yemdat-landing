@@ -101,12 +101,20 @@
                                     <input type="text" name="trainer_form_title_ar" value="{{ $settings['trainer_form_title_ar'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right" required>
                                 </div>
                                 <div class="md:col-span-2">
-                                    <label class="block text-sm font-medium text-gray-700">Form Notes / Requirements (English)</label>
+                                    <label class="block text-sm font-medium text-gray-700">Form Top Description (English)</label>
                                     <textarea name="trainer_form_notes_en" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm" required>{{ $settings['trainer_form_notes_en'] ?? '' }}</textarea>
                                 </div>
                                 <div class="md:col-span-2" dir="rtl">
-                                    <label class="block text-sm font-medium text-gray-700">Form Notes / Requirements (Arabic)</label>
+                                    <label class="block text-sm font-medium text-gray-700">Form Top Description (Arabic)</label>
                                     <textarea name="trainer_form_notes_ar" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right" required>{{ $settings['trainer_form_notes_ar'] ?? '' }}</textarea>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700">Notes Above 'Help Topic' Field (English)</label>
+                                    <textarea name="trainer_topic_notes_en" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm">{{ $settings['trainer_topic_notes_en'] ?? '' }}</textarea>
+                                </div>
+                                <div class="md:col-span-2" dir="rtl">
+                                    <label class="block text-sm font-medium text-gray-700">Notes Above 'Help Topic' Field (Arabic)</label>
+                                    <textarea name="trainer_topic_notes_ar" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right">{{ $settings['trainer_topic_notes_ar'] ?? '' }}</textarea>
                                 </div>
                                 <!-- Input Labels -->
                                 <div>

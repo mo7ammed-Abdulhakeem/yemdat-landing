@@ -94,6 +94,11 @@
                             <label class="block text-sm font-medium text-yemdat-brown mb-2">
                                 {{ app()->getLocale() == 'ar' ? ($settings['trainer_label_help_ar'] ?? 'بماذا يمكنك مساعدتنا؟') : ($settings['trainer_label_help_en'] ?? 'What can you help us with?') }} <span class="text-red-500">*</span>
                             </label>
+                            @if(isset($settings['trainer_topic_notes_en']) || isset($settings['trainer_topic_notes_ar']))
+                            <div class="mb-4 text-sm text-gray-600 bg-blue-50 p-4 border-l-4 border-blue-400 rounded-md">
+                                {{ app()->getLocale() == 'ar' ? ($settings['trainer_topic_notes_ar'] ?? '') : ($settings['trainer_topic_notes_en'] ?? '') }}
+                            </div>
+                            @endif
                             <input type="hidden" name="help_topic" id="help_topic_input" value="{{ old('help_topic') }}">
                             <div class="bg-white rounded-lg shadow-sm" style="border: 1px solid #d1d5db; border-radius: 0.5rem; overflow: hidden;">
                                 <div id="editor-container" style="height: 250px; font-size: 16px; border: none;"></div>

@@ -160,6 +160,23 @@ if (app()->environment('local')) {
     Route::post('/testemail/clear', [\App\Http\Controllers\TestEmailController::class , 'clear'])->name('testemail.clear');
 }
 
+// Live Database Diagnostic Route
+Route::get('/check-db-schema', function () {
+    try {
+        $schema = \Illuminate\Support\Facades\DB::select('SHOW CREATE TABLE event_member');
+        $data = \Illuminate\Support\Facades\DB::table('event_member')->limit(10)->get();
+        $events = \Illuminate\Support\Facades\DB::table('events')->limit(2)->get();
+
+        $output = "<h3>Table Schema:</h3><pre>" . print_r($schema, true) . "</pre>";
+        $output .= "<h3>Pivot Data Dump:</h3><pre>" . json_encode($data, JSON_PRETTY_PRINT) . "</pre>";
+        $output .= "<h3>Event Sample IDs:</h3><pre>" . json_encode($events, JSON_PRETTY_PRINT) . "</pre>";
+        return $output;
+    }
+    catch (\Exception $e) {
+        return "ERROR: " . $e->getMessage();
+    }
+});
+
 // Fallback Route for true 404 handling with active Sessions (Arabic Localization support)
 Route::fallback(function () {
     abort(404);
