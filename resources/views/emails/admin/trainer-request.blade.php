@@ -7,7 +7,6 @@ You have received a new application through the "Be a Trainer" form.
 - **Name:** {{ $trainerRequest->name }}
 - **Email:** {{ $trainerRequest->email }}
 - **Phone:** {{ $trainerRequest->phone_number }}
-- **Country:** {{ $trainerRequest->country }}
 
 @if($trainerRequest->program_type)
 **Program Details:**

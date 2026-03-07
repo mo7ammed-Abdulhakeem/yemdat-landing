@@ -21,7 +21,6 @@ class TrainerController extends Controller
             'name' => 'required|string|max:255',
             'phone_number' => 'required|string|max:20',
             'email' => 'required|email|max:255',
-            'country' => 'required|string|max:100',
             'linkedin_url' => 'nullable|url|max:255',
             'program_type' => 'required|string|in:workshop,course',
             'duration_days' => 'required|integer|min:1',

@@ -141,14 +141,7 @@
                                     <label class="block text-sm font-medium text-gray-700">Phone Label (Arabic)</label>
                                     <input type="text" name="trainer_label_phone_ar" value="{{ $settings['trainer_label_phone_ar'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right" required>
                                 </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">Country Label (English)</label>
-                                    <input type="text" name="trainer_label_country_en" value="{{ $settings['trainer_label_country_en'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm" required>
-                                </div>
-                                <div dir="rtl">
-                                    <label class="block text-sm font-medium text-gray-700">Country Label (Arabic)</label>
-                                    <input type="text" name="trainer_label_country_ar" value="{{ $settings['trainer_label_country_ar'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right" required>
-                                </div>
+
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Program Type Label (English)</label>
                                     <input type="text" name="trainer_label_program_type_en" value="{{ $settings['trainer_label_program_type_en'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm" required>

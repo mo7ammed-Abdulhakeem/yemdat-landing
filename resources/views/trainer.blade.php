@@ -71,14 +71,6 @@
                                 <input type="email" name="email" value="{{ old('email') }}" required class="w-full rounded-lg border-gray-300 bg-gray-50 focus:border-yemdat-gold focus:ring-yemdat-gold focus:bg-white transition" dir="ltr">
                             </div>
 
-                            <!-- Country -->
-                            <div>
-                                <label class="block text-sm font-medium text-yemdat-brown mb-2">
-                                    {{ app()->getLocale() == 'ar' ? ($settings['trainer_label_country_ar'] ?? 'بلد الإقامة') : ($settings['trainer_label_country_en'] ?? 'Country of Residency') }} <span class="text-red-500">*</span>
-                                </label>
-                                <input type="text" name="country" value="{{ old('country') }}" required class="w-full rounded-lg border-gray-300 bg-gray-50 focus:border-yemdat-gold focus:ring-yemdat-gold focus:bg-white transition">
-                            </div>
-
                             <!-- LinkedIn Profile -->
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-yemdat-brown mb-2">

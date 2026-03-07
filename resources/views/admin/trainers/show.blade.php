@@ -45,11 +45,6 @@
                         <div class="text-sm font-medium text-gray-900" dir="ltr">{{ $trainerRequest->phone_number ?? '-' }}</div>
                     </div>
 
-                    <div>
-                        <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Country of Residency</span>
-                        <div class="text-sm font-medium text-gray-900">{{ $trainerRequest->country ?: '-' }}</div>
-                    </div>
-
                     @if($trainerRequest->linkedin_url)
                     <div>
                         <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">LinkedIn Profile</span>
