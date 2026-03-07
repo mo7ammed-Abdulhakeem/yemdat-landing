@@ -160,11 +160,12 @@ if (app()->environment('local')) {
     Route::post('/testemail/clear', [\App\Http\Controllers\TestEmailController::class , 'clear'])->name('testemail.clear');
 }
 
-// Live Email Template Synchronization
-Route::get('/seed-trainer-template', function () {
+// Live V2.9.6 Migration & Settings Synchronization
+Route::get('/update-v296', function () {
     try {
-        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'Database\Seeders\EmailTemplateSeeder', '--force' => true]);
-        return "SUCCESS: The Trainer Auto-Reply email template has been successfully generated inside your Database. You can now edit it via the Admin Email panel.";
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'Database\Seeders\SettingsSeeder', '--force' => true]);
+        return "SUCCESS: V2.9.6 Schema updates applied. New settings labels injected into your Database. You can now configure the form in Admin -> Site Settings.";
     }
     catch (\Throwable $e) {
         return "ERROR: " . $e->getMessage();

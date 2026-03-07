@@ -23,10 +23,16 @@ class TrainerController extends Controller
             'email' => 'required|email|max:255',
             'country' => 'required|string|max:100',
             'linkedin_url' => 'nullable|url|max:255',
-            'help_topic' => 'required|string',
+            'program_type' => 'required|string|in:workshop,course',
+            'duration_hours' => 'required|integer|min:1',
+            'agenda' => 'required|string',
+            'agreed_to_free_provision' => 'required|boolean',
         ]);
 
         $trainerRequest = TrainerRequest::create($validated);
+
+        // Format the new data into a cohesive string for the legacy {help_topic} email template placeholder
+        $programStr = ucfirst($validated['program_type']) . " (" . $validated['duration_hours'] . " Hours)";
 
         // Send auto-reply to the applicant
         try {
@@ -36,7 +42,7 @@ class TrainerController extends Controller
                 'email' => $trainerRequest->email,
                 'phone_number' => $trainerRequest->phone_number,
                 'country' => $trainerRequest->country,
-                'help_topic' => strip_tags($trainerRequest->help_topic),
+                'help_topic' => $programStr,
             ]));
         }
         catch (\Throwable $e) {

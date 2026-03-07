@@ -10,8 +10,11 @@ class TrainerRequest extends Model
         'name',
         'phone_number',
         'email',
-        'country',
         'linkedin_url',
-        'help_topic',
+        'country',
+        'program_type',
+        'duration_hours',
+        'agenda',
+        'agreed_to_free_provision',
     ];
 }

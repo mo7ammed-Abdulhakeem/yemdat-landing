@@ -89,20 +89,65 @@
 
                         </div> <!-- End of grid -->
 
-                        <!-- Help Topic (Full Width) -->
+                        </div> <!-- End of grid -->
+
+                        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                            <!-- Program Type -->
+                            <div>
+                                <label class="block text-sm font-medium text-yemdat-brown mb-2">
+                                    {{ app()->getLocale() == 'ar' ? ($settings['trainer_label_program_type_ar'] ?? 'نوع البرنامج') : ($settings['trainer_label_program_type_en'] ?? 'Program Type') }} <span class="text-red-500">*</span>
+                                </label>
+                                <select name="program_type" class="w-full px-5 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-yemdat-gold focus:bg-white focus:ring-2 focus:ring-yemdat-gold/20 outline-none transition duration-200" required>
+                                    <option value="">--</option>
+                                    <option value="workshop" {{ old('program_type') == 'workshop' ? 'selected' : '' }}>{{ app()->getLocale() == 'ar' ? 'ورشة عمل' : 'Workshop' }}</option>
+                                    <option value="course" {{ old('program_type') == 'course' ? 'selected' : '' }}>{{ app()->getLocale() == 'ar' ? 'دورة تدريبية' : 'Course' }}</option>
+                                </select>
+                            </div>
+
+                            <!-- Duration (Hours) -->
+                            <div>
+                                <label class="block text-sm font-medium text-yemdat-brown mb-2">
+                                    {{ app()->getLocale() == 'ar' ? ($settings['trainer_label_duration_ar'] ?? 'المدة (بالساعات)') : ($settings['trainer_label_duration_en'] ?? 'Duration (Hours)') }} <span class="text-red-500">*</span>
+                                </label>
+                                <input type="number" name="duration_hours" value="{{ old('duration_hours') }}" min="1" step="1" class="w-full px-5 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-yemdat-gold focus:bg-white focus:ring-2 focus:ring-yemdat-gold/20 outline-none transition duration-200" required>
+                            </div>
+                        </div>
+
+                        <!-- Agenda (Full Width Quill) -->
                         <div class="mt-6 w-full">
                             <label class="block text-sm font-medium text-yemdat-brown mb-2">
-                                {{ app()->getLocale() == 'ar' ? ($settings['trainer_label_help_ar'] ?? 'بماذا يمكنك مساعدتنا؟') : ($settings['trainer_label_help_en'] ?? 'What can you help us with?') }} <span class="text-red-500">*</span>
+                                {{ app()->getLocale() == 'ar' ? ($settings['trainer_label_agenda_ar'] ?? 'أجندة البرنامج/الدورة') : ($settings['trainer_label_agenda_en'] ?? 'Program/Workshop Agenda') }} <span class="text-red-500">*</span>
                             </label>
-                            @if(isset($settings['trainer_topic_notes_en']) || isset($settings['trainer_topic_notes_ar']))
+                            
+                            @php
+                                $notesEn = trim(strip_tags($settings['trainer_topic_notes_en'] ?? ''));
+                                $notesAr = trim(strip_tags($settings['trainer_topic_notes_ar'] ?? ''));
+                                $hasNotes = app()->getLocale() == 'ar' ? !empty($notesAr) : !empty($notesEn);
+                            @endphp
+
+                            @if($hasNotes)
                             <div class="mb-4 text-sm text-gray-600 bg-blue-50 p-4 border-l-4 border-blue-400 rounded-md">
-                                {{ app()->getLocale() == 'ar' ? ($settings['trainer_topic_notes_ar'] ?? '') : ($settings['trainer_topic_notes_en'] ?? '') }}
+                                {!! app()->getLocale() == 'ar' ? nl2br(e($settings['trainer_topic_notes_ar'])) : nl2br(e($settings['trainer_topic_notes_en'])) !!}
                             </div>
                             @endif
-                            <input type="hidden" name="help_topic" id="help_topic_input" value="{{ old('help_topic') }}">
+
+                            <input type="hidden" name="agenda" id="agenda_input" value="{{ old('agenda') }}">
                             <div class="bg-white rounded-lg shadow-sm" style="border: 1px solid #d1d5db; border-radius: 0.5rem; overflow: hidden;">
                                 <div id="editor-container" style="height: 250px; font-size: 16px; border: none;"></div>
                             </div>
+                        </div>
+
+                        <!-- Mandatory Agreement Checkbox -->
+                        <div class="mt-6 w-full bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <label class="flex items-start cursor-pointer group">
+                                <div class="flex items-center h-5">
+                                    <input type="checkbox" name="agreed_to_free_provision" value="1" class="w-5 h-5 border border-gray-300 rounded bg-white text-yemdat-gold focus:ring-yemdat-gold/50 cursor-pointer" {{ old('agreed_to_free_provision') ? 'checked' : '' }} required>
+                                </div>
+                                <div class="ml-3 {{ app()->getLocale() == 'ar' ? 'mr-3 ml-0' : '' }} text-sm text-gray-700 font-medium group-hover:text-yemdat-brown transition-colors">
+                                    {{ app()->getLocale() == 'ar' ? ($settings['trainer_agreement_text_ar'] ?? 'أوافق على أنه في حال الموافقة على برنامجي، سيتم تقديمه مجاناً لجميع المشاركين.') : ($settings['trainer_agreement_text_en'] ?? 'I agree that if my program is approved, it will be provided for free for all participants.') }}
+                                    <span class="text-red-500">*</span>
+                                </div>
+                            </label>
                         </div>
 
                         <!-- Submit Button -->
@@ -145,7 +190,7 @@
             }
             
             // Populate old data
-            var oldContent = document.getElementById('help_topic_input').value;
+            var oldContent = document.getElementById('agenda_input').value;
             if (oldContent) {
                 quill.root.innerHTML = oldContent;
             }
@@ -155,7 +200,7 @@
                 form.addEventListener('submit', function() {
                     var html = quill.root.innerHTML;
                     if(html === '<p><br></p>' || html.trim() === '') html = '';
-                    document.getElementById('help_topic_input').value = html;
+                    document.getElementById('agenda_input').value = html;
                 });
             }
         });

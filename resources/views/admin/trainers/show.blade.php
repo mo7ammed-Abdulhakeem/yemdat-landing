@@ -34,7 +34,7 @@
                 </div>
 
                 <!-- Contact & Location Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-6 bg-gray-50 rounded-xl p-6 border border-gray-100">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-6 bg-gray-50 rounded-xl p-6 border border-gray-100 mb-6">
                     <div>
                         <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Email Address</span>
                         <div class="text-sm font-medium text-gray-900" dir="ltr">{{ $trainerRequest->email ?? '-' }}</div>
@@ -63,11 +63,48 @@
                     @endif
                 </div>
 
+                <!-- Program Type & Duration Highlights -->
+                @if($trainerRequest->program_type)
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-blue-50/50 p-4 rounded-lg border border-blue-100 flex items-center">
+                        <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mr-4">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-500 uppercase">Program Type</p>
+                            <p class="text-md font-bold text-gray-900 capitalize">{{ $trainerRequest->program_type }}</p>
+                        </div>
+                    </div>
+                    <div class="bg-emerald-50/50 p-4 rounded-lg border border-emerald-100 flex items-center">
+                        <div class="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 mr-4">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-500 uppercase">Duration</p>
+                            <p class="text-md font-bold text-gray-900">{{ $trainerRequest->duration_hours }} Hours</p>
+                        </div>
+                    </div>
+                    <div class="bg-amber-50/50 p-4 rounded-lg border border-amber-100 flex items-center">
+                        <div class="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mr-4">
+                            @if($trainerRequest->agreed_to_free_provision)
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            @else
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            @endif
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-500 uppercase">Free Provision</p>
+                            <p class="text-md font-bold text-gray-900">{{ $trainerRequest->agreed_to_free_provision ? 'Agreed' : 'Not Agreed' }}</p>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
                 <!-- The Topic/Help Request -->
                 <div class="space-y-4">
-                    <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">What can they help with?</span>
+                    <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ $trainerRequest->program_type ? 'Program Agenda & Details' : 'Legacy Help Topic' }}</span>
                     <div class="prose prose-sm max-w-none text-gray-700 bg-white border border-gray-100 rounded-xl p-6 shadow-sm leading-relaxed" style="word-break: break-word;">
-                        {!! $trainerRequest->help_topic !!}
+                        {!! $trainerRequest->agenda ?? ($trainerRequest->getRawOriginal('help_topic') ?? 'No details provided.') !!}
                     </div>
                 </div>
                 

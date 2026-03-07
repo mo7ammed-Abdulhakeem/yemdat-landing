@@ -150,12 +150,36 @@
                                     <input type="text" name="trainer_label_country_ar" value="{{ $settings['trainer_label_country_ar'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right" required>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700">Help Topic Label (English)</label>
-                                    <input type="text" name="trainer_label_help_en" value="{{ $settings['trainer_label_help_en'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm" required>
+                                    <label class="block text-sm font-medium text-gray-700">Program Type Label (English)</label>
+                                    <input type="text" name="trainer_label_program_type_en" value="{{ $settings['trainer_label_program_type_en'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm" required>
                                 </div>
                                 <div dir="rtl">
-                                    <label class="block text-sm font-medium text-gray-700">Help Topic Label (Arabic)</label>
-                                    <input type="text" name="trainer_label_help_ar" value="{{ $settings['trainer_label_help_ar'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right" required>
+                                    <label class="block text-sm font-medium text-gray-700">Program Type Label (Arabic)</label>
+                                    <input type="text" name="trainer_label_program_type_ar" value="{{ $settings['trainer_label_program_type_ar'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Duration Label (English)</label>
+                                    <input type="text" name="trainer_label_duration_en" value="{{ $settings['trainer_label_duration_en'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm" required>
+                                </div>
+                                <div dir="rtl">
+                                    <label class="block text-sm font-medium text-gray-700">Duration Label (Arabic)</label>
+                                    <input type="text" name="trainer_label_duration_ar" value="{{ $settings['trainer_label_duration_ar'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Agenda Label (English)</label>
+                                    <input type="text" name="trainer_label_agenda_en" value="{{ $settings['trainer_label_agenda_en'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm" required>
+                                </div>
+                                <div dir="rtl">
+                                    <label class="block text-sm font-medium text-gray-700">Agenda Label (Arabic)</label>
+                                    <input type="text" name="trainer_label_agenda_ar" value="{{ $settings['trainer_label_agenda_ar'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right" required>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700">Agreement Text (English)</label>
+                                    <textarea name="trainer_agreement_text_en" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm" required>{{ $settings['trainer_agreement_text_en'] ?? '' }}</textarea>
+                                </div>
+                                <div class="md:col-span-2" dir="rtl">
+                                    <label class="block text-sm font-medium text-gray-700">Agreement Text (Arabic)</label>
+                                    <textarea name="trainer_agreement_text_ar" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right" required>{{ $settings['trainer_agreement_text_ar'] ?? '' }}</textarea>
                                 </div>
                             </div>
                         </div>
