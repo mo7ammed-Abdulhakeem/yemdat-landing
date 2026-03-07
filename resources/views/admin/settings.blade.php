@@ -158,12 +158,20 @@
                                     <input type="text" name="trainer_label_program_type_ar" value="{{ $settings['trainer_label_program_type_ar'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right" required>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700">Duration Label (English)</label>
+                                    <label class="block text-sm font-medium text-gray-700">Duration by Hours Label (English)</label>
                                     <input type="text" name="trainer_label_duration_en" value="{{ $settings['trainer_label_duration_en'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm" required>
                                 </div>
                                 <div dir="rtl">
-                                    <label class="block text-sm font-medium text-gray-700">Duration Label (Arabic)</label>
+                                    <label class="block text-sm font-medium text-gray-700">Duration by Hours Label (Arabic)</label>
                                     <input type="text" name="trainer_label_duration_ar" value="{{ $settings['trainer_label_duration_ar'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Duration by Days Label (English)</label>
+                                    <input type="text" name="trainer_label_days_en" value="{{ $settings['trainer_label_days_en'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm" required>
+                                </div>
+                                <div dir="rtl">
+                                    <label class="block text-sm font-medium text-gray-700">Duration by Days Label (Arabic)</label>
+                                    <input type="text" name="trainer_label_days_ar" value="{{ $settings['trainer_label_days_ar'] ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yemdat-gold sm:text-sm text-right" required>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Agenda Label (English)</label>

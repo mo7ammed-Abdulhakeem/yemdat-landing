@@ -14,6 +14,7 @@ class TrainerRequest extends Model
         'country',
         'program_type',
         'duration_hours',
+        'duration_days',
         'agenda',
         'agreed_to_free_provision',
     ];

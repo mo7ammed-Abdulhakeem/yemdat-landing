@@ -81,7 +81,15 @@
                         </div>
                         <div>
                             <p class="text-xs font-bold text-gray-500 uppercase">Duration</p>
-                            <p class="text-md font-bold text-gray-900">{{ $trainerRequest->duration_hours }} Hours</p>
+                            <p class="text-md font-bold text-gray-900">
+                                @if($trainerRequest->duration_days || $trainerRequest->duration_hours)
+                                    {{ $trainerRequest->duration_days ? $trainerRequest->duration_days . ' Days' : '' }}
+                                    {{ $trainerRequest->duration_days && $trainerRequest->duration_hours ? ', ' : '' }}
+                                    {{ $trainerRequest->duration_hours ? $trainerRequest->duration_hours . ' Hours' : '' }}
+                                @else
+                                    -
+                                @endif
+                            </p>
                         </div>
                     </div>
                     <div class="bg-amber-50/50 p-4 rounded-lg border border-amber-100 flex items-center">

@@ -59,7 +59,13 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $request->duration_hours ? $request->duration_hours . ' Hours' : '-' }}
+                                @if($request->duration_days || $request->duration_hours)
+                                    {{ $request->duration_days ? $request->duration_days . ' Days' : '' }}
+                                    {{ $request->duration_days && $request->duration_hours ? ', ' : '' }}
+                                    {{ $request->duration_hours ? $request->duration_hours . ' Hours' : '' }}
+                                @else
+                                    -
+                                @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {{ $request->country ?: '-' }}

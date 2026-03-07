@@ -24,6 +24,7 @@ class TrainerController extends Controller
             'country' => 'required|string|max:100',
             'linkedin_url' => 'nullable|url|max:255',
             'program_type' => 'required|string|in:workshop,course',
+            'duration_days' => 'required|integer|min:1',
             'duration_hours' => 'required|integer|min:1',
             'agenda' => 'required|string',
             'agreed_to_free_provision' => 'required|boolean',
@@ -32,7 +33,7 @@ class TrainerController extends Controller
         $trainerRequest = TrainerRequest::create($validated);
 
         // Format the new data into a cohesive string for the legacy {help_topic} email template placeholder
-        $programStr = ucfirst($validated['program_type']) . " (" . $validated['duration_hours'] . " Hours)";
+        $programStr = ucfirst($validated['program_type']) . " (" . $validated['duration_days'] . " Days, " . $validated['duration_hours'] . " Hours)";
 
         // Send auto-reply to the applicant
         try {

@@ -91,7 +91,7 @@
 
                         </div> <!-- End of grid -->
 
-                        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                             <!-- Program Type -->
                             <div>
                                 <label class="block text-sm font-medium text-yemdat-brown mb-2">
@@ -102,6 +102,14 @@
                                     <option value="workshop" {{ old('program_type') == 'workshop' ? 'selected' : '' }}>{{ app()->getLocale() == 'ar' ? 'ورشة عمل' : 'Workshop' }}</option>
                                     <option value="course" {{ old('program_type') == 'course' ? 'selected' : '' }}>{{ app()->getLocale() == 'ar' ? 'دورة تدريبية' : 'Course' }}</option>
                                 </select>
+                            </div>
+
+                            <!-- Duration (Days) -->
+                            <div>
+                                <label class="block text-sm font-medium text-yemdat-brown mb-2">
+                                    {{ app()->getLocale() == 'ar' ? ($settings['trainer_label_days_ar'] ?? 'المدة (بالأيام)') : ($settings['trainer_label_days_en'] ?? 'Duration (Days)') }} <span class="text-red-500">*</span>
+                                </label>
+                                <input type="number" name="duration_days" value="{{ old('duration_days') }}" min="1" step="1" class="w-full px-5 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-yemdat-gold focus:bg-white focus:ring-2 focus:ring-yemdat-gold/20 outline-none transition duration-200" required>
                             </div>
 
                             <!-- Duration (Hours) -->

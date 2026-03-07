@@ -160,12 +160,12 @@ if (app()->environment('local')) {
     Route::post('/testemail/clear', [\App\Http\Controllers\TestEmailController::class , 'clear'])->name('testemail.clear');
 }
 
-// Live V2.9.6 Migration & Settings Synchronization
-Route::get('/update-v296', function () {
+// Live V2.9.7 Migration & Settings Synchronization
+Route::get('/update-v297', function () {
     try {
         \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
         \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'Database\Seeders\SettingsSeeder', '--force' => true]);
-        return "SUCCESS: V2.9.6 Schema updates applied. New settings labels injected into your Database. You can now configure the form in Admin -> Site Settings.";
+        return "SUCCESS: V2.9.7 Schema updates applied. New 'Duration (Days)' column and settings injected. You can now configure this in Admin -> Site Settings.";
     }
     catch (\Throwable $e) {
         return "ERROR: " . $e->getMessage();
