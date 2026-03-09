@@ -170,4 +170,19 @@ class PostController extends Controller
         $post->update(['is_published' => !$post->is_published]);
         return back()->with('success', 'Post status updated.');
     }
+
+    public function toggleFeatured(Post $post)
+    {
+        if (!auth()->user()->hasPermission('posts')) {
+            abort(403);
+        }
+
+        // Only author or super admin can toggle
+        if ($post->created_by !== auth()->id() && !auth()->user()->isSuperAdmin()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $post->update(['is_featured' => !$post->is_featured]);
+        return back()->with('success', 'Post featured status updated.');
+    }
 }

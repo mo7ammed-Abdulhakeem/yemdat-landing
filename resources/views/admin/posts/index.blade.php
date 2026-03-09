@@ -29,6 +29,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Featured</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Published</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                 </tr>
@@ -68,9 +69,21 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             @if($post->created_by === auth()->id() || auth()->user()->isSuperAdmin())
+                                                <form action="{{ route('admin.posts.toggle_featured', $post) }}" method="POST" class="inline-block">
+                                                    @csrf
+                                                    <button type="submit" class="relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yemdat-gold {{ $post->is_featured ? 'bg-blue-500' : 'bg-gray-200' }}">
+                                                        <span class="sr-only">Toggle featured status</span>
+                                                        <span class="inline-block w-4 h-4 transform bg-white rounded-full transition-transform {{ $post->is_featured ? 'translate-x-6' : 'translate-x-1' }}"></span>
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <span class="text-gray-400 text-xs italic">No Access</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            @if($post->created_by === auth()->id() || auth()->user()->isSuperAdmin())
                                                 <form action="{{ route('admin.posts.toggle', $post) }}" method="POST" class="inline-block">
                                                     @csrf
-                                                    @method('PATCH')
                                                     <button type="submit" class="relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yemdat-gold {{ $post->is_published ? 'bg-green-500' : 'bg-gray-200' }}">
                                                         <span class="sr-only">Toggle publish status</span>
                                                         <span class="inline-block w-4 h-4 transform bg-white rounded-full transition-transform {{ $post->is_published ? 'translate-x-6' : 'translate-x-1' }}"></span>

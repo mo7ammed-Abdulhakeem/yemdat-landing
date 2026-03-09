@@ -104,7 +104,7 @@
 
             <!-- News Grid -->
             @if($posts->count() > 0)
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                     @foreach($posts as $post)
                         <article class="bg-white rounded-[1.5rem] shadow-sm border border-gray-200 overflow-hidden flex flex-col h-full hover:shadow-2xl transition-all duration-500 group">
                             <!-- Image container -->

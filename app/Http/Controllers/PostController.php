@@ -25,14 +25,37 @@ class PostController extends Controller
             });
         }
 
+        // Dynamically calculate the Top 5 most used tags across all published posts
+        $allTags = Post::where('is_published', true)->whereNotNull('tags')->pluck('tags')->flatten()->map(function ($tag) {
+            return trim(is_string($tag) ? trim(json_decode($tag, true) ?? $tag, '"') : $tag);
+        })->filter()->toArray();
+
+        $tagCounts = array_count_values($allTags);
+        arsort($tagCounts);
+        $top5Tags = array_slice(array_keys($tagCounts), 0, 5);
+
+        // Core categories hardcoded + Top 5 dynamic tags
+        $coreTypes = ['announcement', 'update', 'article'];
+        $presetCategories = array_merge(['All'], $coreTypes, $top5Tags, ['Other']);
+
         // Unified Category/Tag Filtering
         if ($request->filled('category') && $request->category !== 'All') {
             $category = $request->category;
-            // Check if it's a primary 'type' or a JSON 'tag'
-            $query->where(function ($q) use ($category) {
-                $q->where('type', $category)
-                    ->orWhereJsonContains('tags', $category);
-            });
+
+            if ($category === 'Other') {
+                // If "Other", exclude the core types AND exclude any post that has ONE of the top 5 tags
+                $query->whereNotIn('type', $coreTypes);
+                foreach ($top5Tags as $topTag) {
+                    $query->whereJsonDoesntContain('tags', $topTag);
+                }
+            }
+            else {
+                // Check if it's a primary 'type' or a JSON 'tag'
+                $query->where(function ($q) use ($category) {
+                    $q->where('type', $category)
+                        ->orWhereJsonContains('tags', $category);
+                });
+            }
         }
 
         // Determine if we should show the Hero section
@@ -41,7 +64,12 @@ class PostController extends Controller
 
         $heroPost = null;
         if ($showHero) {
-            $heroPost = (clone $query)->latest()->first();
+            // Priority: is_featured = true, fallback to latest post
+            $heroPost = (clone $query)->where('is_featured', true)->latest()->first();
+            if (!$heroPost) {
+                $heroPost = (clone $query)->latest()->first();
+            }
+
             if ($heroPost) {
                 $query->where('id', '!=', $heroPost->id);
             }
@@ -49,12 +77,10 @@ class PostController extends Controller
 
         $posts = $query->latest()->paginate(10)->withQueryString();
 
-        // Pass available preset categories to the view
-        $presetCategories = ['All', 'Announcement', 'Community', 'Data Analysis', 'Security', 'Automation'];
         $activeCategory = $request->get('category', 'All');
         $searchQuery = $request->get('search', '');
 
-        return view('news.index', compact('posts', 'heroPost', 'showHero', 'presetCategories', 'activeCategory', 'searchQuery'));
+        return view('news.index', compact('posts', 'heroPost', 'showHero', 'presetCategories', 'activeCategory', 'searchQuery', 'top5Tags'));
     }
 
     /**

@@ -18,12 +18,14 @@ class Post extends Model
         'image',
         'tags',
         'is_published',
+        'is_featured',
         'created_by',
     ];
 
     protected $casts = [
         'tags' => 'array',
         'is_published' => 'boolean',
+        'is_featured' => 'boolean',
     ];
 
     public function author()
