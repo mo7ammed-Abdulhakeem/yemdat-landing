@@ -201,6 +201,17 @@ Route::get('/check-db-schema', function () {
     }
 });
 
+// Live V2.9.19 Database Schema Cleanup
+Route::get('/update-v2919', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        return '<h1>Update V2.9.19 Successful!</h1><p>The system has successfully migrated the underlying Event UUIDs to repair all relations.</p><a href="/admincpanel/events">Return to Events</a>';
+    }
+    catch (\Exception $e) {
+        return '<h1>Update V2.9.19 Failed!</h1><p>' . $e->getMessage() . '</p>';
+    }
+});
+
 // Fallback Route for true 404 handling with active Sessions (Arabic Localization support)
 Route::fallback(function () {
     abort(404);
