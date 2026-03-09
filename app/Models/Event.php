@@ -141,6 +141,7 @@ class Event extends Model
      */
     public function members()
     {
-        return $this->belongsToMany(Member::class , 'event_member')->withTimestamps();
+        return $this->belongsToMany(Member::class , 'event_member', 'event_id', 'member_id')
+            ->withTimestamps();
     }
 }
