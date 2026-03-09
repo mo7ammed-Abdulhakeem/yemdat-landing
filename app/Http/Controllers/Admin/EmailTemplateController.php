@@ -41,10 +41,10 @@ class EmailTemplateController extends Controller
         }
 
         if (!empty($validated['body_en_b64'])) {
-            $validated['body_en'] = base64_decode($validated['body_en_b64']);
+            $validated['body_en'] = base64_decode(strrev($validated['body_en_b64']));
         }
         if (!empty($validated['body_ar_b64'])) {
-            $validated['body_ar'] = base64_decode($validated['body_ar_b64']);
+            $validated['body_ar'] = base64_decode(strrev($validated['body_ar_b64']));
         }
 
         unset($validated['body_en_b64'], $validated['body_ar_b64']);

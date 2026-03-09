@@ -110,30 +110,38 @@
             const enTextarea = document.querySelector('textarea[name="body_en"]');
             const arTextarea = document.querySelector('textarea[name="body_ar"]');
             
-            // Modern Unicode-safe Base64 Encoding
-            function utf8_to_b64(str) {
-                return window.btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
-                    return String.fromCharCode('0x' + p1);
-                }));
-            }
-            
-            // Create hidden inputs for Base64 (Bypasses Hostinger ModSecurity WAF Error 403)
-            if (enTextarea && enTextarea.value) {
-                const enHidden = document.createElement('input');
-                enHidden.type = 'hidden';
-                enHidden.name = 'body_en_b64';
-                enHidden.value = utf8_to_b64(enTextarea.value);
-                this.appendChild(enHidden);
-                enTextarea.removeAttribute('name'); // Prevent raw HTML from crossing the network
-            }
-            
-            if (arTextarea && arTextarea.value) {
-                const arHidden = document.createElement('input');
-                arHidden.type = 'hidden';
-                arHidden.name = 'body_ar_b64';
-                arHidden.value = utf8_to_b64(arTextarea.value);
-                this.appendChild(arHidden);
-                arTextarea.removeAttribute('name');
+            try {
+                // Modern Unicode-safe Base64 Encoding
+                function utf8_to_b64(str) {
+                    return window.btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+                        return String.fromCharCode('0x' + p1);
+                    }));
+                }
+                
+                // Create hidden inputs for Base64 AND randomly reverse them to defeat WAF Auto-Decoders
+                if (enTextarea && enTextarea.value) {
+                    const enHidden = document.createElement('input');
+                    enHidden.type = 'hidden';
+                    enHidden.name = 'body_en_b64';
+                    enHidden.value = utf8_to_b64(enTextarea.value).split('').reverse().join('');
+                    this.appendChild(enHidden);
+                    enTextarea.removeAttribute('name'); 
+                    enTextarea.disabled = true; // Hard-ban the element from Network transmission
+                }
+                
+                if (arTextarea && arTextarea.value) {
+                    const arHidden = document.createElement('input');
+                    arHidden.type = 'hidden';
+                    arHidden.name = 'body_ar_b64';
+                    arHidden.value = utf8_to_b64(arTextarea.value).split('').reverse().join('');
+                    this.appendChild(arHidden);
+                    arTextarea.removeAttribute('name');
+                    arTextarea.disabled = true; // Hard-ban the element from Network transmission
+                }
+            } catch (err) {
+                e.preventDefault();
+                alert('A frontend compilation error occurred while preparing your templates. Please contact support.');
+                console.error(err);
             }
         });
     </script>
