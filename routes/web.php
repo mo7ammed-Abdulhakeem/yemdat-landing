@@ -212,6 +212,17 @@ Route::get('/update-v2919', function () {
     }
 });
 
+// Live V3.0.2 Add Featured Posts Database Schema
+Route::get('/update-v3020', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        return '<h1>Update V3.0.2 Successful!</h1><p>The system has successfully added the is_featured column to the posts system.</p><a href="/admincpanel/posts">Return to Posts</a>';
+    }
+    catch (\Exception $e) {
+        return '<h1>Update V3.0.2 Failed!</h1><p>' . $e->getMessage() . '</p>';
+    }
+});
+
 // Fallback Route for true 404 handling with active Sessions (Arabic Localization support)
 Route::fallback(function () {
     abort(404);
