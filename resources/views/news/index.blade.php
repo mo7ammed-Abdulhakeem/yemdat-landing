@@ -44,10 +44,6 @@
                             class="block w-full p-4 ps-12 text-sm text-gray-900 border border-gray-200 rounded-full bg-white focus:ring-yemdat-gold focus:border-yemdat-gold shadow-sm transition-all" 
                             placeholder="{{ app()->getLocale() == 'ar' ? 'بحث في الأخبار...' : 'Search news...' }}"
                         >
-                        <!-- Preserve category if typing a search -->
-                        @if($activeCategory !== 'All')
-                            <input type="hidden" name="category" value="{{ $activeCategory }}">
-                        @endif
                     </div>
                 </form>
             </div>
