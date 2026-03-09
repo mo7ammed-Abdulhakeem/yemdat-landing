@@ -25,11 +25,29 @@ class EmailTemplateController extends Controller
         $validated = $request->validate([
             'subject_en' => 'required|string|max:255',
             'subject_ar' => 'required|string|max:255',
-            'body_en' => 'required|string',
-            'body_ar' => 'required|string',
+            'body_en_b64' => 'nullable|string',
+            'body_ar_b64' => 'nullable|string',
+            'body_en' => 'nullable|string',
+            'body_ar' => 'nullable|string',
             'banner_image' => 'nullable|image|max:2048',
             'from_email' => 'nullable|email|max:255',
         ]);
+
+        if (empty($validated['body_en_b64']) && empty($validated['body_en'])) {
+            return back()->withErrors(['body_en' => 'The English body is required.']);
+        }
+        if (empty($validated['body_ar_b64']) && empty($validated['body_ar'])) {
+            return back()->withErrors(['body_ar' => 'The Arabic body is required.']);
+        }
+
+        if (!empty($validated['body_en_b64'])) {
+            $validated['body_en'] = base64_decode($validated['body_en_b64']);
+        }
+        if (!empty($validated['body_ar_b64'])) {
+            $validated['body_ar'] = base64_decode($validated['body_ar_b64']);
+        }
+
+        unset($validated['body_en_b64'], $validated['body_ar_b64']);
 
         if ($request->hasFile('banner_image')) {
             $path = $request->file('banner_image')->store('email_banners', 'public');

@@ -8,7 +8,7 @@
         </div>
 
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <form action="{{ route('admin.emails.update', $email) }}" method="POST" enctype="multipart/form-data" class="p-6 md:p-8 space-y-8">
+            <form action="{{ route('admin.emails.update', $email) }}" method="POST" enctype="multipart/form-data" class="p-6 md:p-8 space-y-8" id="emailTemplateForm">
                 @csrf
                 @method('PUT')
 
@@ -103,4 +103,39 @@
             </form>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        document.getElementById('emailTemplateForm').addEventListener('submit', function(e) {
+            const enTextarea = document.querySelector('textarea[name="body_en"]');
+            const arTextarea = document.querySelector('textarea[name="body_ar"]');
+            
+            // Modern Unicode-safe Base64 Encoding
+            function utf8_to_b64(str) {
+                return window.btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+                    return String.fromCharCode('0x' + p1);
+                }));
+            }
+            
+            // Create hidden inputs for Base64 (Bypasses Hostinger ModSecurity WAF Error 403)
+            if (enTextarea && enTextarea.value) {
+                const enHidden = document.createElement('input');
+                enHidden.type = 'hidden';
+                enHidden.name = 'body_en_b64';
+                enHidden.value = utf8_to_b64(enTextarea.value);
+                this.appendChild(enHidden);
+                enTextarea.removeAttribute('name'); // Prevent raw HTML from crossing the network
+            }
+            
+            if (arTextarea && arTextarea.value) {
+                const arHidden = document.createElement('input');
+                arHidden.type = 'hidden';
+                arHidden.name = 'body_ar_b64';
+                arHidden.value = utf8_to_b64(arTextarea.value);
+                this.appendChild(arHidden);
+                arTextarea.removeAttribute('name');
+            }
+        });
+    </script>
+    @endpush
 </x-admin-layout>
