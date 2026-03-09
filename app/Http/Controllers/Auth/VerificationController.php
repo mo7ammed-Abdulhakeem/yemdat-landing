@@ -15,7 +15,7 @@ class VerificationController extends Controller
 {
     public function show()
     {
-        if (!session()->has('verify_member_id')) {
+        if (!session()->has('pending_registration')) {
             return redirect()->route('public.login');
         }
         return view('auth.verify-email');
@@ -25,25 +25,35 @@ class VerificationController extends Controller
     {
         $request->validate(['otp' => 'required|string|size:6']);
 
-        $memberId = session('verify_member_id');
-        if (!$memberId)
+        $pendingData = session('pending_registration');
+        if (!$pendingData) {
             return redirect()->route('public.login');
+        }
 
-        $member = Member::find($memberId);
-        if (!$member)
-            return redirect()->route('public.login');
-
-        if (!$member->otp_code || !Hash::check($request->otp, $member->otp_code) || $member->otp_expires_at->isPast()) {
+        if (!isset($pendingData['otp_code']) || !Hash::check($request->otp, $pendingData['otp_code']) || $pendingData['otp_expires_at']->isPast()) {
             return back()->withErrors(['otp' => app()->getLocale() == 'ar' ? 'رمز التحقق غير صحيح أو منتهي الصلاحية.' : 'Invalid or expired OTP code.']);
         }
 
-        // Success
-        $member->email_verified_at = now();
-        $member->otp_code = null;
-        $member->otp_expires_at = null;
-        $member->save();
+        // OTP Success - Now Create the Member Record in the Database
+        $member = Member::create([
+            'full_name' => $pendingData['full_name'],
+            'email' => $pendingData['email'],
+            'password' => Hash::make($pendingData['password']),
+            'phone_code' => $pendingData['phone_code'],
+            'phone_number' => $pendingData['phone_number'],
+            'country' => $pendingData['country'],
+            'gender' => $pendingData['gender'],
+            'education_level' => $pendingData['education_level'],
+            'specialty' => $pendingData['specialty'],
+            'specialty_other' => $pendingData['specialty_other'] ?? null,
+            'membership_type' => $pendingData['membership_type'],
+            'email_verified_at' => now(),
+            // Ensure auth-bound OTP markers are null natively upon creation
+            'otp_code' => null,
+            'otp_expires_at' => null,
+        ]);
 
-        session()->forget('verify_member_id');
+        session()->forget('pending_registration');
 
         // Send Welcome Email
         try {
@@ -63,22 +73,20 @@ class VerificationController extends Controller
 
     public function resend()
     {
-        $memberId = session('verify_member_id');
-        if (!$memberId)
+        $pendingData = session('pending_registration');
+        if (!$pendingData) {
             return redirect()->route('public.login');
-
-        $member = Member::find($memberId);
-        if (!$member)
-            return redirect()->route('public.login');
+        }
 
         $otp = str_pad(mt_rand(1, 999999), 6, '0', STR_PAD_LEFT);
-        $member->otp_code = Hash::make($otp);
-        $member->otp_expires_at = now()->addMinutes(10);
-        $member->save();
+        $pendingData['otp_code'] = Hash::make($otp);
+        $pendingData['otp_expires_at'] = now()->addMinutes(10);
+
+        session(['pending_registration' => $pendingData]);
 
         try {
-            Mail::to($member->email)->send(new SignupOtpEmail([
-                'name' => $member->full_name,
+            Mail::to($pendingData['email'])->send(new SignupOtpEmail([
+                'name' => $pendingData['full_name'],
                 'otp' => $otp,
             ]));
         }

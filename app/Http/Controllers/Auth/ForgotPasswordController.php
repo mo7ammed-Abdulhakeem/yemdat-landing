@@ -81,7 +81,7 @@ class ForgotPasswordController extends Controller
 
         // Pass context to the original direct claim/password route
         session()->forget('reset_member_id');
-        session(['claim_member_id' => $member->id]);
+        session(['claim_member_id' => $member->id, 'is_password_reset' => true]);
         return redirect()->route('claim.profile.set-password', ['token' => 'reset-password']);
     }
 }

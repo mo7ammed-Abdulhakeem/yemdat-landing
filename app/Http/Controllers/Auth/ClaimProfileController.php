@@ -66,13 +66,20 @@ class ClaimProfileController extends Controller
 
         $member = Member::findOrFail($memberId);
 
-        $request->validate([
-            'phone_number' => 'required|string',
-            'password' => ['required', 'confirmed', Password::defaults()],
-        ]);
+        $isPasswordReset = session('is_password_reset', false);
 
-        // Security check: Make sure the phone number matches what is on file
-        if ($request->phone_number !== $member->phone_number) {
+        $rules = [
+            'password' => ['required', 'confirmed', Password::defaults()],
+        ];
+
+        if (!$isPasswordReset) {
+            $rules['phone_number'] = 'required|string';
+        }
+
+        $request->validate($rules);
+
+        // Security check: Make sure the phone number matches what is on file (only if claiming profile)
+        if (!$isPasswordReset && $request->phone_number !== $member->phone_number) {
             return back()->withErrors(['phone_number' => app()->getLocale() == 'ar' ? 'رقم الهاتف غير صحيح.' : 'Incorrect phone number.']);
         }
 
@@ -83,6 +90,7 @@ class ClaimProfileController extends Controller
 
         // Clear session and login using member guard
         session()->forget('claim_member_id');
+        session()->forget('is_password_reset');
         Auth::guard('member')->login($member);
 
         return redirect()->route('profile.show')->with('success', app()->getLocale() == 'ar' ? 'تم تعيين كلمة المرور بنجاح. أهلاً بك!' : 'Password set successfully. Welcome!');

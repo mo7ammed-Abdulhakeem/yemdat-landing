@@ -37,30 +37,19 @@ class RegisterController extends Controller
             'membership_type' => 'required|string|exists:membership_tiers,slug',
         ]);
 
-        $member = Member::create([
-            'full_name' => $validated['full_name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'phone_code' => $validated['phone_code'],
-            'phone_number' => $validated['phone_number'],
-            'country' => $validated['country'],
-            'gender' => $validated['gender'],
-            'education_level' => $validated['education_level'],
-            'specialty' => $validated['specialty'],
-            'specialty_other' => $validated['specialty_other'] ?? null,
-            'membership_type' => $validated['membership_type'],
-        ]);
-
-        // 2. Generate OTP and store in member table
+        // 2. Generate OTP and store everything in session instead of database
         $otp = str_pad(mt_rand(1, 999999), 6, '0', STR_PAD_LEFT);
-        $member->otp_code = Hash::make($otp);
-        $member->otp_expires_at = now()->addMinutes(10);
-        $member->save();
+
+        $registrationData = $validated;
+        $registrationData['otp_code'] = Hash::make($otp);
+        $registrationData['otp_expires_at'] = now()->addMinutes(10);
+
+        session(['pending_registration' => $registrationData]);
 
         // 3. Dispatch OTP Email
         try {
-            \Illuminate\Support\Facades\Mail::to($member->email)->send(new \App\Mail\SignupOtpEmail([
-                'name' => $member->full_name,
+            \Illuminate\Support\Facades\Mail::to($validated['email'])->send(new \App\Mail\SignupOtpEmail([
+                'name' => $validated['full_name'],
                 'otp' => $otp,
             ]));
         }
@@ -69,7 +58,6 @@ class RegisterController extends Controller
         }
 
         // 4. Redirect to OTP screen
-        session(['verify_member_id' => $member->id]);
         return redirect()->route('verification.notice');
     }
 }

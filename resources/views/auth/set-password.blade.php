@@ -33,7 +33,8 @@
                 <form class="space-y-6" action="{{ route('claim.profile.set-password.post') }}" method="POST">
                     @csrf
                     
-                    <!-- Verify Phone Number -->
+                    <!-- Verify Phone Number (Hidden during Password Resets) -->
+                    @if(!isset($isPasswordReset) || !$isPasswordReset)
                     <div>
                         <label for="phone_number" class="block text-sm font-bold text-gray-700">
                             {{ app()->getLocale() == 'ar' ? 'رقم الهاتف المسجل (للتحقق)' : 'Registered Phone Number (For Verification)' }}
@@ -45,6 +46,7 @@
                         </div>
                         <p class="text-xs text-gray-400 mt-1 font-bold">{{ app()->getLocale() == 'ar' ? '(أدخل الرقم بدون مفتاح الدولة)' : '(Enter the number without country code)' }}</p>
                     </div>
+                    @endif
 
                     <!-- Password -->
                     <div>
