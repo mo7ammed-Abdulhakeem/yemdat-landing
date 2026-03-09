@@ -24,6 +24,32 @@
             </div>
         </div>
 
+        @php
+            $hasOrphans = \Illuminate\Support\Facades\DB::table('event_member')
+                ->whereNotIn('event_id', function ($query) {
+                    $query->select('id')->from('events');
+                })->exists();
+        @endphp
+
+        @if($hasOrphans)
+            <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-r-md shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <svg class="h-6 w-6 text-red-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <div>
+                            <h3 class="text-sm font-bold text-red-800">Registration Disconnect Detected</h3>
+                            <p class="text-sm text-red-700 mt-1">We detected event registrations in the database that are no longer linked to a valid Event. Use the Repair Tool to easily map them back immediately.</p>
+                        </div>
+                    </div>
+                    <a href="{{ route('admin.events.repair.index') }}" class="ml-4 flex-shrink-0 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-md shadow-sm transition">
+                        Launch Repair Tool
+                    </a>
+                </div>
+            </div>
+        @endif
+
             @if (session('success'))
                 <div class="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
                     <span class="block sm:inline">{{ session('success') }}</span>

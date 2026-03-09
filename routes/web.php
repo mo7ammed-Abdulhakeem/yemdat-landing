@@ -138,6 +138,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Events Management
     Route::get('/admincpanel/events/export-all', [App\Http\Controllers\Admin\EventController::class , 'exportAll'])->name('admin.events.export_all');
+    Route::get('/admincpanel/events/repair-orphans', [App\Http\Controllers\Admin\EventRepairController::class , 'index'])->name('admin.events.repair.index');
+    Route::post('/admincpanel/events/repair-orphans', [App\Http\Controllers\Admin\EventRepairController::class , 'repair'])->name('admin.events.repair.store');
     Route::get('/admincpanel/events/{event}/export', [App\Http\Controllers\Admin\EventController::class , 'exportMembers'])->name('admin.events.export');
     Route::patch('/admincpanel/events/{event}/toggle', [App\Http\Controllers\Admin\EventController::class , 'toggle'])->name('admin.events.toggle');
     Route::resource('/admincpanel/events', App\Http\Controllers\Admin\EventController::class)->names('admin.events');
