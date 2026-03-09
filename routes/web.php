@@ -160,12 +160,11 @@ if (app()->environment('local')) {
     Route::post('/testemail/clear', [\App\Http\Controllers\TestEmailController::class , 'clear'])->name('testemail.clear');
 }
 
-// Live V2.9.11 Migration & Settings Synchronization
-Route::get('/update-v2911', function () {
+// Live V2.9.15 Hardcode Email Template Seeder
+Route::get('/update-v2915', function () {
     try {
-        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'Database\Seeders\SettingsSeeder', '--force' => true]);
-        return "SUCCESS: V2.9.11 Schema updates applied. The 'Country' field and validation dependencies have been successfully removed from your application.";
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'Database\Seeders\UpdateTrainerEmailTemplateSeeder', '--force' => true]);
+        return "SUCCESS: V2.9.15 Email Template Updates Applied. The requested HTML payloads have been directly injected into the MySQL Email Templates table without passing through the Admin UI.";
     }
     catch (\Throwable $e) {
         return "ERROR: " . $e->getMessage();
