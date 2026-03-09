@@ -24,7 +24,7 @@
                             <button type="submit" name="category" value="{{ $category }}" 
                                 class="px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 border 
                                 {{ $activeCategory === $category ? 'bg-yemdat-brown text-white border-yemdat-brown shadow-md transform scale-105' : 'bg-white text-gray-600 border-gray-200 hover:border-yemdat-gold hover:text-yemdat-brown' }}">
-                                {{ app()->getLocale() == 'ar' ? __("global.{$category}") : $category }}
+                                {{ app()->getLocale() == 'ar' ? (\Illuminate\Support\Facades\Lang::has("global." . strtolower($category)) ? __("global." . strtolower($category)) : (\Illuminate\Support\Facades\Lang::has("global.{$category}") ? __("global.{$category}") : $category)) : ucfirst($category) }}
                             </button>
                         @endforeach
                         <!-- Preserve search if clicking a category -->
@@ -66,7 +66,7 @@
                                 <!-- Floating Type Badge -->
                                 <div class="absolute top-6 left-6 rtl:left-auto rtl:right-6">
                                      <span class="px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider bg-yemdat-gold text-white shadow-md">
-                                        {{ app()->getLocale() == 'ar' ? __("global.{$heroPost->type}") : ucfirst($heroPost->type) }}
+                                        {{ app()->getLocale() == 'ar' ? (\Illuminate\Support\Facades\Lang::has("global." . strtolower($heroPost->type)) ? __("global." . strtolower($heroPost->type)) : ucfirst($heroPost->type)) : ucfirst($heroPost->type) }}
                                      </span>
                                 </div>
                             </div>
@@ -77,7 +77,7 @@
                                     <svg class="w-5 h-5 mr-2 rtl:ml-2 text-yemdat-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                     {{ $heroPost->created_at->format('M d, Y') }}
                                     <span class="mx-3">•</span>
-                                    <span>{{ ceil(str_word_count(strip_tags($heroPost->content)) / 200) }} min read</span>
+                                    <span>{{ ceil(str_word_count(strip_tags($heroPost->content)) / 200) }} {{ app()->getLocale() == 'ar' ? 'دقائق للقراءة' : 'min read' }}</span>
                                 </div>
                                 
                                 <h2 class="text-3xl lg:text-5xl font-extrabold text-yemdat-brown mb-6 leading-tight group-hover:text-yemdat-gold transition-colors">
@@ -127,7 +127,7 @@
                                         }
                                     @endphp
                                     <span class="px-4 py-1.5 bg-white text-gray-800 rounded-md text-xs font-bold shadow-md">
-                                        {{ app()->getLocale() == 'ar' ? __("global.{$displayTag}") : $displayTag }}
+                                        {{ app()->getLocale() == 'ar' ? (\Illuminate\Support\Facades\Lang::has("global." . strtolower($displayTag)) ? __("global." . strtolower($displayTag)) : (\Illuminate\Support\Facades\Lang::has("global.{$displayTag}") ? __("global.{$displayTag}") : $displayTag)) : $displayTag }}
                                     </span>
                                 </div>
                             </a>

@@ -146,6 +146,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Posts & News Management
     Route::patch('/admincpanel/posts/{post}/toggle', [App\Http\Controllers\Admin\PostController::class , 'toggle'])->name('admin.posts.toggle');
+    Route::post('/admincpanel/posts/{post}/toggle-featured', [App\Http\Controllers\Admin\PostController::class , 'toggleFeatured'])->name('admin.posts.toggle_featured');
     Route::resource('/admincpanel/posts', App\Http\Controllers\Admin\PostController::class)->names('admin.posts');
 
     // Admin User Management (Super Admin Only checks inside controller)
