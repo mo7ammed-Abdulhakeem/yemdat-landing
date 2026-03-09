@@ -3,7 +3,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <!-- Breadcrumbs -->
-            <div class="max-w-4xl mx-auto mb-8">
+            <div class="max-w-4xl mx-auto mb-8 relative z-20">
                 <nav class="flex mb-4" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-3 rtl:space-x-reverse">
                         <li class="inline-flex items-center">
