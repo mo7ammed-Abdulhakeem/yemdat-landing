@@ -14,21 +14,47 @@ class PostController extends Controller
     {
         $query = Post::where('is_published', true)->with('author');
 
-        // Optional filtering by type
-        if ($request->has('type') && in_array($request->type, ['announcement', 'update', 'article'])) {
-            $query->where('type', $request->type);
+        // Text Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('title_en', 'LIKE', "%{$search}%")
+                    ->orWhere('title_ar', 'LIKE', "%{$search}%")
+                    ->orWhere('content_en', 'LIKE', "%{$search}%")
+                    ->orWhere('content_ar', 'LIKE', "%{$search}%");
+            });
         }
 
-        // Optional filtering by tags
-        if ($request->has('tag')) {
-            $tag = $request->tag;
-            // JSON matching for the array of tags
-            $query->whereJsonContains('tags', $tag);
+        // Unified Category/Tag Filtering
+        if ($request->filled('category') && $request->category !== 'All') {
+            $category = $request->category;
+            // Check if it's a primary 'type' or a JSON 'tag'
+            $query->where(function ($q) use ($category) {
+                $q->where('type', $category)
+                    ->orWhereJsonContains('tags', $category);
+            });
         }
 
-        $posts = $query->latest()->paginate(12);
+        // Determine if we should show the Hero section
+        // Hero is only shown on Page 1, without active search/category filters
+        $showHero = !$request->filled('search') && (!$request->filled('category') || $request->category === 'All') && $request->get('page', 1) == 1;
 
-        return view('news.index', compact('posts'));
+        $heroPost = null;
+        if ($showHero) {
+            $heroPost = (clone $query)->latest()->first();
+            if ($heroPost) {
+                $query->where('id', '!=', $heroPost->id);
+            }
+        }
+
+        $posts = $query->latest()->paginate(10)->withQueryString();
+
+        // Pass available preset categories to the view
+        $presetCategories = ['All', 'Announcement', 'Community', 'Data Analysis', 'Security', 'Automation'];
+        $activeCategory = $request->get('category', 'All');
+        $searchQuery = $request->get('search', '');
+
+        return view('news.index', compact('posts', 'heroPost', 'showHero', 'presetCategories', 'activeCategory', 'searchQuery'));
     }
 
     /**
