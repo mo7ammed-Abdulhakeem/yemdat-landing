@@ -37,7 +37,11 @@
                         @forelse($requests as $request)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-bold text-gray-900">{{ $request->name }}</div>
+                                <div class="text-sm font-bold text-gray-900">
+                                    <a href="{{ route('admin.trainers.show', $request) }}" class="hover:text-yemdat-gold hover:underline">
+                                        {{ $request->name }}
+                                    </a>
+                                </div>
                                 @if($request->phone_number)
                                     <div class="text-xs text-gray-500 mt-1" dir="ltr">{{ $request->phone_number }}</div>
                                 @endif

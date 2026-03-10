@@ -45,7 +45,15 @@
                                                     </div>
                                                 @endif
                                                 <div class="ml-4">
-                                                    <div class="text-sm font-medium text-gray-900">{{ Str::limit($post->title_en, 40) }}</div>
+                                                    <div class="text-sm font-medium text-gray-900">
+                                                        @if($post->created_by === auth()->id() || auth()->user()->isSuperAdmin())
+                                                            <a href="{{ route('admin.posts.edit', $post) }}" class="hover:text-yemdat-gold hover:underline">
+                                                                {{ Str::limit($post->title_en, 40) }}
+                                                            </a>
+                                                        @else
+                                                            {{ Str::limit($post->title_en, 40) }}
+                                                        @endif
+                                                    </div>
                                                     <div class="text-xs text-gray-500">{{ $post->created_at->format('M d, Y') }}</div>
                                                 </div>
                                             </div>

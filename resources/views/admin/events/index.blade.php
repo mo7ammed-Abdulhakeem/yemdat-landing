@@ -83,7 +83,11 @@
                                                     </div>
                                                 @endif
                                                 <div class="ml-4">
-                                                    <div class="text-sm font-medium text-gray-900">{{ $event->title_en }}</div>
+                                                    <div class="text-sm font-medium text-gray-900">
+                                                        <a href="{{ route('admin.events.edit', $event) }}" class="hover:text-yemdat-gold hover:underline">
+                                                            {{ $event->title_en }}
+                                                        </a>
+                                                    </div>
                                                     <div class="text-sm text-gray-500">{{ Str::limit(strip_tags($event->description_en), 30) }}</div>
                                                 </div>
                                             </div>
