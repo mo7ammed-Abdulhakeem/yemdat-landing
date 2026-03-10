@@ -61,9 +61,13 @@ return [
     'country_other' => 'Other',
 
     'spec_data_mgmt' => 'Data Management',
+    'spec_data_management' => 'Data Management',
     'spec_governance' => 'Data Governance',
+    'spec_data_governance' => 'Data Governance',
     'spec_ai' => 'Artificial Intelligence',
+    'spec_artificial_intelligence' => 'Artificial Intelligence',
     'spec_analytics' => 'Data Analytics',
+    'spec_data_analytics' => 'Data Analytics',
     'spec_other' => 'Other',
 
     'type_individual' => 'Intern Membership',

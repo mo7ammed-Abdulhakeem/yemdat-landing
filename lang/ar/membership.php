@@ -61,9 +61,13 @@ return [
     'country_other' => 'أخرى',
 
     'spec_data_mgmt' => 'إدارة البيانات',
+    'spec_data_management' => 'إدارة البيانات',
     'spec_governance' => 'حوكمة البيانات',
+    'spec_data_governance' => 'حوكمة البيانات',
     'spec_ai' => 'الذكاء الاصطناعي',
+    'spec_artificial_intelligence' => 'الذكاء الاصطناعي',
     'spec_analytics' => 'تحليل البيانات',
+    'spec_data_analytics' => 'تحليل البيانات',
     'spec_other' => 'أخرى',
 
     'type_individual' => 'عضوية متدرب',
