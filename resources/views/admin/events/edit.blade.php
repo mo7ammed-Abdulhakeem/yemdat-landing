@@ -35,7 +35,8 @@
                         
                         <!-- Event Details Section -->
                         <h3 class="text-lg font-medium text-yemdat-brown mb-4 border-b pb-2">Event Basic Info</h3>
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        {{-- Cache Bust v2 --}}
+                        <div class="flex flex-col gap-6 mb-6">
                             <!-- Title EN -->
                             <div>
                                 <label for="title_en" class="block text-sm font-medium text-gray-700">Event Title (English) <span class="text-red-500">*</span></label>
@@ -109,7 +110,7 @@
 
                         <!-- Lecturer Info Section -->
                         <h3 class="text-lg font-medium text-yemdat-brown mb-4 border-b pb-2">Lecturer Information</h3>
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <div class="flex flex-col gap-6 mb-6">
                             <!-- Lecturer Name EN -->
                             <div>
                                 <label for="lecturer_name_en" class="block text-sm font-medium text-gray-700">Lecturer Name (English) <span class="text-red-500">*</span></label>
