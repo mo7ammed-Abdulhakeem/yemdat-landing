@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Mail\Events\MessageSent;
 use Illuminate\Support\Facades\Cache;
 
