@@ -3,10 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Mail\Events\MessageSent;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Vite;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,10 +25,6 @@ class AppServiceProvider extends ServiceProvider
             $settings = \App\Models\Setting::all()->pluck('value', 'key');
             \Illuminate\Support\Facades\View::share('settings', $settings);
         }
-
-        // Force Vite to generate URLs relative to the root domain 
-        // because the server's document root IS public_html
-        Vite::useBuildDirectory('build');
 
         if (app()->environment('local')) {
             Event::listen(MessageSent::class , function (MessageSent $event) {
