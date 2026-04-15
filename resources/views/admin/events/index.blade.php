@@ -84,7 +84,7 @@
                                                 @endif
                                                 <div class="ml-4">
                                                     <div class="text-sm font-medium text-gray-900">
-                                                        <a href="{{ route('admin.events.edit', $event) }}" class="hover:text-yemdat-gold hover:underline">
+                                                        <a href="{{ route('admin.events.show', $event) }}" class="hover:text-yemdat-gold hover:underline">
                                                             {{ $event->title_en }}
                                                         </a>
                                                     </div>
@@ -105,7 +105,9 @@
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm font-bold text-gray-900">{{ $event->members()->count() }}</div>
+                                            <a href="{{ route('admin.events.show', $event) }}" class="text-sm font-bold text-yemdat-brown hover:text-yemdat-gold hover:underline" title="View Registered Members">
+                                                {{ $event->members()->count() }}
+                                            </a>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             @php
