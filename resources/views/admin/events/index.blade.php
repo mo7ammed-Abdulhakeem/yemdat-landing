@@ -4,14 +4,20 @@
     </x-slot>
 
     <div>
-        <div class="mb-6 flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                {{-- Breadcrumbs or Back Link if needed, but header has title now --}}
-                 <!-- <a href="{{ route('admin.dashboard') }}" class="text-yemdat-brown hover:text-yemdat-gold flex items-center gap-1 font-medium text-sm">
-                    <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                    Back to Dashboard
-                </a> -->
-            </div>
+        <div class="mb-4 flex flex-wrap justify-between items-center gap-3">
+            <form action="{{ route('admin.events.index') }}" method="GET" class="flex flex-wrap items-center gap-2">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search events or lecturer..." class="rounded-l-md border-gray-300 focus:border-yemdat-gold focus:ring-yemdat-gold text-sm">
+                <select name="status" class="border-gray-300 rounded-md focus:border-yemdat-gold focus:ring-yemdat-gold text-sm">
+                    <option value="">All Statuses</option>
+                    <option value="upcoming" {{ request('status') === 'upcoming' ? 'selected' : '' }}>Upcoming</option>
+                    <option value="past" {{ request('status') === 'past' ? 'selected' : '' }}>Past</option>
+                    <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active Only</option>
+                </select>
+                <button type="submit" class="bg-yemdat-brown text-white px-4 py-2 rounded-md hover:bg-yemdat-gold transition text-sm font-medium">Search</button>
+                @if(request('search') || request('status'))
+                    <a href="{{ route('admin.events.index') }}" class="text-sm text-gray-500 hover:text-yemdat-brown px-2 py-2">Clear</a>
+                @endif
+            </form>
             <div class="flex gap-3">
                 <a href="{{ route('admin.events.export_all') }}" class="inline-flex items-center px-4 py-2 border border-green-600 rounded-md shadow-sm text-sm font-medium text-green-700 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>

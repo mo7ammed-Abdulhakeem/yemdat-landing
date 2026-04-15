@@ -37,7 +37,7 @@ class ForgotPasswordController extends Controller
 
         // Dispatch Password Reset OTP Email
         try {
-            Mail::to($member->email)->send(new PasswordResetOtpEmail([
+            Mail::to($member->email)->queue(new PasswordResetOtpEmail([
                 'name' => $member->full_name,
                 'otp' => $otp,
             ]));

@@ -48,7 +48,7 @@ class RegisterController extends Controller
 
         // 3. Dispatch OTP Email
         try {
-            \Illuminate\Support\Facades\Mail::to($validated['email'])->send(new \App\Mail\SignupOtpEmail([
+            \Illuminate\Support\Facades\Mail::to($validated['email'])->queue(new \App\Mail\SignupOtpEmail([
                 'name' => $validated['full_name'],
                 'otp' => $otp,
             ]));

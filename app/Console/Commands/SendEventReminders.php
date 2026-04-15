@@ -46,7 +46,7 @@ class SendEventReminders extends Command
                     $eventDate = $event->start_date->format('l, F j, Y g:i A');
                     $eventLocation = app()->getLocale() == 'ar' ? $event->location_ar : $event->location_en;
 
-                    Mail::to($member->email)->send(new EventReminderEmail([
+                    Mail::to($member->email)->queue(new EventReminderEmail([
                         'name' => $member->full_name,
                         'event_name' => $eventName,
                         'event_date' => $eventDate,

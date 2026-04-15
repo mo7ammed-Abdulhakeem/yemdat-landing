@@ -57,7 +57,7 @@ class VerificationController extends Controller
 
         // Send Welcome Email
         try {
-            Mail::to($member->email)->send(new WelcomeEmail([
+            Mail::to($member->email)->queue(new WelcomeEmail([
                 'name' => $member->full_name,
             ]));
         }
@@ -85,7 +85,7 @@ class VerificationController extends Controller
         session(['pending_registration' => $pendingData]);
 
         try {
-            Mail::to($pendingData['email'])->send(new SignupOtpEmail([
+            Mail::to($pendingData['email'])->queue(new SignupOtpEmail([
                 'name' => $pendingData['full_name'],
                 'otp' => $otp,
             ]));

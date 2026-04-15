@@ -10,13 +10,31 @@ use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         if (!auth()->user()->hasPermission('posts')) {
             abort(403);
         }
 
-        $posts = Post::with('author')->latest()->paginate(10);
+        $query = Post::with('author')->latest();
+
+        if ($request->filled('search')) {
+            $search = $request->get('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('title_en', 'like', "%{$search}%")
+                  ->orWhere('title_ar', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('type')) {
+            $query->where('type', $request->get('type'));
+        }
+
+        if ($request->filled('status')) {
+            $query->where('is_published', $request->get('status') === 'published');
+        }
+
+        $posts = $query->paginate(10)->withQueryString();
         return view('admin.posts.index', compact('posts'));
     }
 

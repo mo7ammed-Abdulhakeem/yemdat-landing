@@ -58,12 +58,20 @@ class AdminController extends Controller
 
     public function showMember(Member $member)
     {
+        if (!auth()->user()->hasPermission('members')) {
+            abort(403);
+        }
+
         $member->load('events');
         return view('admin.members.show', compact('member'));
     }
 
     public function exportSingleMember(Member $member)
     {
+        if (!auth()->user()->hasPermission('members')) {
+            abort(403);
+        }
+
         $member->load('events');
         $fileName = 'member_' . \Illuminate\Support\Str::slug($member->full_name) . '_' . date('Y_m_d') . '.csv';
 
@@ -116,6 +124,10 @@ class AdminController extends Controller
 
     public function editMember(Member $member)
     {
+        if (!auth()->user()->hasPermission('members')) {
+            abort(403);
+        }
+
         $countries = [
             'Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Antigua and Barbuda', 'Argentina', 'Armenia', 'Australia', 'Austria', 'Azerbaijan',
             'Bahamas', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus', 'Belgium', 'Belize', 'Benin', 'Bhutan', 'Bolivia', 'Bosnia and Herzegovina', 'Botswana', 'Brazil', 'Brunei', 'Bulgaria', 'Burkina Faso', 'Burundi',
@@ -149,6 +161,10 @@ class AdminController extends Controller
 
     public function updateMember(Request $request, Member $member)
     {
+        if (!auth()->user()->hasPermission('members')) {
+            abort(403);
+        }
+
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:members,email,' . $member->id,
@@ -167,11 +183,19 @@ class AdminController extends Controller
 
     public function showMessage(Contact $contact)
     {
+        if (!auth()->user()->hasPermission('messages')) {
+            abort(403);
+        }
+
         return view('admin.messages.show', compact('contact'));
     }
 
     public function members(Request $request)
     {
+        if (!auth()->user()->hasPermission('members')) {
+            abort(403);
+        }
+
         $query = Member::latest();
 
         if ($request->has('search') && $request->get('search')) {
@@ -189,6 +213,10 @@ class AdminController extends Controller
 
     public function messages(Request $request)
     {
+        if (!auth()->user()->hasPermission('messages')) {
+            abort(403);
+        }
+
         $query = Contact::latest();
 
         if ($request->has('search') && $request->get('search')) {
@@ -207,18 +235,30 @@ class AdminController extends Controller
 
     public function destroyMember(Member $member)
     {
+        if (!auth()->user()->hasPermission('members')) {
+            abort(403);
+        }
+
         $member->delete();
         return redirect()->route('admin.members.index')->with('success', 'Member deleted successfully.');
     }
 
     public function destroyMessage(Contact $contact)
     {
+        if (!auth()->user()->hasPermission('messages')) {
+            abort(403);
+        }
+
         $contact->delete();
         return redirect()->route('admin.messages.index')->with('success', 'Message deleted successfully.');
     }
 
     public function exportMembers()
     {
+        if (!auth()->user()->hasPermission('members')) {
+            abort(403);
+        }
+
         $headers = [
             "Content-type" => "text/csv",
             "Content-Disposition" => "attachment; filename=members.csv",
@@ -261,6 +301,10 @@ class AdminController extends Controller
 
     public function exportMessages()
     {
+        if (!auth()->user()->hasPermission('messages')) {
+            abort(403);
+        }
+
         $headers = [
             "Content-type" => "text/csv",
             "Content-Disposition" => "attachment; filename=contact_messages.csv",

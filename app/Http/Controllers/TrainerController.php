@@ -37,7 +37,7 @@ class TrainerController extends Controller
         // Send auto-reply to the applicant
         try {
             \Illuminate\Support\Facades\Log::info('Attempting to send Applicant Auto-Reply to: ' . $validated['email']);
-            \Illuminate\Support\Facades\Mail::to($validated['email'])->send(new \App\Mail\TrainerAutoReplyEmail([
+            \Illuminate\Support\Facades\Mail::to($validated['email'])->queue(new \App\Mail\TrainerAutoReplyEmail([
                 'name' => $trainerRequest->name,
                 'email' => $trainerRequest->email,
                 'phone_number' => $trainerRequest->phone_number,
@@ -54,7 +54,7 @@ class TrainerController extends Controller
         if ($adminEmail) {
             try {
                 \Illuminate\Support\Facades\Log::info('Attempting to send Admin Alert to: ' . $adminEmail);
-                \Illuminate\Support\Facades\Mail::to($adminEmail)->send(new \App\Mail\TrainerRequestNotification($trainerRequest));
+                \Illuminate\Support\Facades\Mail::to($adminEmail)->queue(new \App\Mail\TrainerRequestNotification($trainerRequest));
             }
             catch (\Throwable $e) {
                 \Illuminate\Support\Facades\Log::error('CRITICAL: Failed to send trainer admin alert: ' . $e->getMessage() . ' at Line: ' . $e->getLine());

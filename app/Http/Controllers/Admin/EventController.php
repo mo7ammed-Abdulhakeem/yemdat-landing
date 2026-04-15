@@ -10,9 +10,29 @@ use Illuminate\Support\Str;
 
 class EventController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $events = Event::with('creator')->latest()->paginate(10);
+        $query = Event::with('creator')->latest();
+
+        if ($request->filled('search')) {
+            $search = $request->get('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('title_en', 'like', "%{$search}%")
+                  ->orWhere('title_ar', 'like', "%{$search}%")
+                  ->orWhere('lecturer_name_en', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            match ($request->get('status')) {
+                'upcoming' => $query->where('start_date', '>', now()),
+                'past'     => $query->where('start_date', '<=', now()),
+                'active'   => $query->where('is_active', true),
+                default    => null,
+            };
+        }
+
+        $events = $query->paginate(10)->withQueryString();
         return view('admin.events.index', compact('events'));
     }
 

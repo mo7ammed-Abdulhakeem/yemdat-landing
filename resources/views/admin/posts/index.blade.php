@@ -4,10 +4,25 @@
     </x-slot>
 
     <div>
-        <div class="mb-6 flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                {{-- Breadcrumbs --}}
-            </div>
+        <div class="mb-4 flex flex-wrap justify-between items-center gap-3">
+            <form action="{{ route('admin.posts.index') }}" method="GET" class="flex flex-wrap items-center gap-2">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search posts..." class="rounded-l-md border-gray-300 focus:border-yemdat-gold focus:ring-yemdat-gold text-sm">
+                <select name="type" class="border-gray-300 rounded-md focus:border-yemdat-gold focus:ring-yemdat-gold text-sm">
+                    <option value="">All Types</option>
+                    <option value="announcement" {{ request('type') === 'announcement' ? 'selected' : '' }}>Announcement</option>
+                    <option value="update" {{ request('type') === 'update' ? 'selected' : '' }}>Update</option>
+                    <option value="article" {{ request('type') === 'article' ? 'selected' : '' }}>Article</option>
+                </select>
+                <select name="status" class="border-gray-300 rounded-md focus:border-yemdat-gold focus:ring-yemdat-gold text-sm">
+                    <option value="">All Statuses</option>
+                    <option value="published" {{ request('status') === 'published' ? 'selected' : '' }}>Published</option>
+                    <option value="draft" {{ request('status') === 'draft' ? 'selected' : '' }}>Draft</option>
+                </select>
+                <button type="submit" class="bg-yemdat-brown text-white px-4 py-2 rounded-md hover:bg-yemdat-gold transition text-sm font-medium">Search</button>
+                @if(request('search') || request('type') || request('status'))
+                    <a href="{{ route('admin.posts.index') }}" class="text-sm text-gray-500 hover:text-yemdat-brown px-2 py-2">Clear</a>
+                @endif
+            </form>
             <a href="{{ route('admin.posts.create') }}" class="bg-yemdat-brown hover:bg-yemdat-gold text-white font-bold py-2 px-4 rounded shadow transition">
                 + Add New Post
             </a>

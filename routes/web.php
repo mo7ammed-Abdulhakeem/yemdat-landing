@@ -163,67 +163,6 @@ if (app()->environment('local')) {
     Route::post('/testemail/clear', [\App\Http\Controllers\TestEmailController::class , 'clear'])->name('testemail.clear');
 }
 
-// Live V2.9.15 Hardcode Email Template Seeder
-Route::get('/update-v2915', function () {
-    try {
-        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'Database\Seeders\UpdateTrainerEmailTemplateSeeder', '--force' => true]);
-        return "SUCCESS: V2.9.15 Email Template Updates Applied. The requested HTML payloads have been directly injected into the MySQL Email Templates table without passing through the Admin UI.";
-    }
-    catch (\Throwable $e) {
-        return "ERROR: " . $e->getMessage();
-    }
-});
-
-// Clear Blade View Cache for Email Templates
-Route::get('/clear-views', function () {
-    try {
-        \Illuminate\Support\Facades\Artisan::call('view:clear');
-        return "SUCCESS: Blade View Cache cleared! The new Admin Email template is now active.";
-    }
-    catch (\Throwable $e) {
-        return "ERROR: " . $e->getMessage();
-    }
-});
-
-// Live Database Diagnostic Route
-Route::get('/check-db-schema', function () {
-    try {
-        $schema = \Illuminate\Support\Facades\DB::select('SHOW CREATE TABLE event_member');
-        $data = \Illuminate\Support\Facades\DB::table('event_member')->limit(10)->get();
-        $events = \Illuminate\Support\Facades\DB::table('events')->limit(2)->get();
-
-        $output = "<h3>Table Schema:</h3><pre>" . print_r($schema, true) . "</pre>";
-        $output .= "<h3>Pivot Data Dump:</h3><pre>" . json_encode($data, JSON_PRETTY_PRINT) . "</pre>";
-        $output .= "<h3>Event Sample IDs:</h3><pre>" . json_encode($events, JSON_PRETTY_PRINT) . "</pre>";
-        return $output;
-    }
-    catch (\Exception $e) {
-        return "ERROR: " . $e->getMessage();
-    }
-});
-
-// Live V2.9.19 Database Schema Cleanup
-Route::get('/update-v2919', function () {
-    try {
-        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-        return '<h1>Update V2.9.19 Successful!</h1><p>The system has successfully migrated the underlying Event UUIDs to repair all relations.</p><a href="/admincpanel/events">Return to Events</a>';
-    }
-    catch (\Exception $e) {
-        return '<h1>Update V2.9.19 Failed!</h1><p>' . $e->getMessage() . '</p>';
-    }
-});
-
-// Live V3.0.2 Add Featured Posts Database Schema
-Route::get('/update-v3020', function () {
-    try {
-        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-        return '<h1>Update V3.0.2 Successful!</h1><p>The system has successfully added the is_featured column to the posts system.</p><a href="/admincpanel/posts">Return to Posts</a>';
-    }
-    catch (\Exception $e) {
-        return '<h1>Update V3.0.2 Failed!</h1><p>' . $e->getMessage() . '</p>';
-    }
-});
-
 // Fallback Route for true 404 handling with active Sessions (Arabic Localization support)
 Route::fallback(function () {
     abort(404);
