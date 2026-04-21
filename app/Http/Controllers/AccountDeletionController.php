@@ -22,7 +22,7 @@ class AccountDeletionController extends Controller
         $member->otp_expires_at = Carbon::now()->addMinutes(15);
         $member->save();
 
-        Mail::to($member->email)->queue(new AccountDeletionOtpEmail($otp));
+        Mail::to($member->email)->send(new AccountDeletionOtpEmail($otp));
 
         return redirect()->route('profile.delete.confirm')->with('success', app()->getLocale() == 'ar' ? 'تم إرسال رمز التحقق إلى بريدك الإلكتروني.' : 'A verification code has been sent to your email.');
     }

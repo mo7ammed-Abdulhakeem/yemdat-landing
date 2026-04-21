@@ -10,8 +10,11 @@ use Illuminate\Support\Facades\Log;
 
 class PublicLoginController extends Controller
 {
-    public function showLogin()
+    public function showLogin(Request $request)
     {
+        if ($request->has('redirect')) {
+            session(['url.intended' => $request->get('redirect')]);
+        }
         return view('auth.public-login');
     }
 
@@ -27,7 +30,7 @@ class PublicLoginController extends Controller
 
             $request->session()->regenerate();
 
-            return redirect()->route('profile.show');
+            return redirect()->intended(route('profile.show'));
         }
 
         return back()->withErrors([

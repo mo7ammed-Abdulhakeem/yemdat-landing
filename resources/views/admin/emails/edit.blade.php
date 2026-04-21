@@ -23,7 +23,22 @@
                 @endif
                 
                 <div class="bg-blue-50 border border-blue-100 text-blue-800 rounded-xl p-4 text-sm">
-                    <strong>Note:</strong> You can use variables in the subject or body to inject dynamic data natively. They look like this: <code>{name}</code>, <code>{otp}</code>, <code>{event_title}</code>, <code>{start_date}</code>, <code>{location}</code>, <code>{join_url_text}</code>.
+                    <strong>Available placeholders:</strong> <code>{name}</code>, <code>{otp}</code>, <code>{event_title}</code>, <code>{start_date}</code>, <code>{location}</code>, <code>{join_url_text}</code>
+                </div>
+
+                {{-- Active toggle --}}
+                <div class="flex items-center justify-between bg-gray-50 rounded-xl px-5 py-4 border border-gray-200">
+                    <div>
+                        <p class="text-sm font-bold text-gray-700">Send this email</p>
+                        <p class="text-xs text-gray-400 mt-0.5">When off, this email will not be sent regardless of trigger.</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer" x-data="{ on: {{ $email->is_active ? 'true' : 'false' }} }">
+                        <input type="hidden" name="is_active" value="0">
+                        <input type="checkbox" name="is_active" value="1" class="sr-only peer"
+                            x-model="on" {{ $email->is_active ? 'checked' : '' }}>
+                        <div class="w-11 h-6 bg-gray-300 peer-checked:bg-green-500 rounded-full transition-colors peer-focus:ring-2 peer-focus:ring-green-300"></div>
+                        <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5"></div>
+                    </label>
                 </div>
 
                 <div class="space-y-6">

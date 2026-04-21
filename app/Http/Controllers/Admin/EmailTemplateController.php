@@ -23,13 +23,15 @@ class EmailTemplateController extends Controller
     public function update(Request $request, EmailTemplate $email)
     {
         $validated = $request->validate([
-            'subject_en' => 'required|string|max:255',
-            'subject_ar' => 'required|string|max:255',
-            'body_en' => 'required|string',
-            'body_ar' => 'required|string',
-            'banner_image' => 'nullable|image|max:2048',
-            'from_email' => 'nullable|email|max:255',
+            'subject_en'  => 'required|string|max:255',
+            'subject_ar'  => 'required|string|max:255',
+            'body_en'     => 'required|string',
+            'body_ar'     => 'required|string',
+            'banner_image'=> 'nullable|image|max:2048',
+            'from_email'  => 'nullable|email|max:255',
+            'is_active'   => 'nullable|boolean',
         ]);
+        $validated['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('banner_image')) {
             $path = $request->file('banner_image')->store('email_banners', 'public');
@@ -39,5 +41,13 @@ class EmailTemplateController extends Controller
         $email->update($validated);
 
         return redirect()->route('admin.emails.index')->with('success', 'Email Template updated successfully.');
+    }
+
+    public function toggle(EmailTemplate $email)
+    {
+        $email->update(['is_active' => !$email->is_active]);
+
+        $state = $email->is_active ? 'enabled' : 'disabled';
+        return back()->with('success', "{$email->mailable_class} {$state}.");
     }
 }

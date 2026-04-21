@@ -12,6 +12,7 @@ use Illuminate\Validation\Rules\Password;
 use App\Models\Setting;
 use App\Mail\ContactUsAutoReplyEmail;
 use App\Mail\ContactUsAdminAlert;
+use App\Models\EmailTemplate;
 
 class ContactController extends Controller
 {
@@ -36,13 +37,15 @@ class ContactController extends Controller
 
         $contact = Contact::create($validated);
 
-        try {
-            Mail::to($validated['email'])->queue(new ContactUsAutoReplyEmail([
-                'name' => $validated['name'],
-            ]));
-        }
-        catch (\Exception $e) {
-            \Log::error('Failed to send contact auto-reply: ' . $e->getMessage());
+        if (EmailTemplate::isActiveFor('ContactUsAutoReplyEmail')) {
+            try {
+                Mail::to($validated['email'])->queue(new ContactUsAutoReplyEmail([
+                    'name' => $validated['name'],
+                ]));
+            }
+            catch (\Exception $e) {
+                \Log::error('Failed to send contact auto-reply: ' . $e->getMessage());
+            }
         }
 
         $adminEmail = Setting::where('key', 'admin_email')->value('value');

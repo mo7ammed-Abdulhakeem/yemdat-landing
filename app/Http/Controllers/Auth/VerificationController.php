@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\WelcomeEmail;
 use App\Mail\SignupOtpEmail;
+use App\Models\EmailTemplate;
 
 class VerificationController extends Controller
 {
@@ -56,19 +57,25 @@ class VerificationController extends Controller
         session()->forget('pending_registration');
 
         // Send Welcome Email
-        try {
-            Mail::to($member->email)->queue(new WelcomeEmail([
-                'name' => $member->full_name,
-            ]));
-        }
-        catch (\Exception $e) {
-            \Log::error('Welcome Email failed: ' . $e->getMessage());
+        if (EmailTemplate::isActiveFor('WelcomeEmail')) {
+            try {
+                Mail::to($member->email)->send(new WelcomeEmail([
+                    'name' => $member->full_name,
+                ]));
+            }
+            catch (\Exception $e) {
+                \Log::error('Welcome Email failed: ' . $e->getMessage());
+            }
         }
 
         // Log them in natively
         Auth::guard('member')->login($member);
 
-        return redirect()->route('profile.show')->with('success', app()->getLocale() == 'ar' ? 'تم تأكيد الحساب بنجاح! نأخذك الآن إلى ملفك الشخصي لتحديث بياناتك.' : 'Email verified successfully! Taking you to your profile.');
+        $successMsg = app()->getLocale() == 'ar'
+            ? 'تم تأكيد الحساب بنجاح!'
+            : 'Email verified successfully!';
+
+        return redirect()->intended(route('profile.show'))->with('success', $successMsg);
     }
 
     public function resend()
@@ -85,7 +92,7 @@ class VerificationController extends Controller
         session(['pending_registration' => $pendingData]);
 
         try {
-            Mail::to($pendingData['email'])->queue(new SignupOtpEmail([
+            Mail::to($pendingData['email'])->send(new SignupOtpEmail([
                 'name' => $pendingData['full_name'],
                 'otp' => $otp,
             ]));

@@ -24,6 +24,7 @@ class Member extends Authenticatable
         'password',
         'bio',
         'linkedin_url',
+        'unsubscribed_at',
     ];
 
     protected $hidden = [
@@ -36,7 +37,8 @@ class Member extends Authenticatable
         return [
             'password' => 'hashed',
             'email_verified_at' => 'datetime',
-            'otp_expires_at' => 'datetime',
+            'otp_expires_at'   => 'datetime',
+            'unsubscribed_at'  => 'datetime',
         ];
     }
 

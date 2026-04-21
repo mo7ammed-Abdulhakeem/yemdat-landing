@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmailTemplate;
 use App\Models\Setting;
 use App\Models\TrainerRequest;
 use Illuminate\Http\Request;
@@ -35,18 +36,20 @@ class TrainerController extends Controller
         $programStr = ucfirst($validated['program_type']) . " (" . $validated['duration_days'] . " Days, " . $validated['duration_hours'] . " Hours)";
 
         // Send auto-reply to the applicant
-        try {
-            \Illuminate\Support\Facades\Log::info('Attempting to send Applicant Auto-Reply to: ' . $validated['email']);
-            \Illuminate\Support\Facades\Mail::to($validated['email'])->queue(new \App\Mail\TrainerAutoReplyEmail([
-                'name' => $trainerRequest->name,
-                'email' => $trainerRequest->email,
-                'phone_number' => $trainerRequest->phone_number,
-                'country' => $trainerRequest->country,
-                'help_topic' => $programStr,
-            ]));
-        }
-        catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error('CRITICAL: Failed to send trainer auto-reply: ' . $e->getMessage() . ' at Line: ' . $e->getLine());
+        if (EmailTemplate::isActiveFor('TrainerAutoReplyEmail')) {
+            try {
+                \Illuminate\Support\Facades\Log::info('Attempting to send Applicant Auto-Reply to: ' . $validated['email']);
+                \Illuminate\Support\Facades\Mail::to($validated['email'])->queue(new \App\Mail\TrainerAutoReplyEmail([
+                    'name' => $trainerRequest->name,
+                    'email' => $trainerRequest->email,
+                    'phone_number' => $trainerRequest->phone_number,
+                    'country' => $trainerRequest->country,
+                    'help_topic' => $programStr,
+                ]));
+            }
+            catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('CRITICAL: Failed to send trainer auto-reply: ' . $e->getMessage() . ' at Line: ' . $e->getLine());
+            }
         }
 
         // Send notification to Admin

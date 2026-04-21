@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmailTemplate;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -85,16 +86,25 @@ class EventController extends Controller
 
             // Dispatch Event Confirmation Email
             try {
+                if (!EmailTemplate::isActiveFor('EventConfirmationEmail')) {
+                    // Template disabled by admin — skip email
+                    $message = app()->getLocale() == 'ar' ? 'تم تسجيلك بنجاح في الفعالية!' : 'You have successfully registered for the event!';
+                    return redirect()->back()->with('success', $message);
+                }
+
                 $eventName = app()->getLocale() == 'ar' ? $event->title_ar : $event->title_en;
                 $eventDate = $event->start_date->format('l, F j, Y g:i A');
                 $eventLocation = app()->getLocale() == 'ar' ? $event->location_ar : $event->location_en;
 
                 Mail::to($member->email)->queue(new EventConfirmationEmail([
-                    'name' => $member->full_name,
-                    'event_name' => $eventName,
-                    'event_date' => $eventDate,
-                    'event_location' => $eventLocation,
-                ]));
+                    'name'          => $member->full_name,
+                    'event_title'   => $eventName,
+                    'start_date'    => $eventDate,
+                    'location'      => $eventLocation,
+                    'join_url_text' => $event->join_url
+                        ? '<a href="' . $event->join_url . '">' . $event->join_url . '</a>'
+                        : '',
+                ], $event));
             }
             catch (\Exception $e) {
                 Log::error('Event Confirmation Email failed: ' . $e->getMessage());

@@ -15,8 +15,11 @@ use App\Models\MembershipTier;
 
 class RegisterController extends Controller
 {
-    public function showRegistrationForm()
+    public function showRegistrationForm(Request $request)
     {
+        if ($request->has('redirect')) {
+            session(['url.intended' => $request->get('redirect')]);
+        }
         $tiers = MembershipTier::where('is_active', true)->get();
         return view('auth.register', compact('tiers'));
     }
@@ -48,7 +51,7 @@ class RegisterController extends Controller
 
         // 3. Dispatch OTP Email
         try {
-            \Illuminate\Support\Facades\Mail::to($validated['email'])->queue(new \App\Mail\SignupOtpEmail([
+            \Illuminate\Support\Facades\Mail::to($validated['email'])->send(new \App\Mail\SignupOtpEmail([
                 'name' => $validated['full_name'],
                 'otp' => $otp,
             ]));

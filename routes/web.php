@@ -130,6 +130,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Email Templates
     Route::resource('/admincpanel/emails', App\Http\Controllers\Admin\EmailTemplateController::class)->only(['index', 'edit', 'update'])->names('admin.emails');
+    Route::post('/admincpanel/emails/{email}/toggle', [App\Http\Controllers\Admin\EmailTemplateController::class, 'toggle'])->name('admin.emails.toggle');
 
     // Trainer Requests
     Route::get('/admincpanel/trainers', [App\Http\Controllers\Admin\TrainerRequestController::class , 'index'])->name('admin.trainers.index');
@@ -155,7 +156,19 @@ Route::middleware(['auth'])->group(function () {
     // Profile Management
     Route::get('/admincpanel/profile', [App\Http\Controllers\Admin\ProfileController::class , 'edit'])->name('admin.profile.edit');
     Route::put('/admincpanel/profile', [App\Http\Controllers\Admin\ProfileController::class , 'update'])->name('admin.profile.update');
+
+    // Broadcast / Bulk Email
+    Route::get('/admincpanel/broadcasts', [App\Http\Controllers\Admin\BroadcastController::class, 'index'])->name('admin.broadcasts.index');
+    Route::get('/admincpanel/broadcasts/create', [App\Http\Controllers\Admin\BroadcastController::class, 'create'])->name('admin.broadcasts.create');
+    Route::post('/admincpanel/broadcasts', [App\Http\Controllers\Admin\BroadcastController::class, 'store'])->name('admin.broadcasts.store');
+    Route::get('/admincpanel/broadcasts/{broadcast}', [App\Http\Controllers\Admin\BroadcastController::class, 'show'])->name('admin.broadcasts.show');
+    Route::post('/admincpanel/broadcasts/{broadcast}/send', [App\Http\Controllers\Admin\BroadcastController::class, 'send'])->name('admin.broadcasts.send');
 });
+
+// Public email tracking (no auth required)
+Route::get('/track/open/{token}', [App\Http\Controllers\TrackingController::class, 'openPixel'])->name('track.open');
+Route::get('/unsubscribe/{token}', [App\Http\Controllers\TrackingController::class, 'unsubscribePage'])->name('unsubscribe');
+Route::post('/unsubscribe/{token}', [App\Http\Controllers\TrackingController::class, 'unsubscribeConfirm'])->name('unsubscribe.confirm');
 
 if (app()->environment('local')) {
     Route::get('/testemail', [\App\Http\Controllers\TestEmailController::class , 'index'])->name('testemail.index');

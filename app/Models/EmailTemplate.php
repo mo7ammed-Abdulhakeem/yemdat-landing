@@ -17,5 +17,16 @@ class EmailTemplate extends Model
         'body_en',
         'body_ar',
         'banner_image',
+        'is_active',
     ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+
+    public static function isActiveFor(string $mailable): bool
+    {
+        $template = static::where('mailable_class', $mailable)->first();
+        return !$template || $template->is_active;
+    }
 }

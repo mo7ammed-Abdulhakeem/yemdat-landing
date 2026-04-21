@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Models\EmailTemplate;
 use App\Models\Event;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -42,15 +43,23 @@ class SendEventReminders extends Command
         foreach ($events as $event) {
             foreach ($event->members as $member) {
                 try {
-                    $eventName = app()->getLocale() == 'ar' ? $event->title_ar : $event->title_en;
-                    $eventDate = $event->start_date->format('l, F j, Y g:i A');
-                    $eventLocation = app()->getLocale() == 'ar' ? $event->location_ar : $event->location_en;
+                    if (!EmailTemplate::isActiveFor('EventReminderEmail')) {
+                        continue;
+                    }
+
+                    $eventTitle    = app()->getLocale() == 'ar' ? $event->title_ar : $event->title_en;
+                    $startDate     = $event->start_date->format('l, F j, Y g:i A');
+                    $location      = app()->getLocale() == 'ar' ? ($event->location ?? '') : ($event->location ?? '');
+                    $joinUrlText   = $event->join_url
+                        ? '<a href="' . $event->join_url . '">' . $event->join_url . '</a>'
+                        : '';
 
                     Mail::to($member->email)->queue(new EventReminderEmail([
-                        'name' => $member->full_name,
-                        'event_name' => $eventName,
-                        'event_date' => $eventDate,
-                        'event_location' => $eventLocation,
+                        'name'          => $member->full_name,
+                        'event_title'   => $eventTitle,
+                        'start_date'    => $startDate,
+                        'location'      => $location,
+                        'join_url_text' => $joinUrlText,
                     ]));
 
                     $sentCount++;

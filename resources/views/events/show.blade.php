@@ -139,7 +139,7 @@
                                 @if(!$member)
                                     <div class="space-y-3">
                                         <p class="text-sm text-center text-gray-500">{{ app()->getLocale() == 'ar' ? 'يجب تسجيل الدخول للتسجيل في الفعالية' : 'Please sign in to register for this event.' }}</p>
-                                        <a href="{{ route('public.login') }}" class="block w-full py-3 text-center bg-gray-100 text-yemdat-brown font-bold rounded-xl hover:bg-gray-200 transition">
+                                        <a href="{{ route('public.login', ['redirect' => url()->current()]) }}" class="block w-full py-3 text-center bg-gray-100 text-yemdat-brown font-bold rounded-xl hover:bg-gray-200 transition">
                                             {{ app()->getLocale() == 'ar' ? 'تسجيل الدخول / إنشاء حساب' : 'Sign In / Join Community' }}
                                         </a>
                                     </div>
