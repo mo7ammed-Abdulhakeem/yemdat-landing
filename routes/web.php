@@ -166,9 +166,9 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Public email tracking (no auth required)
-Route::get('/track/open/{token}', [App\Http\Controllers\TrackingController::class, 'openPixel'])->name('track.open');
+Route::get('/track/open/{token}', [App\Http\Controllers\TrackingController::class, 'openPixel'])->name('track.open')->middleware('throttle:60,1');
 Route::get('/unsubscribe/{token}', [App\Http\Controllers\TrackingController::class, 'unsubscribePage'])->name('unsubscribe');
-Route::post('/unsubscribe/{token}', [App\Http\Controllers\TrackingController::class, 'unsubscribeConfirm'])->name('unsubscribe.confirm');
+Route::post('/unsubscribe/{token}', [App\Http\Controllers\TrackingController::class, 'unsubscribeConfirm'])->name('unsubscribe.confirm')->middleware('throttle:5,1');
 
 if (app()->environment('local')) {
     Route::get('/testemail', [\App\Http\Controllers\TestEmailController::class , 'index'])->name('testemail.index');

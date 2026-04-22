@@ -18,7 +18,10 @@ class RegisterController extends Controller
     public function showRegistrationForm(Request $request)
     {
         if ($request->has('redirect')) {
-            session(['url.intended' => $request->get('redirect')]);
+            $redirect = $request->get('redirect');
+            if (str_starts_with($redirect, url('/'))) {
+                session(['url.intended' => $redirect]);
+            }
         }
         $tiers = MembershipTier::where('is_active', true)->get();
         return view('auth.register', compact('tiers'));

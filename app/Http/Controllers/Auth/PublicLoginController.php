@@ -13,7 +13,11 @@ class PublicLoginController extends Controller
     public function showLogin(Request $request)
     {
         if ($request->has('redirect')) {
-            session(['url.intended' => $request->get('redirect')]);
+            $redirect = $request->get('redirect');
+            // Only store if it's a same-origin URL (no external redirects)
+            if (str_starts_with($redirect, url('/'))) {
+                session(['url.intended' => $redirect]);
+            }
         }
         return view('auth.public-login');
     }
