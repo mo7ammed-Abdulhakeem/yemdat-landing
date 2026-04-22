@@ -38,9 +38,8 @@ class EventConfirmationEmail extends Mailable
         }
 
         if ($this->event) {
-            $mail->attachData($this->buildIcs(), 'event.ics', [
-                'mime' => 'text/calendar',
-            ]);
+            $icsName = $this->locale === 'ar' ? 'اضافة-للتقويم.ics' : 'add-to-calendar.ics';
+            $mail->attachData($this->buildIcs(), $icsName, ['mime' => 'text/calendar']);
         }
 
         return $mail;
@@ -50,12 +49,12 @@ class EventConfirmationEmail extends Mailable
     {
         $start    = $this->event->start_date->utc()->format('Ymd\THis\Z');
         $end      = ($this->event->end_date ?? $this->event->start_date->copy()->addHour())->utc()->format('Ymd\THis\Z');
-        $title    = addcslashes($this->event->title_en ?? '', ',;\\');
+        $title    = addcslashes($this->locale === 'ar' ? ($this->event->title_ar ?? '') : ($this->event->title_en ?? ''), ',;\\');
         $location = addcslashes($this->event->location ?? '', ',;\\');
         $url      = $this->event->join_url ?? '';
         $uid      = $this->event->id . '@yemdat.com';
 
-        return implode("\r\n", [
+        $lines = [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
             'PRODID:-//Yemdat//EN',
@@ -66,10 +65,14 @@ class EventConfirmationEmail extends Mailable
             "DTEND:{$end}",
             "SUMMARY:{$title}",
             "LOCATION:{$location}",
-            "URL:{$url}",
-            'END:VEVENT',
-            'END:VCALENDAR',
-            '',
-        ]);
+        ];
+        if ($url) {
+            $lines[] = "URL:{$url}";
+        }
+        $lines[] = 'END:VEVENT';
+        $lines[] = 'END:VCALENDAR';
+        $lines[] = '';
+
+        return implode("\r\n", $lines);
     }
 }

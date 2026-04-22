@@ -3,56 +3,37 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 class AccountDeletionOtpEmail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, DynamicEmailTrait;
 
-    public $otp;
+    public $placeholders;
+    public string $locale;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct($otp)
+    public function __construct(array $placeholders = [])
     {
-        $this->otp = $otp;
+        $this->placeholders = $placeholders;
+        $this->locale = app()->getLocale();
     }
 
-    /**
-     * Get the message envelope.
-     */
-    public function envelope(): Envelope
+    public function build()
     {
-        return new Envelope(
-            subject: app()->getLocale() == 'ar' ? '??? ?????? ???? ??????' : 'Account Deletion Verification Code',
-        );
-    }
+        $emailData = $this->parseDynamicTemplate($this->placeholders);
 
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            markdown: 'emails.member.account-deletion-otp',
-            with: [
-                'otp' => $this->otp,
-            ],
-        );
-    }
+        $mail = $this->subject($emailData['subject'])
+            ->view('emails.dynamic')
+            ->with([
+                'body'   => $emailData['body'],
+                'banner' => $emailData['banner'],
+            ]);
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
-    public function attachments(): array
-    {
-        return [];
+        if (!empty($emailData['from_email'])) {
+            $mail->from($emailData['from_email']);
+        }
+
+        return $mail;
     }
 }

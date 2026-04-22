@@ -53,6 +53,13 @@ class EmailTemplateSeeder extends Seeder
                 'body_ar' => 'مرحباً {name}،<br><br>شكراً لتواصلك معنا. لقد استلمنا رسالتك وسيقوم فريقنا بالرد عليك في أقرب وقت ممكن.<br><br>أطيب التحيات،<br>فريق يمدات',
             ],
             [
+                'mailable_class' => 'AccountDeletionOtpEmail',
+                'subject_en' => 'Account Deletion Verification Code - Yemdat',
+                'subject_ar' => 'رمز التحقق لحذف الحساب - يمدات',
+                'body_en' => 'Hi {name},<br><br>You requested to delete your Yemdat account. Please use the verification code below to confirm:<br><br><strong>{otp}</strong><br><br>This code expires in 15 minutes. If you did not request this, you can safely ignore this email.',
+                'body_ar' => 'مرحباً {name}،<br><br>لقد طلبت حذف حسابك في يمدات. يرجى استخدام رمز التحقق أدناه للتأكيد:<br><br><strong>{otp}</strong><br><br>ينتهي صلاحية هذا الرمز خلال 15 دقيقة. إذا لم تقم بهذا الطلب، يمكنك تجاهل هذه الرسالة بأمان.',
+            ],
+            [
                 'mailable_class' => 'TrainerAutoReplyEmail',
                 'subject_en' => 'Thank you for your interest in becoming a Trainer - Yemdat',
                 'subject_ar' => 'شكراً لاهتمامك بالانضمام كمدرب - يمدات',
