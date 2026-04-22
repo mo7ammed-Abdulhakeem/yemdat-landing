@@ -6,7 +6,7 @@ use App\Models\EmailTemplate;
 
 trait DynamicEmailTrait
 {
-    protected function parseDynamicTemplate(array $data)
+    protected function parseDynamicTemplate(array $data, string $locale = '')
     {
         $template = EmailTemplate::where('mailable_class', class_basename(self::class))->first();
 
@@ -19,7 +19,11 @@ trait DynamicEmailTrait
             ];
         }
 
-        $locale = app()->getLocale();
+        // Use passed locale, fall back to property on the mailable, then app locale
+        if (!$locale) {
+            $locale = property_exists($this, 'locale') ? $this->locale : app()->getLocale();
+        }
+
         $rawSubject = $locale === 'ar' ? $template->subject_ar : $template->subject_en;
         $rawBody = $locale === 'ar' ? $template->body_ar : $template->body_en;
 

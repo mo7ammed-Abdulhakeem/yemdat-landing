@@ -13,11 +13,13 @@ class EventConfirmationEmail extends Mailable
 
     public $placeholders;
     public ?Event $event;
+    public string $locale;
 
     public function __construct(array $placeholders = [], ?Event $event = null)
     {
         $this->placeholders = $placeholders;
         $this->event = $event;
+        $this->locale = app()->getLocale();
     }
 
     public function build()

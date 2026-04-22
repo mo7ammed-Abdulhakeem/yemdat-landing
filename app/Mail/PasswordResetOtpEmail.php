@@ -11,10 +11,12 @@ class PasswordResetOtpEmail extends Mailable
     use Queueable, SerializesModels, DynamicEmailTrait;
 
     public $placeholders;
+    public string $locale;
 
     public function __construct(array $placeholders = [])
     {
         $this->placeholders = $placeholders;
+        $this->locale = app()->getLocale();
     }
 
     public function build()

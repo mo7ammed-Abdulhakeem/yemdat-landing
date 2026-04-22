@@ -15,13 +15,12 @@ class TrainerAutoReplyEmail extends Mailable
     use Queueable, SerializesModels, DynamicEmailTrait;
 
     public $placeholders;
+    public string $locale;
 
-    /**
-     * Create a new message instance.
-     */
     public function __construct(array $placeholders = [])
     {
         $this->placeholders = $placeholders;
+        $this->locale = app()->getLocale();
     }
 
     /**
