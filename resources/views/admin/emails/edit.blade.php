@@ -118,4 +118,21 @@
             </form>
         </div>
     </div>
+<script>
+document.getElementById('emailTemplateForm').addEventListener('submit', function () {
+    function b64(str) {
+        const bytes = new TextEncoder().encode(str);
+        let binary = '';
+        bytes.forEach(b => binary += String.fromCharCode(b));
+        return btoa(binary);
+    }
+    const subjectAr = this.querySelector('[name="subject_ar"]');
+    const bodyAr    = this.querySelector('[name="body_ar"]');
+    subjectAr.value = b64(subjectAr.value);
+    bodyAr.value    = b64(bodyAr.value);
+    const flag = document.createElement('input');
+    flag.type = 'hidden'; flag.name = '_b64'; flag.value = '1';
+    this.appendChild(flag);
+});
+</script>
 </x-admin-layout>

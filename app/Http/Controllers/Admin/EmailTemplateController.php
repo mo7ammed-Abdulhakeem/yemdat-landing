@@ -22,6 +22,14 @@ class EmailTemplateController extends Controller
 
     public function update(Request $request, EmailTemplate $email)
     {
+        if ($request->input('_b64') === '1') {
+            $subjectAr = base64_decode($request->input('subject_ar', ''), true);
+            $bodyAr    = base64_decode($request->input('body_ar', ''), true);
+            if ($subjectAr !== false && $bodyAr !== false) {
+                $request->merge(['subject_ar' => $subjectAr, 'body_ar' => $bodyAr]);
+            }
+        }
+
         $validated = $request->validate([
             'subject_en'  => 'required|string|max:255',
             'subject_ar'  => 'required|string|max:255',
