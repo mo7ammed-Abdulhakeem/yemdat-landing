@@ -11,7 +11,6 @@ class EventReminderEmail extends Mailable
     use Queueable, SerializesModels, DynamicEmailTrait;
 
     public $placeholders;
-    public string $locale;
 
     public function __construct(array $placeholders = [])
     {
