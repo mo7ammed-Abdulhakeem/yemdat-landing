@@ -16,6 +16,8 @@ class BroadcastController extends Controller
 {
     public function index()
     {
+        if (!auth()->user()->hasPermission('broadcasts')) abort(403);
+
         $broadcasts = EmailBroadcast::with('creator', 'event')
             ->latest()
             ->paginate(15);
@@ -25,12 +27,15 @@ class BroadcastController extends Controller
 
     public function create()
     {
+        if (!auth()->user()->hasPermission('broadcasts')) abort(403);
+
         $events = Event::orderBy('start_date', 'desc')->get();
         return view('admin.broadcasts.create', compact('events'));
     }
 
     public function store(Request $request)
     {
+        if (!auth()->user()->hasPermission('broadcasts')) abort(403);
         $validated = $request->validate([
             'subject_en'    => 'required_if:language,en|nullable|string|max:255',
             'subject_ar'    => 'required_if:language,ar|nullable|string|max:255',
@@ -54,6 +59,7 @@ class BroadcastController extends Controller
 
     public function show(EmailBroadcast $broadcast)
     {
+        if (!auth()->user()->hasPermission('broadcasts')) abort(403);
         $broadcast->load('creator', 'event');
         $recipients = $broadcast->recipients()
             ->with('member')
@@ -73,6 +79,8 @@ class BroadcastController extends Controller
 
     public function send(Request $request, EmailBroadcast $broadcast)
     {
+        if (!auth()->user()->hasPermission('broadcasts')) abort(403);
+
         if ($broadcast->status !== 'draft') {
             return redirect()->route('admin.broadcasts.show', $broadcast)
                 ->with('error', 'This broadcast has already been sent.');
@@ -121,6 +129,8 @@ class BroadcastController extends Controller
 
     public function sendToNew(EmailBroadcast $broadcast)
     {
+        if (!auth()->user()->hasPermission('broadcasts')) abort(403);
+
         if ($broadcast->status !== 'sent') {
             return redirect()->route('admin.broadcasts.show', $broadcast)
                 ->with('error', 'Top-up is only available for broadcasts that have finished sending.');
