@@ -75,4 +75,17 @@ class ProfileController extends Controller
 
         return redirect()->route('profile.show')->with('success', app()->getLocale() == 'ar' ? 'تم تحديث البيانات بنجاح.' : 'Profile updated successfully.');
     }
+
+    public function updateEmailPreference(Request $request)
+    {
+        $member = Auth::guard('member')->user();
+
+        if ($request->input('action') === 'resubscribe') {
+            $member->update(['unsubscribed_at' => null]);
+        }
+
+        return back()->with('success', app()->getLocale() == 'ar'
+            ? 'تم تحديث تفضيلات البريد الإلكتروني.'
+            : 'Email preferences updated.');
+    }
 }

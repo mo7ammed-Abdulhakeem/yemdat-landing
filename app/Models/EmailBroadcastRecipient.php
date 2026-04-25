@@ -9,10 +9,11 @@ class EmailBroadcastRecipient extends Model
 {
     protected $fillable = [
         'broadcast_id', 'member_id', 'email',
-        'tracking_token', 'opened_at', 'open_count', 'unsubscribed_at',
+        'tracking_token', 'sent_at', 'opened_at', 'open_count', 'unsubscribed_at',
     ];
 
     protected $casts = [
+        'sent_at'         => 'datetime',
         'opened_at'       => 'datetime',
         'unsubscribed_at' => 'datetime',
     ];

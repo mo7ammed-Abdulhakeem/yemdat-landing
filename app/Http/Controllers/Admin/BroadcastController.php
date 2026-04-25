@@ -62,6 +62,7 @@ class BroadcastController extends Controller
 
         $stats = [
             'total'        => $broadcast->total_recipients,
+            'sent'         => $broadcast->recipients()->whereNotNull('sent_at')->count(),
             'opens'        => $broadcast->opens_count,
             'open_rate'    => $broadcast->open_rate,
             'unsubscribes' => $broadcast->unsubscribes_count,
@@ -105,16 +106,57 @@ class BroadcastController extends Controller
 
         DB::table('email_broadcast_recipients')->insert($rows);
 
-        // Dispatch a single job that sends all emails in the background
-        \App\Jobs\ProcessBroadcastJob::dispatch($broadcast->id);
-
         $broadcast->update([
-            'status'           => 'sent',
+            'status'           => 'sending',
             'total_recipients' => $members->count(),
             'sent_at'          => now(),
         ]);
 
+        // Dispatch after updating status so the job's final 'sent' update wins
+        \App\Jobs\ProcessBroadcastJob::dispatch($broadcast->id);
+
         return redirect()->route('admin.broadcasts.show', $broadcast)
             ->with('success', 'Broadcast queued for ' . $members->count() . ' recipients.');
+    }
+
+    public function sendToNew(EmailBroadcast $broadcast)
+    {
+        if ($broadcast->status !== 'sent') {
+            return redirect()->route('admin.broadcasts.show', $broadcast)
+                ->with('error', 'Top-up is only available for broadcasts that have finished sending.');
+        }
+
+        if ($broadcast->audience_type !== 'event_members' || !$broadcast->event) {
+            return redirect()->route('admin.broadcasts.show', $broadcast)
+                ->with('error', 'Top-up is only available for event broadcasts.');
+        }
+
+        $existingMemberIds = EmailBroadcastRecipient::where('broadcast_id', $broadcast->id)->pluck('member_id');
+        $newMembers = $broadcast->event->members()->whereNotIn('members.id', $existingMemberIds)->get();
+
+        if ($newMembers->isEmpty()) {
+            return redirect()->route('admin.broadcasts.show', $broadcast)
+                ->with('error', 'No new registrants to send to.');
+        }
+
+        $lastId = EmailBroadcastRecipient::where('broadcast_id', $broadcast->id)->max('id') ?? 0;
+        $now = now();
+        DB::table('email_broadcast_recipients')->insert(
+            $newMembers->map(fn($m) => [
+                'broadcast_id'   => $broadcast->id,
+                'member_id'      => $m->id,
+                'email'          => $m->email,
+                'tracking_token' => (string) Str::uuid(),
+                'open_count'     => 0,
+                'created_at'     => $now,
+                'updated_at'     => $now,
+            ])->all()
+        );
+
+        \App\Jobs\ProcessBroadcastJob::dispatch($broadcast->id, $lastId);
+        $broadcast->increment('total_recipients', $newMembers->count());
+
+        return redirect()->route('admin.broadcasts.show', $broadcast)
+            ->with('success', 'Sending to ' . $newMembers->count() . ' new registrant(s).');
     }
 }

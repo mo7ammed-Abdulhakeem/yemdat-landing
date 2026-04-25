@@ -56,16 +56,36 @@
                         <span class="px-3 py-1 text-xs rounded-full bg-yellow-100 text-yellow-700 font-medium">Sending…</span>
                     @else
                         <span class="px-3 py-1 text-xs rounded-full bg-green-100 text-green-700 font-medium">Sent</span>
+                        @if($broadcast->audience_type === 'event_members')
+                            <form action="{{ route('admin.broadcasts.send-new', $broadcast) }}" method="POST"
+                                  onsubmit="return confirm('Send this broadcast only to new registrants who have not received it yet?');">
+                                @csrf
+                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-sm transition">
+                                    Send to New Registrants
+                                </button>
+                            </form>
+                        @endif
                     @endif
                 </div>
             </div>
         </div>
 
+        {{-- Sending progress banner --}}
+        @if($broadcast->status === 'sending')
+            <div class="mb-6 bg-blue-50 border border-blue-200 text-blue-800 rounded-xl px-5 py-4 text-sm">
+                Sending in daily batches (90/day). <strong>{{ $stats['sent'] }} of {{ $stats['total'] }}</strong> sent so far. Next batch runs automatically in ~24 hours.
+            </div>
+        @endif
+
         {{-- Stat cards --}}
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Total Sent</p>
+                <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Queued</p>
                 <p class="text-3xl font-bold text-gray-900">{{ number_format($stats['total']) }}</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+                <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Sent So Far</p>
+                <p class="text-3xl font-bold text-gray-700">{{ number_format($stats['sent']) }}</p>
             </div>
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
                 <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Opened</p>

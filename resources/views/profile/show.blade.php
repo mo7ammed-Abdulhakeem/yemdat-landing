@@ -277,6 +277,29 @@
                 @endif
             </div>
 
+            <!-- Email Preferences -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mt-8">
+                <h3 class="text-lg font-bold text-yemdat-brown mb-1">
+                    {{ app()->getLocale() == 'ar' ? 'تفضيلات البريد الإلكتروني' : 'Email Preferences' }}
+                </h3>
+                @if($member->unsubscribed_at)
+                    <p class="text-sm text-gray-500 mb-4">
+                        {{ app()->getLocale() == 'ar' ? 'أنت غير مشترك حالياً في رسائل البث الإخبارية.' : 'You are currently unsubscribed from broadcast emails.' }}
+                    </p>
+                    <form action="{{ route('member.email-preferences') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="action" value="resubscribe">
+                        <button type="submit" class="px-5 py-2 bg-yemdat-brown text-white text-sm font-bold rounded-xl hover:bg-yemdat-gold hover:text-yemdat-brown transition">
+                            {{ app()->getLocale() == 'ar' ? 'إعادة الاشتراك' : 'Re-subscribe' }}
+                        </button>
+                    </form>
+                @else
+                    <p class="text-sm text-gray-500">
+                        {{ app()->getLocale() == 'ar' ? 'أنت مشترك في رسائل البث الإخبارية.' : 'You are subscribed to broadcast emails.' }}
+                    </p>
+                @endif
+            </div>
+
             <!-- Logout Button -->
             <div class="mt-8 flex justify-end">
                 <form action="{{ route('public.logout') }}" method="POST">

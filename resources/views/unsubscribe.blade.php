@@ -18,13 +18,25 @@
         .success-icon { font-size: 48px; margin-bottom: 16px; }
         .already { color: #9ca3af; font-size: 13px; margin-top: 8px; }
         a.back { display: inline-block; margin-top: 20px; color: #593E2D; font-size: 13px; text-decoration: underline; }
+        .btn-resub { background: #593E2D; color: #fff; border: none; border-radius: 8px; padding: 10px 24px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 16px; width: 100%; transition: background .2s; }
+        .btn-resub:hover { background: #F2CB57; color: #3E2B20; }
     </style>
 </head>
 <body>
     <div class="card">
         <div class="logo">YEM<span>DAT</span></div>
 
-        @if(isset($confirmed) && $confirmed)
+        @if(isset($resubscribed) && $resubscribed)
+            {{-- Re-subscribed success state --}}
+            <div class="success-icon">🎉</div>
+            <h1>You're re-subscribed!</h1>
+            <p>
+                <span class="name">{{ $recipient->member->full_name ?? $recipient->email }}</span>,
+                you will now receive general broadcast emails from Yemdat again.
+            </p>
+            <a href="{{ url('/') }}" class="back">← Return to Yemdat</a>
+
+        @elseif(isset($confirmed) && $confirmed)
             {{-- Success state --}}
             <div class="success-icon">✅</div>
             <h1>You've been unsubscribed</h1>
@@ -34,6 +46,10 @@
                 <br><br>
                 You will still receive important emails such as event confirmations and OTPs.
             </p>
+            <form action="{{ route('resubscribe.confirm', $recipient->tracking_token) }}" method="POST">
+                @csrf
+                <button type="submit" class="btn-resub">Re-subscribe to broadcast emails</button>
+            </form>
             <a href="{{ url('/') }}" class="back">← Return to Yemdat</a>
 
         @elseif($recipient->unsubscribed_at)
@@ -44,6 +60,10 @@
                 <span class="name">{{ $recipient->member->full_name ?? $recipient->email }}</span>,
                 you are already unsubscribed from general emails.
             </p>
+            <form action="{{ route('resubscribe.confirm', $recipient->tracking_token) }}" method="POST">
+                @csrf
+                <button type="submit" class="btn-resub">Re-subscribe to broadcast emails</button>
+            </form>
             <a href="{{ url('/') }}" class="back">← Return to Yemdat</a>
 
         @else

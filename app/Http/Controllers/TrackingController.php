@@ -55,4 +55,17 @@ class TrackingController extends Controller
 
         return view('unsubscribe', ['recipient' => $recipient, 'confirmed' => true]);
     }
+
+    public function resubscribeByToken(string $token)
+    {
+        $recipient = EmailBroadcastRecipient::where('tracking_token', $token)
+            ->with('member')
+            ->firstOrFail();
+
+        if ($recipient->member) {
+            $recipient->member->update(['unsubscribed_at' => null]);
+        }
+
+        return view('unsubscribe', ['recipient' => $recipient, 'resubscribed' => true]);
+    }
 }

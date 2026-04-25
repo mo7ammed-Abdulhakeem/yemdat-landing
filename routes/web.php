@@ -87,6 +87,7 @@ Route::middleware(['auth:member'])->group(function () {
     Route::post('/my-profile/delete/request', [App\Http\Controllers\AccountDeletionController::class , 'requestOtp'])->name('profile.delete.request');
     Route::get('/my-profile/delete/confirm', [App\Http\Controllers\AccountDeletionController::class , 'showConfirm'])->name('profile.delete.confirm');
     Route::post('/my-profile/delete/confirm', [App\Http\Controllers\AccountDeletionController::class , 'confirm'])->name('profile.delete.confirm.post');
+    Route::post('/my-profile/email-preferences', [App\Http\Controllers\ProfileController::class, 'updateEmailPreference'])->name('member.email-preferences');
 });
 
 // Admin Authentication Routes
@@ -163,12 +164,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admincpanel/broadcasts', [App\Http\Controllers\Admin\BroadcastController::class, 'store'])->name('admin.broadcasts.store');
     Route::get('/admincpanel/broadcasts/{broadcast}', [App\Http\Controllers\Admin\BroadcastController::class, 'show'])->name('admin.broadcasts.show');
     Route::post('/admincpanel/broadcasts/{broadcast}/send', [App\Http\Controllers\Admin\BroadcastController::class, 'send'])->name('admin.broadcasts.send');
+    Route::post('/admincpanel/broadcasts/{broadcast}/send-new', [App\Http\Controllers\Admin\BroadcastController::class, 'sendToNew'])->name('admin.broadcasts.send-new');
 });
 
 // Public email tracking (no auth required)
 Route::get('/track/open/{token}', [App\Http\Controllers\TrackingController::class, 'openPixel'])->name('track.open')->middleware('throttle:60,1');
 Route::get('/unsubscribe/{token}', [App\Http\Controllers\TrackingController::class, 'unsubscribePage'])->name('unsubscribe');
 Route::post('/unsubscribe/{token}', [App\Http\Controllers\TrackingController::class, 'unsubscribeConfirm'])->name('unsubscribe.confirm')->middleware('throttle:5,1');
+Route::post('/resubscribe/{token}', [App\Http\Controllers\TrackingController::class, 'resubscribeByToken'])->name('resubscribe.confirm')->middleware('throttle:5,1');
 
 if (app()->environment('local')) {
     Route::get('/testemail', [\App\Http\Controllers\TestEmailController::class , 'index'])->name('testemail.index');
