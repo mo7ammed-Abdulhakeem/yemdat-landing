@@ -57,57 +57,6 @@ class BroadcastController extends Controller
             ->with('success', 'Broadcast saved as draft.');
     }
 
-    public function edit(EmailBroadcast $broadcast)
-    {
-        if (!auth()->user()->hasPermission('broadcasts')) abort(403);
-
-        if ($broadcast->status !== 'draft') {
-            return redirect()->route('admin.broadcasts.show', $broadcast)
-                ->with('error', 'Only draft broadcasts can be edited.');
-        }
-
-        $events = Event::orderBy('start_date', 'desc')->get();
-        return view('admin.broadcasts.edit', compact('broadcast', 'events'));
-    }
-
-    public function update(Request $request, EmailBroadcast $broadcast)
-    {
-        if (!auth()->user()->hasPermission('broadcasts')) abort(403);
-
-        if ($broadcast->status !== 'draft') {
-            return redirect()->route('admin.broadcasts.show', $broadcast)
-                ->with('error', 'Only draft broadcasts can be edited.');
-        }
-
-        $validated = $request->validate([
-            'subject_en'    => 'required_if:language,en|nullable|string|max:255',
-            'subject_ar'    => 'required_if:language,ar|nullable|string|max:255',
-            'body_en'       => 'required_if:language,en|nullable|string',
-            'body_ar'       => 'required_if:language,ar|nullable|string',
-            'audience_type' => 'required|in:all_members,event_members',
-            'event_id'      => 'required_if:audience_type,event_members|nullable|string|exists:events,id',
-            'language'      => 'required|in:en,ar',
-            'from_email'    => 'nullable|email|max:255',
-            'from_name'     => 'nullable|string|max:255',
-        ]);
-
-        $broadcast->update($validated);
-
-        return redirect()->route('admin.broadcasts.show', $broadcast)
-            ->with('success', 'Broadcast updated.');
-    }
-
-    public function destroy(EmailBroadcast $broadcast)
-    {
-        if (!auth()->user()->hasPermission('broadcasts')) abort(403);
-
-        $broadcast->recipients()->delete();
-        $broadcast->delete();
-
-        return redirect()->route('admin.broadcasts.index')
-            ->with('success', 'Broadcast deleted.');
-    }
-
     public function show(EmailBroadcast $broadcast)
     {
         if (!auth()->user()->hasPermission('broadcasts')) abort(403);
