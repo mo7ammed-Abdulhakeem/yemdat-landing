@@ -13,10 +13,18 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use App\Filament\Concerns\AuthorizesViaPermission;
 
 class MemberResource extends Resource
 {
+    use AuthorizesViaPermission;
+
     protected static ?string $model = Member::class;
+
+    protected static function permissionKey(): ?string
+    {
+        return 'members';
+    }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

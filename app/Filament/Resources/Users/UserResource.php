@@ -13,10 +13,19 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use App\Filament\Concerns\AuthorizesViaPermission;
 
 class UserResource extends Resource
 {
+    use AuthorizesViaPermission;
+
     protected static ?string $model = User::class;
+
+    // Restrict admin-user management to super admins (matches the legacy UserController).
+    protected static function permissionKey(): ?string
+    {
+        return null;
+    }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 

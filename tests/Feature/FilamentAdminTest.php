@@ -25,14 +25,14 @@ class FilamentAdminTest extends TestCase
 
     public function test_admin_can_load_the_members_resource(): void
     {
-        $admin = User::factory()->create(['role' => 'admin']);
+        $admin = User::factory()->create(['role' => 'super_admin']);
 
         $this->actingAs($admin)->get('/admin/members')->assertOk();
     }
 
     public function test_admin_can_load_the_events_and_posts_resources(): void
     {
-        $admin = User::factory()->create(['role' => 'admin']);
+        $admin = User::factory()->create(['role' => 'super_admin']);
 
         $this->actingAs($admin)->get('/admin/events')->assertOk();
         $this->actingAs($admin)->get('/admin/posts')->assertOk();
@@ -71,5 +71,19 @@ class FilamentAdminTest extends TestCase
         // An admin without the 'broadcasts' permission must not reach the resource.
         $plain = User::factory()->create(['role' => 'admin', 'permissions' => []]);
         $this->actingAs($plain)->get('/admin/email-broadcasts')->assertForbidden();
+    }
+
+    public function test_resources_respect_granular_permissions(): void
+    {
+        // Admin granted only the 'members' permission.
+        $limited = User::factory()->create(['role' => 'admin', 'permissions' => ['members']]);
+        $this->actingAs($limited)->get('/admin/members')->assertOk();
+        $this->actingAs($limited)->get('/admin/posts')->assertForbidden();   // needs 'posts'
+        $this->actingAs($limited)->get('/admin/users')->assertForbidden();   // super-admin only
+
+        // Super admin bypasses every gate.
+        $super = User::factory()->create(['role' => 'super_admin']);
+        $this->actingAs($super)->get('/admin/users')->assertOk();
+        $this->actingAs($super)->get('/admin/posts')->assertOk();
     }
 }

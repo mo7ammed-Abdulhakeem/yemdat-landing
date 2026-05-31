@@ -13,10 +13,18 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use App\Filament\Concerns\AuthorizesViaPermission;
 
 class PostResource extends Resource
 {
+    use AuthorizesViaPermission;
+
     protected static ?string $model = Post::class;
+
+    protected static function permissionKey(): ?string
+    {
+        return 'posts';
+    }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
