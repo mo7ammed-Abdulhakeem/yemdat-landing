@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Broadcasts\SendBroadcast;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendBroadcastEmailJob;
 use App\Models\EmailBroadcast;
@@ -128,7 +129,7 @@ class BroadcastController extends Controller
         return view('admin.broadcasts.show', compact('broadcast', 'recipients', 'stats'));
     }
 
-    public function send(Request $request, EmailBroadcast $broadcast)
+    public function send(Request $request, EmailBroadcast $broadcast, SendBroadcast $sender)
     {
         if (!auth()->user()->hasPermission('broadcasts')) abort(403);
 
@@ -137,48 +138,18 @@ class BroadcastController extends Controller
                 ->with('error', 'This broadcast has already been sent.');
         }
 
-        // Collect recipients based on audience type
-        if ($broadcast->audience_type === 'all_members') {
-            $members = Member::whereNull('unsubscribed_at')->get();
-        } else {
-            // Event-specific: ignore unsubscribed_at
-            $event   = $broadcast->event;
-            $members = $event ? $event->members()->get() : collect();
-        }
+        $count = $sender->send($broadcast);
 
-        if ($members->isEmpty()) {
+        if ($count === 0) {
             return redirect()->route('admin.broadcasts.show', $broadcast)
                 ->with('error', 'No recipients found for this broadcast.');
         }
 
-        // Bulk insert recipient rows
-        $now = now();
-        $rows = $members->map(fn($member) => [
-            'broadcast_id'   => $broadcast->id,
-            'member_id'      => $member->id,
-            'email'          => $member->email,
-            'tracking_token' => (string) Str::uuid(),
-            'open_count'     => 0,
-            'created_at'     => $now,
-            'updated_at'     => $now,
-        ])->all();
-
-        DB::table('email_broadcast_recipients')->insert($rows);
-
-        $broadcast->update([
-            'status'           => 'sending',
-            'total_recipients' => $members->count(),
-            'sent_at'          => now(),
-        ]);
-
-        // Dispatch after updating status so the job's final 'sent' update wins
-        \App\Jobs\ProcessBroadcastJob::dispatch($broadcast->id);
-
         return redirect()->route('admin.broadcasts.show', $broadcast)
-            ->with('success', 'Broadcast queued for ' . $members->count() . ' recipients.');
+            ->with('success', 'Broadcast queued for ' . $count . ' recipients.');
     }
 
-    public function sendToNew(EmailBroadcast $broadcast)
+    public function sendToNew(EmailBroadcast $broadcast, SendBroadcast $sender)
     {
         if (!auth()->user()->hasPermission('broadcasts')) abort(403);
 
@@ -192,32 +163,14 @@ class BroadcastController extends Controller
                 ->with('error', 'Top-up is only available for event broadcasts.');
         }
 
-        $existingMemberIds = EmailBroadcastRecipient::where('broadcast_id', $broadcast->id)->pluck('member_id');
-        $newMembers = $broadcast->event->members()->whereNotIn('members.id', $existingMemberIds)->get();
+        $count = $sender->sendToNew($broadcast);
 
-        if ($newMembers->isEmpty()) {
+        if ($count === 0) {
             return redirect()->route('admin.broadcasts.show', $broadcast)
                 ->with('error', 'No new registrants to send to.');
         }
 
-        $lastId = EmailBroadcastRecipient::where('broadcast_id', $broadcast->id)->max('id') ?? 0;
-        $now = now();
-        DB::table('email_broadcast_recipients')->insert(
-            $newMembers->map(fn($m) => [
-                'broadcast_id'   => $broadcast->id,
-                'member_id'      => $m->id,
-                'email'          => $m->email,
-                'tracking_token' => (string) Str::uuid(),
-                'open_count'     => 0,
-                'created_at'     => $now,
-                'updated_at'     => $now,
-            ])->all()
-        );
-
-        \App\Jobs\ProcessBroadcastJob::dispatch($broadcast->id, $lastId);
-        $broadcast->increment('total_recipients', $newMembers->count());
-
         return redirect()->route('admin.broadcasts.show', $broadcast)
-            ->with('success', 'Sending to ' . $newMembers->count() . ' new registrant(s).');
+            ->with('success', 'Sending to ' . $count . ' new registrant(s).');
     }
 }

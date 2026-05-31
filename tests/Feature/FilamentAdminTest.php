@@ -61,4 +61,15 @@ class FilamentAdminTest extends TestCase
         $this->actingAs($admin)->get('/admin/events/create')->assertOk();
         $this->actingAs($admin)->get('/admin/membership-tiers/create')->assertOk();
     }
+
+    public function test_broadcasts_resource_respects_permission(): void
+    {
+        $super = User::factory()->create(['role' => 'super_admin']);
+        $this->actingAs($super)->get('/admin/email-broadcasts')->assertOk();
+        $this->actingAs($super)->get('/admin/email-broadcasts/create')->assertOk();
+
+        // An admin without the 'broadcasts' permission must not reach the resource.
+        $plain = User::factory()->create(['role' => 'admin', 'permissions' => []]);
+        $this->actingAs($plain)->get('/admin/email-broadcasts')->assertForbidden();
+    }
 }
