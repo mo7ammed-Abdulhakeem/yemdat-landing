@@ -12,15 +12,13 @@
             </div>
 
             @if ($errors->any())
-                <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl relative">
-                    <strong class="font-bold">{{ app()->getLocale() == 'ar' ? 'عذراً!' : 'Whoops!' }}</strong>
-                    <span class="block sm:inline">{{ app()->getLocale() == 'ar' ? 'حدثت بعض الأخطاء.' : 'Something went wrong.' }}</span>
-                    <ul class="mt-2 list-disc list-inside text-sm">
+                <x-ui.alert variant="danger" :title="app()->getLocale() == 'ar' ? 'عذراً!' : 'Whoops!'" class="mb-6">
+                    <ul class="mt-1 list-disc list-inside text-sm space-y-0.5">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
-                </div>
+                </x-ui.alert>
             @endif
 
             <form action="{{ route('profile.update') }}" method="POST" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -183,12 +181,12 @@
                 </div>
 
                 <div class="px-8 py-5 bg-gray-50 mt-8 border-t border-gray-100 flex justify-end gap-3 rounded-b-2xl">
-                    <a href="{{ route('profile.show') }}" class="px-6 py-2 bg-white border border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 transition">
+                    <x-ui.button variant="outline" :href="route('profile.show')">
                         {{ app()->getLocale() == 'ar' ? 'إلغاء' : 'Cancel' }}
-                    </a>
-                    <button type="submit" class="px-6 py-2 bg-yemdat-brown text-white font-bold rounded-xl hover:bg-yemdat-gold transition shadow-sm">
+                    </x-ui.button>
+                    <x-ui.button type="submit">
                         {{ app()->getLocale() == 'ar' ? 'حفظ التغييرات' : 'Save Changes' }}
-                    </button>
+                    </x-ui.button>
                 </div>
             </form>
 
@@ -203,10 +201,10 @@
                     </p>
                     <form action="{{ route('profile.delete.request') }}" method="POST">
                         @csrf
-                        <button type="submit" class="w-full md:w-auto px-6 py-3 text-white font-bold rounded-xl transition shadow-sm inline-flex justify-center items-center gap-2" style="background-color: #dc2626; border: 1px solid #b91c1c;" onclick="return confirm('{{ app()->getLocale() == 'ar' ? 'هل أنت متأكد أنك تريد طلب حذف الحساب؟' : 'Are you sure you want to request account deletion?' }}');">
+                        <x-ui.button type="submit" variant="danger" class="w-full md:w-auto" onclick="return confirm('{{ app()->getLocale() == 'ar' ? 'هل أنت متأكد أنك تريد طلب حذف الحساب؟' : 'Are you sure you want to request account deletion?' }}');">
                             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             {{ app()->getLocale() == 'ar' ? 'طلب حذف الحساب' : 'Request Account Deletion' }}
-                        </button>
+                        </x-ui.button>
                     </form>
                 </div>
             </div>

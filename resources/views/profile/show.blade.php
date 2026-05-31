@@ -11,9 +11,9 @@
                         {{ app()->getLocale() == 'ar' ? 'إدارة بيانات عضويتك في مجتمع يمدات.' : 'Manage your Yemdat community membership details.' }}
                     </p>
                 </div>
-                <a href="{{ route('profile.edit') }}" class="px-6 py-2 bg-yemdat-gold text-yemdat-brown font-bold rounded-xl hover:bg-yemdat-orange transition shadow-sm">
+                <x-ui.button variant="accent" :href="route('profile.edit')">
                     {{ app()->getLocale() == 'ar' ? 'تعديل الملف' : 'Edit Profile' }}
-                </a>
+                </x-ui.button>
             </div>
 
             @if(session('success'))
@@ -78,9 +78,9 @@
 
                     <div class="text-center md:text-start flex-grow">
                         <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ $member->full_name }}</h2>
-                        <span class="inline-block px-3 py-1 bg-yemdat-beige text-yemdat-brown text-sm font-bold rounded-full mb-4 uppercase tracking-wider">
+                        <x-ui.badge class="mb-4 uppercase tracking-wider">
                             {{ $member->membershipTier ? (app()->getLocale() == 'ar' ? $member->membershipTier->name_ar : $member->membershipTier->name_en) : 'Member' }}
-                        </span>
+                        </x-ui.badge>
                         
                         <div class="text-gray-600 mb-6 max-w-2xl">
                             @if($member->bio)
@@ -214,9 +214,9 @@
                     <div class="p-8 text-center text-gray-500">
                         {{ app()->getLocale() == 'ar' ? 'لم تقم بالتسجيل في أي فعالية بعد.' : 'You have not registered for any events yet.' }}
                         <div class="mt-4">
-                            <a href="{{ route('events.index') }}" class="inline-block px-6 py-2 bg-yemdat-gold text-yemdat-brown font-bold rounded-xl hover:bg-yemdat-orange transition shadow-sm">
+                            <x-ui.button variant="accent" :href="route('events.index')">
                                 {{ app()->getLocale() == 'ar' ? 'استعرض الفعاليات' : 'Browse Events' }}
-                            </a>
+                            </x-ui.button>
                         </div>
                     </div>
                 @endif
@@ -269,9 +269,9 @@
                     <div class="p-8 text-center text-gray-500">
                         {{ app()->getLocale() == 'ar' ? 'لم تقم بإرسال أي رسائل تواصل بعد.' : 'You have not sent any contact messages yet.' }}
                         <div class="mt-4">
-                            <a href="{{ route('contact') }}" class="inline-block px-6 py-2 bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition shadow-sm border border-gray-200">
+                            <x-ui.button variant="outline" :href="route('contact')">
                                 {{ app()->getLocale() == 'ar' ? 'تواصل معنا' : 'Contact Us' }}
-                            </a>
+                            </x-ui.button>
                         </div>
                     </div>
                 @endif
@@ -289,9 +289,9 @@
                     <form action="{{ route('member.email-preferences') }}" method="POST">
                         @csrf
                         <input type="hidden" name="action" value="resubscribe">
-                        <button type="submit" class="px-5 py-2 bg-yemdat-brown text-white text-sm font-bold rounded-xl hover:bg-yemdat-gold hover:text-yemdat-brown transition">
+                        <x-ui.button type="submit">
                             {{ app()->getLocale() == 'ar' ? 'إعادة الاشتراك' : 'Re-subscribe' }}
-                        </button>
+                        </x-ui.button>
                     </form>
                 @else
                     <p class="text-sm text-gray-500">
