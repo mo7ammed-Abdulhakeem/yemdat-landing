@@ -1,126 +1,36 @@
 <x-app-layout>
-<!-- Hero Section CSS -->
-    <style>
-        .hero-container {
-            background-color: #f7f4f0;
-            border-bottom: 1px solid #e8e3dc;
-            padding-top: 4rem;
-            padding-bottom: 5rem;
-        }
-        .hero-label {
-            color: #c99320;
-            font-size: 0.85rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-        .hero-title {
-            color: #4b392a;
-            font-size: 3rem;
-            font-weight: 900;
-            line-height: 1.1;
-            letter-spacing: -0.02em;
-            font-family: 'Arial Black', Impact, 'Segoe UI Black', Roboto, Helvetica, Arial, sans-serif;
-            margin-bottom: 1rem;
-        }
-        .hero-desc {
-            color: #4b5e71;
-            font-size: 1.1rem;
-            font-weight: 400;
-            line-height: 1.6;
-            max-width: 52rem;
-            margin: 0 auto 2rem auto;
-            padding: 0 1rem;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-        .hero-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 1.05rem;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            transition: all 0.2s ease-in-out;
-            width: 100%;
-            height: 54px;
-        }
-        .hero-btn-primary {
-            background-color: #4b392a;
-            color: #ffffff;
-        }
-        .hero-btn-primary:hover {
-            background-color: #37291e;
-        }
-        .hero-btn-secondary {
-            background-color: #ffffff;
-            color: #4b5e71;
-            border: 1.5px solid #d4a742;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        }
-        .hero-btn-secondary:hover {
-            background-color: #fafafa;
-        }
+<!-- Hero Section -->
+    <section class="bg-surface border-b border-border">
+        <div class="max-w-5xl mx-auto text-center px-4 sm:px-6 lg:px-8 pt-16 pb-20 md:pt-24 md:pb-28">
+            <p class="text-sm md:text-base font-bold uppercase tracking-[0.1em] text-accent-hover mb-5">YEMDAT</p>
 
-        /* Small screens (sm) */
-        @media (min-width: 640px) {
-            .hero-btn {
-                width: 260px;
-                height: 58px;
-                font-size: 1.15rem;
-            }
-        }
-
-        /* Medium screens (md) */
-        @media (min-width: 768px) {
-            .hero-title {
-                font-size: 5rem;
-                margin-bottom: 1.5rem;
-            }
-            .hero-desc {
-                font-size: 1.35rem;
-                margin-bottom: 2.5rem;
-            }
-            .hero-container {
-                padding-top: 6rem;
-                padding-bottom: 9rem;
-            }
-            .hero-label {
-                font-size: 0.95rem;
-            }
-        }
-    </style>
-
-    <!-- Hero Section -->
-    <div class="text-center px-4 sm:px-6 lg:px-8 hero-container">
-        <div class="max-w-5xl mx-auto">
-            <div class="mb-5 flex justify-center">
-                 <div class="hero-label">YEMDAT</div>
-            </div>
-
-            <h1 class="hero-title">
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold text-primary leading-tight tracking-tight mb-4 md:mb-6">
                 {{ __('home.hero_title') }}
             </h1>
 
-            <p class="hero-desc">
+            <p class="text-lg md:text-xl text-ink-soft max-w-3xl mx-auto leading-relaxed mb-8 md:mb-10 px-2">
                 {{ __('home.hero_desc') }}
             </p>
 
             <!-- Action Buttons -->
             <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-                <a href="{{ auth()->guard('member')->check() ? route('profile.show') : route('register') }}" class="hero-btn hero-btn-primary">
+                <x-ui.button
+                    :href="auth()->guard('member')->check() ? route('profile.show') : route('register')"
+                    size="lg"
+                    class="w-full sm:w-64"
+                >
                     {{ auth()->guard('member')->check() ? (app()->getLocale() == 'ar' ? 'ملفي الشخصي' : 'My Profile') : __('home.btn_join') }}
                     @if(!auth()->guard('member')->check())
-                    <svg style="width: 1.25rem; height: 1.25rem; margin-left: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        <svg class="w-5 h-5 ms-1 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                     @endif
-                </a>
-                 <a href="{{ route('events.index') }}" class="hero-btn hero-btn-secondary">
+                </x-ui.button>
+
+                <x-ui.button :href="route('events.index')" variant="outline" size="lg" class="w-full sm:w-64">
                     {{ __('home.btn_explore') }}
-                </a>
+                </x-ui.button>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- Features Section -->
     <div class="py-16 bg-white/50">
