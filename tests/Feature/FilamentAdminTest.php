@@ -86,4 +86,23 @@ class FilamentAdminTest extends TestCase
         $this->actingAs($super)->get('/admin/users')->assertOk();
         $this->actingAs($super)->get('/admin/posts')->assertOk();
     }
+
+    public function test_settings_page_respects_permission(): void
+    {
+        $super = User::factory()->create(['role' => 'super_admin']);
+        $this->actingAs($super)->get('/admin/manage-settings')->assertOk();
+
+        $plain = User::factory()->create(['role' => 'admin', 'permissions' => []]);
+        $this->actingAs($plain)->get('/admin/manage-settings')->assertForbidden();
+    }
+
+    public function test_dashboard_loads_with_and_without_analytics_widget(): void
+    {
+        // Analytics widget is visible to a permitted admin; dashboard renders either way.
+        $analyst = User::factory()->create(['role' => 'admin', 'permissions' => ['analytics']]);
+        $this->actingAs($analyst)->get('/admin')->assertOk();
+
+        $plain = User::factory()->create(['role' => 'admin', 'permissions' => []]);
+        $this->actingAs($plain)->get('/admin')->assertOk();
+    }
 }
