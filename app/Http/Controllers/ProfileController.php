@@ -46,7 +46,9 @@ class ProfileController extends Controller
             'country' => 'required|string|max:255',
             'gender' => 'required|string|in:Male,Female',
             'education_level' => 'nullable|string|max:255',
-            'specialty' => 'nullable|string|max:255',
+            // `members.specialty` is NOT NULL (and required at registration + in the form),
+            // so it must be required here too — otherwise an absent value writes null and 500s.
+            'specialty' => 'required|string|max:255',
             'specialty_other' => 'nullable|string|max:255',
             'linkedin_url' => 'nullable|url|max:255',
             'bio' => 'nullable|string',

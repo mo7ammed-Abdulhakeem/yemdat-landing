@@ -48,11 +48,11 @@ class VerificationController extends Controller
             'specialty' => $pendingData['specialty'],
             'specialty_other' => $pendingData['specialty_other'] ?? null,
             'membership_type' => $pendingData['membership_type'],
-            'email_verified_at' => now(),
-            // Ensure auth-bound OTP markers are null natively upon creation
-            'otp_code' => null,
-            'otp_expires_at' => null,
         ]);
+
+        // email_verified_at / otp_* are intentionally not in $fillable, so mass
+        // assignment silently drops them. Set the verification timestamp explicitly.
+        $member->forceFill(['email_verified_at' => now()])->save();
 
         session()->forget('pending_registration');
 

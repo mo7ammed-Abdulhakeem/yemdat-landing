@@ -1,0 +1,12 @@
+{
+    "preset": "laravel",
+    "exclude": [
+        "bootstrap/cache",
+        "storage",
+        "updates"
+    ],
+    "notName": [
+        "create_db.php",
+        "test_pivot.php"
+    ]
+}

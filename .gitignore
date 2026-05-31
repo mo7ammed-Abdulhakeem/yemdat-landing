@@ -22,3 +22,12 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Local-only artifacts (never commit — DB dump contains member PII + password hashes)
+/yemdat_database.sql
+/database/*.sql
+/storage/db-backups
+envcopy
+/.claude
+/.env.production
+/.env.testing

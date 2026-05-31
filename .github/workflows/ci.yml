@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tests:
+    name: Tests (PHP 8.2 / MariaDB)
+    runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
+          MARIADB_DATABASE: yemdat_testing
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: pdo_mysql, mbstring, bcmath, gd, zip, intl, fileinfo
+          coverage: none
+
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer/files
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Prepare environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Run tests
+        # DB connection/name come from phpunit.xml (mysql / yemdat_testing / root / no password).
+        # RefreshDatabase loads database/schema/mysql-schema.sql via the mysql client.
+        run: php artisan test
+
+  pint:
+    name: Code style (changed files)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Run Pint on newly added PHP files
+        # The legacy codebase is not fully Pint-clean yet, so we only *enforce*
+        # style on brand-new files (diff-filter=A) to keep new code clean without
+        # forcing churn on legacy files. Run a one-time project-wide `vendor/bin/pint`
+        # later (its own commit/deploy) to bring the whole codebase to standard,
+        # then switch this to --diff-filter=ACMR.
+        run: |
+          BASE="${{ github.event.pull_request.base.sha || github.event.before }}"
+          if [ -z "$BASE" ] || ! git cat-file -e "$BASE" 2>/dev/null; then
+            echo "No valid base commit to diff against; skipping."
+            exit 0
+          fi
+          ADDED=$(git diff --name-only --diff-filter=A "$BASE" HEAD -- '*.php' | grep -v '^updates/' || true)
+          if [ -n "$ADDED" ]; then
+            echo "Linting newly added files:"; echo "$ADDED"
+            echo "$ADDED" | xargs vendor/bin/pint --test
+          else
+            echo "No newly added PHP files; nothing to enforce."
+          fi
