@@ -37,4 +37,28 @@ class FilamentAdminTest extends TestCase
         $this->actingAs($admin)->get('/admin/events')->assertOk();
         $this->actingAs($admin)->get('/admin/posts')->assertOk();
     }
+
+    public function test_admin_can_load_the_remaining_resources(): void
+    {
+        $admin = User::factory()->create(['role' => 'super_admin']);
+
+        foreach ([
+            '/admin/membership-tiers',
+            '/admin/trainer-requests',
+            '/admin/contacts',
+            '/admin/email-templates',
+            '/admin/users',
+        ] as $url) {
+            $this->actingAs($admin)->get($url)->assertOk();
+        }
+    }
+
+    public function test_admin_can_load_create_forms(): void
+    {
+        $admin = User::factory()->create(['role' => 'super_admin']);
+
+        $this->actingAs($admin)->get('/admin/users/create')->assertOk();
+        $this->actingAs($admin)->get('/admin/events/create')->assertOk();
+        $this->actingAs($admin)->get('/admin/membership-tiers/create')->assertOk();
+    }
 }
