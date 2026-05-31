@@ -37,31 +37,31 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Data Management -->
-                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:border-yemdat-gold/50 transition duration-300 text-center flex flex-col items-center">
+                <x-ui.card padding="p-8" class="text-center flex flex-col items-center hover:border-yemdat-gold/50 transition duration-300">
                     <div class="w-16 h-16 bg-yemdat-beige rounded-2xl flex items-center justify-center mb-6 text-yemdat-gold">
                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
                     </div>
-                    <h3 class="text-xl font-bold text-yemdat-brown mb-3">{{ __('home.feat_1_title') }}</h3>
-                    <p class="text-gray-600">{{ __('home.feat_1_desc') }}</p>
-                </div>
+                    <h3 class="text-xl font-bold text-primary mb-3">{{ __('home.feat_1_title') }}</h3>
+                    <p class="text-ink-soft">{{ __('home.feat_1_desc') }}</p>
+                </x-ui.card>
 
                 <!-- Professional Network -->
-                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:border-yemdat-gold/50 transition duration-300 text-center flex flex-col items-center">
+                <x-ui.card padding="p-8" class="text-center flex flex-col items-center hover:border-yemdat-gold/50 transition duration-300">
                      <div class="w-16 h-16 bg-yemdat-beige rounded-2xl flex items-center justify-center mb-6 text-yemdat-gold">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                     </div>
-                    <h3 class="text-xl font-bold text-yemdat-brown mb-3">{{ __('home.feat_2_title') }}</h3>
-                    <p class="text-gray-600">{{ __('home.feat_2_desc') }}</p>
-                </div>
+                    <h3 class="text-xl font-bold text-primary mb-3">{{ __('home.feat_2_title') }}</h3>
+                    <p class="text-ink-soft">{{ __('home.feat_2_desc') }}</p>
+                </x-ui.card>
 
                 <!-- Training -->
-                 <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:border-yemdat-gold/50 transition duration-300 text-center flex flex-col items-center">
+                <x-ui.card padding="p-8" class="text-center flex flex-col items-center hover:border-yemdat-gold/50 transition duration-300">
                      <div class="w-16 h-16 bg-yemdat-beige rounded-2xl flex items-center justify-center mb-6 text-yemdat-gold">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z"></path><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"></path></svg>
                     </div>
-                    <h3 class="text-xl font-bold text-yemdat-brown mb-3">{{ __('home.feat_3_title') }}</h3>
-                    <p class="text-gray-600">{{ __('home.feat_3_desc') }}</p>
-                </div>
+                    <h3 class="text-xl font-bold text-primary mb-3">{{ __('home.feat_3_title') }}</h3>
+                    <p class="text-ink-soft">{{ __('home.feat_3_desc') }}</p>
+                </x-ui.card>
             </div>
         </div>
     </div>
@@ -115,9 +115,9 @@
             </div>
             
             <div class="text-center">
-                <a href="{{ route('events.index') }}" class="inline-block bg-yemdat-brown text-white px-8 py-3 rounded-lg font-bold transition shadow-md hover:bg-yemdat-brown/90">
+                <x-ui.button :href="route('events.index')" size="lg">
                     {{ app()->getLocale() == 'ar' ? 'عرض كل الفعاليات' : 'View All Events' }}
-                </a>
+                </x-ui.button>
             </div>
         </div>
     </div>
@@ -209,9 +209,9 @@
             </div>
 
             <div class="text-center mt-12">
-                 <a href="{{ route('news') }}" class="inline-block bg-white text-gray-500 border border-gray-200 px-8 py-3 rounded-full text-sm font-bold hover:border-yemdat-gold hover:text-yemdat-brown transition shadow-sm">
+                <x-ui.button :href="route('news')" variant="outline">
                     {{ __('home.btn_more_news') }}
-                </a>
+                </x-ui.button>
             </div>
         </div>
     </div>
