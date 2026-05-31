@@ -180,6 +180,9 @@ if (app()->environment('local')) {
     Route::get('/testemail', [\App\Http\Controllers\TestEmailController::class , 'index'])->name('testemail.index');
     Route::get('/testemail/{id}', [\App\Http\Controllers\TestEmailController::class , 'show'])->name('testemail.show');
     Route::post('/testemail/clear', [\App\Http\Controllers\TestEmailController::class , 'clear'])->name('testemail.clear');
+
+    // Design-system component gallery (see DESIGN.md). Local only.
+    Route::view('/ui-preview', 'ui-preview')->name('ui.preview');
 }
 
 // Fallback Route for true 404 handling with active Sessions (Arabic Localization support)

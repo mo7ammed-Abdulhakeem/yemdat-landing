@@ -33,50 +33,56 @@
 
                     <form action="{{ route('contact.store') }}" method="POST" class="flex flex-col gap-6">
                         @csrf
-                        
+
                         <!-- Validation Errors (New Floating Modal) -->
                         @if ($errors->any())
                             <x-alert-modal type="error" :message="$errors->first()" />
                         @endif
 
-                        <!-- Name -->
-                        <div>
-                            <label class="block text-sm font-medium text-yemdat-brown mb-2">{{ __('contact.label_name') }}</label>
-                            <input type="text" name="name" value="{{ old('name', auth()->guard('member')->user()->full_name ?? '') }}" required class="w-full rounded-lg border-gray-300 bg-gray-50 focus:border-yemdat-gold focus:ring-yemdat-gold focus:bg-white transition" placeholder="{{ __('contact.placeholder_name') }}">
-                        </div>
+                        <x-ui.input
+                            name="name"
+                            :label="__('contact.label_name')"
+                            :value="auth()->guard('member')->user()->full_name ?? ''"
+                            :required="true"
+                            :placeholder="__('contact.placeholder_name')"
+                        />
 
-                        <!-- Email -->
-                        <div>
-                            <label class="block text-sm font-medium text-yemdat-brown mb-2">{{ __('contact.label_email') }}</label>
-                            <input type="email" name="email" value="{{ old('email', auth()->guard('member')->user()->email ?? '') }}" required class="w-full rounded-lg border-gray-300 bg-gray-50 focus:border-yemdat-gold focus:ring-yemdat-gold focus:bg-white rtl:text-right transition" placeholder="{{ __('contact.placeholder_email') }}">
-                        </div>
+                        <x-ui.input
+                            name="email"
+                            type="email"
+                            :label="__('contact.label_email')"
+                            :value="auth()->guard('member')->user()->email ?? ''"
+                            :required="true"
+                            :placeholder="__('contact.placeholder_email')"
+                        />
 
-                        <!-- Phone Number -->
-                        <div>
-                            <label class="block text-sm font-medium text-yemdat-brown mb-2 flex items-center">
-                                {{ __('contact.label_phone') }}
-                                <span class="text-xs text-gray-400 font-normal mx-2">({{ app()->getLocale() == 'ar' ? 'إختياري' : 'Optional' }})</span>
-                            </label>
-                            <input type="text" name="phone_number" value="{{ old('phone_number', auth()->guard('member')->user()->phone_number ?? '') }}" class="w-full rounded-lg border-gray-300 bg-gray-50 focus:border-yemdat-gold focus:ring-yemdat-gold focus:bg-white transition" placeholder="{{ app()->getLocale() == 'ar' ? 'مثال: +966500000000' : 'e.g. +1234567890' }}" dir="ltr">
-                        </div>
+                        <x-ui.input
+                            name="phone_number"
+                            :label="__('contact.label_phone').' ('.(app()->getLocale() == 'ar' ? 'إختياري' : 'Optional').')'"
+                            :value="auth()->guard('member')->user()->phone_number ?? ''"
+                            dir="ltr"
+                            :placeholder="app()->getLocale() == 'ar' ? 'مثال: +966500000000' : 'e.g. +1234567890'"
+                        />
 
-                        <!-- Subject -->
-                        <div>
-                            <label class="block text-sm font-medium text-yemdat-brown mb-2">{{ __('contact.label_subject') }}</label>
-                            <input type="text" name="subject" value="{{ old('subject') }}" required class="w-full rounded-lg border-gray-300 bg-gray-50 focus:border-yemdat-gold focus:ring-yemdat-gold focus:bg-white transition" placeholder="{{ __('contact.placeholder_subject') }}">
-                        </div>
+                        <x-ui.input
+                            name="subject"
+                            :label="__('contact.label_subject')"
+                            :required="true"
+                            :placeholder="__('contact.placeholder_subject')"
+                        />
 
-                        <!-- Message -->
-                        <div>
-                            <label class="block text-sm font-medium text-yemdat-brown mb-2">{{ __('contact.label_message') }}</label>
-                            <textarea name="message" rows="4" required class="w-full rounded-lg border-gray-300 bg-gray-50 focus:border-yemdat-gold focus:ring-yemdat-gold focus:bg-white transition" placeholder="{{ __('contact.placeholder_message') }}">{{ old('message') }}</textarea>
-                        </div>
+                        <x-ui.textarea
+                            name="message"
+                            :label="__('contact.label_message')"
+                            :required="true"
+                            :rows="4"
+                            :placeholder="__('contact.placeholder_message')"
+                        />
 
-                        <!-- Submit Button -->
-                         <button type="submit" class="w-full bg-yemdat-brown hover:bg-yemdat-brown/90 text-white font-bold py-3 rounded-lg transition flex items-center justify-center gap-2">
+                        <x-ui.button type="submit" class="w-full">
                             <svg class="w-5 h-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
                             {{ __('contact.btn_send') }}
-                        </button>
+                        </x-ui.button>
                     </form>
                 </div>
 

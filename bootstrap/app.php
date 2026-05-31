@@ -14,6 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\SetLocale::class,
         ]);
+
+        // Unauthenticated visitors to the admin area go to the admin login;
+        // everyone else (community member routes) goes to the member login.
+        $middleware->redirectGuestsTo(function (\Illuminate\Http\Request $request) {
+            return $request->is('admincpanel/*') ? route('login') : route('public.login');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

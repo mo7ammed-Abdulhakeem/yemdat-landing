@@ -89,9 +89,10 @@ class ProfileUpdateTest extends TestCase
         $this->assertTrue(Hash::check('new-password-123', $member->fresh()->password));
     }
 
-    public function test_guest_cannot_update_a_profile(): void
+    public function test_guest_is_redirected_to_member_login(): void
     {
-        $this->put(route('profile.update'), [])->assertRedirect();
+        // Member-area guests should land on the member login, not the admin login.
+        $this->put(route('profile.update'), [])->assertRedirect(route('public.login'));
         $this->assertGuest('member');
     }
 }

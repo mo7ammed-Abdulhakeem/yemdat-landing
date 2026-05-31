@@ -8,13 +8,49 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
-    
-    /* YEMDAT Brand Colors */
+    /* Arabic-optimized stack (applied on RTL pages via the `font-arabic` utility) */
+    --font-arabic: 'Tajawal', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+
+    /* ---- YEMDAT brand palette (raw) ---- */
     --color-yemdat-beige: #FAF8F3;
     --color-yemdat-brown: #593E2D;
     --color-yemdat-gold: #F2CB57;
     --color-yemdat-orange: #C88D16;
     --color-yemdat-dark: #3E2B20;
+    /* Extra brand tints/shades for surfaces, borders, and hovers */
+    --color-yemdat-cream: #FFFDF8;
+    --color-yemdat-sand: #EFE9DE;
+    --color-yemdat-gold-soft: #FAEEC4;
+
+    /* ---- Semantic tokens (prefer these in new components) ---- */
+    --color-primary: #593E2D;          /* brand brown — primary actions, headings */
+    --color-primary-hover: #3E2B20;    /* darker brown */
+    --color-accent: #F2CB57;           /* gold — highlights, focus rings */
+    --color-accent-hover: #C88D16;     /* orange — accent hover */
+    --color-surface: #FAF8F3;          /* page background (beige) */
+    --color-surface-raised: #FFFFFF;   /* cards, panels */
+    --color-surface-sunken: #EFE9DE;   /* subtle fills, table stripes */
+    --color-border: #E6DFD2;           /* hairline borders on beige */
+    --color-ink: #3E2B20;              /* primary text */
+    --color-ink-soft: #6B5847;         /* secondary/muted text */
+
+    /* Status colors */
+    --color-success: #2F855A;
+    --color-success-soft: #E6F4EC;
+    --color-danger: #C53030;
+    --color-danger-soft: #FBEAEA;
+    --color-warning: #C88D16;
+    --color-warning-soft: #FAEEC4;
+    --color-info: #2B6CB0;
+    --color-info-soft: #E7F0F9;
+
+    /* Radii */
+    --radius-btn: 0.625rem;
+    --radius-card: 1rem;
+
+    /* Shadows */
+    --shadow-card: 0 1px 3px rgb(62 43 32 / 0.08), 0 10px 30px rgb(62 43 32 / 0.06);
+    --shadow-pop: 0 12px 40px rgb(62 43 32 / 0.16);
 }
 
 /* Custom Typography for Event Details (Prose) */
