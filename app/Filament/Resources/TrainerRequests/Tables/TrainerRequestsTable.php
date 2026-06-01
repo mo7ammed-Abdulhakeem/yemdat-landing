@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\TrainerRequests\Tables;
 
+use App\Filament\Resources\TrainerRequests\TrainerRequestResource;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -46,8 +47,9 @@ class TrainerRequestsTable
             ->filters([
                 //
             ])
+            ->recordUrl(fn ($record): string => TrainerRequestResource::getUrl('view', ['record' => $record]))
             ->recordActions([
-                EditAction::make(),
+                ViewAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

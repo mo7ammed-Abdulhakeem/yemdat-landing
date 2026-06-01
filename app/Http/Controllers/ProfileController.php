@@ -17,7 +17,13 @@ class ProfileController extends Controller
             return redirect()->route('home')->withErrors(['error' => 'You do not have a registered community profile.']);
         }
 
-        return view('profile.show', compact('member'));
+        // Map of event_id => valid certificate, for the "Download Certificate" buttons.
+        $certificatesByEvent = $member->certificates()
+            ->whereNull('revoked_at')
+            ->get()
+            ->keyBy('event_id');
+
+        return view('profile.show', compact('member', 'certificatesByEvent'));
     }
 
     public function edit()

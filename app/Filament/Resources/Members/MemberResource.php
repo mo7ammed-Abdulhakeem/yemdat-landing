@@ -5,7 +5,11 @@ namespace App\Filament\Resources\Members;
 use App\Filament\Resources\Members\Pages\CreateMember;
 use App\Filament\Resources\Members\Pages\EditMember;
 use App\Filament\Resources\Members\Pages\ListMembers;
+use App\Filament\Resources\Members\Pages\ViewMember;
+use App\Filament\Resources\Members\RelationManagers\RegisteredEventsRelationManager;
+use App\Filament\Resources\Members\RelationManagers\SentMessagesRelationManager;
 use App\Filament\Resources\Members\Schemas\MemberForm;
+use App\Filament\Resources\Members\Schemas\MemberInfolist;
 use App\Filament\Resources\Members\Tables\MembersTable;
 use App\Models\Member;
 use BackedEnum;
@@ -33,6 +37,11 @@ class MemberResource extends Resource
         return MemberForm::configure($schema);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return MemberInfolist::configure($schema);
+    }
+
     public static function table(Table $table): Table
     {
         return MembersTable::configure($table);
@@ -41,7 +50,8 @@ class MemberResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RegisteredEventsRelationManager::class,
+            SentMessagesRelationManager::class,
         ];
     }
 
@@ -50,6 +60,7 @@ class MemberResource extends Resource
         return [
             'index' => ListMembers::route('/'),
             'create' => CreateMember::route('/create'),
+            'view' => ViewMember::route('/{record}'),
             'edit' => EditMember::route('/{record}/edit'),
         ];
     }

@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources\TrainerRequests;
 
-use App\Filament\Resources\TrainerRequests\Pages\CreateTrainerRequest;
-use App\Filament\Resources\TrainerRequests\Pages\EditTrainerRequest;
 use App\Filament\Resources\TrainerRequests\Pages\ListTrainerRequests;
-use App\Filament\Resources\TrainerRequests\Schemas\TrainerRequestForm;
+use App\Filament\Resources\TrainerRequests\Pages\ViewTrainerRequest;
+use App\Filament\Resources\TrainerRequests\Schemas\TrainerRequestInfolist;
 use App\Filament\Resources\TrainerRequests\Tables\TrainerRequestsTable;
 use App\Models\TrainerRequest;
 use BackedEnum;
@@ -20,9 +19,9 @@ class TrainerRequestResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    public static function form(Schema $schema): Schema
+    public static function infolist(Schema $schema): Schema
     {
-        return TrainerRequestForm::configure($schema);
+        return TrainerRequestInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table
@@ -41,8 +40,7 @@ class TrainerRequestResource extends Resource
     {
         return [
             'index' => ListTrainerRequests::route('/'),
-            'create' => CreateTrainerRequest::route('/create'),
-            'edit' => EditTrainerRequest::route('/{record}/edit'),
+            'view' => ViewTrainerRequest::route('/{record}'),
         ];
     }
 }

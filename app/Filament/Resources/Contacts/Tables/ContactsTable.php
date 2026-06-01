@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\Contacts\Tables;
 
+use App\Filament\Resources\Contacts\ContactResource;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -14,10 +15,12 @@ class ContactsTable
     {
         return $table
             ->columns([
-                TextColumn::make('member_id')
-                    ->numeric()
-                    ->sortable(),
+                TextColumn::make('member.full_name')
+                    ->label('Member')
+                    ->placeholder('Guest')
+                    ->searchable(),
                 TextColumn::make('name')
+                    ->label('Sender name')
                     ->searchable(),
                 TextColumn::make('email')
                     ->label('Email address')
@@ -38,8 +41,9 @@ class ContactsTable
             ->filters([
                 //
             ])
+            ->recordUrl(fn ($record): string => ContactResource::getUrl('view', ['record' => $record]))
             ->recordActions([
-                EditAction::make(),
+                ViewAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

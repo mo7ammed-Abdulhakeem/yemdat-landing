@@ -88,6 +88,9 @@ Route::middleware(['auth:member'])->group(function () {
     Route::get('/my-profile/delete/confirm', [App\Http\Controllers\AccountDeletionController::class , 'showConfirm'])->name('profile.delete.confirm');
     Route::post('/my-profile/delete/confirm', [App\Http\Controllers\AccountDeletionController::class , 'confirm'])->name('profile.delete.confirm.post');
     Route::post('/my-profile/email-preferences', [App\Http\Controllers\ProfileController::class, 'updateEmailPreference'])->name('member.email-preferences');
+
+    // Certificate download (owner only)
+    Route::get('/my-profile/certificates/{certificate}/download', [App\Http\Controllers\CertificateController::class, 'download'])->name('certificates.download');
 });
 
 // Admin Authentication Routes
@@ -169,6 +172,9 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/admincpanel/broadcasts/{broadcast}', [App\Http\Controllers\Admin\BroadcastController::class, 'update'])->name('admin.broadcasts.update');
     Route::delete('/admincpanel/broadcasts/{broadcast}', [App\Http\Controllers\Admin\BroadcastController::class, 'destroy'])->name('admin.broadcasts.destroy');
 });
+
+// Public certificate verification (target of the certificate QR code)
+Route::get('/verify/{serial}', [App\Http\Controllers\CertificateController::class, 'verify'])->name('certificates.verify');
 
 // Public email tracking (no auth required)
 Route::get('/track/open/{token}', [App\Http\Controllers\TrackingController::class, 'openPixel'])->name('track.open')->middleware('throttle:60,1');

@@ -48,7 +48,16 @@ class Member extends Authenticatable
     public function events()
     {
         return $this->belongsToMany(Event::class , 'event_member', 'member_id', 'event_id')
+            ->withPivot('attended_at', 'completed_at')
             ->withTimestamps();
+    }
+
+    /**
+     * Certificates issued to this member.
+     */
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class);
     }
 
     public function membershipTier()

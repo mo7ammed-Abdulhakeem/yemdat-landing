@@ -142,6 +142,15 @@ class Event extends Model
     public function members()
     {
         return $this->belongsToMany(Member::class , 'event_member', 'event_id', 'member_id')
+            ->withPivot('attended_at', 'completed_at')
             ->withTimestamps();
+    }
+
+    /**
+     * Certificates issued for this event.
+     */
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class);
     }
 }
