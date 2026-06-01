@@ -20,6 +20,10 @@ class CertificateResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-academic-cap';
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Community';
+
+    protected static ?int $navigationSort = 4;
+
     public static function downloadAction(): Action
     {
         return Action::make('download')

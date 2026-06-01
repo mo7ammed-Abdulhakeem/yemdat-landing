@@ -25,7 +25,11 @@ class ContactResource extends Resource
         return 'messages';
     }
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedInbox;
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Community';
+
+    protected static ?int $navigationSort = 3;
 
     public static function infolist(Schema $schema): Schema
     {

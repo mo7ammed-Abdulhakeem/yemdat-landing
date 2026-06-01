@@ -10,6 +10,7 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -33,6 +34,19 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::hex('#593E2D'),
                 'gray' => Color::Stone,
             ])
+            // Collapsible sidebar on desktop too (burger toggles it like on mobile).
+            ->sidebarCollapsibleOnDesktop()
+            // Group related resources/pages in the sidebar for easier navigation.
+            ->navigationGroups([
+                'Community',
+                'Content',
+                'Settings',
+            ])
+            // Language / direction (EN ⇄ AR / LTR ⇄ RTL) toggle in the top bar.
+            ->renderHook(
+                PanelsRenderHook::TOPBAR_END,
+                fn (): string => view('filament.lang-switcher')->render(),
+            )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

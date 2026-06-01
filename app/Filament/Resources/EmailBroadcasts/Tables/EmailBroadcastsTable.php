@@ -10,6 +10,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class EmailBroadcastsTable
@@ -39,6 +40,20 @@ class EmailBroadcastsTable
                 TextColumn::make('created_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('created_at', 'desc')
+            ->filters([
+                SelectFilter::make('status')
+                    ->options([
+                        'draft' => 'Draft',
+                        'sending' => 'Sending',
+                        'sent' => 'Sent',
+                    ]),
+                SelectFilter::make('audience_type')
+                    ->label('Audience')
+                    ->options([
+                        'all_members' => 'All Members',
+                        'event_members' => 'Event',
+                    ]),
+            ])
             ->recordActions([
                 Action::make('send')
                     ->label('Send')

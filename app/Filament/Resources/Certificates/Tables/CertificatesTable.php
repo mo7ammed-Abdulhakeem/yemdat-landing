@@ -7,6 +7,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class CertificatesTable
@@ -40,6 +41,18 @@ class CertificatesTable
                 TextColumn::make('issuer.name')
                     ->label('Issued by')
                     ->toggleable(),
+            ])
+            ->filters([
+                TernaryFilter::make('revoked_at')
+                    ->label('Status')
+                    ->placeholder('All')
+                    ->trueLabel('Revoked only')
+                    ->falseLabel('Valid only')
+                    ->queries(
+                        true: fn ($query) => $query->whereNotNull('revoked_at'),
+                        false: fn ($query) => $query->whereNull('revoked_at'),
+                        blank: fn ($query) => $query,
+                    ),
             ])
             ->recordActions([
                 ViewAction::make(),

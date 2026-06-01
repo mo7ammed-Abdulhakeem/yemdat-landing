@@ -17,7 +17,11 @@ class TrainerRequestResource extends Resource
 {
     protected static ?string $model = TrainerRequest::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserPlus;
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Community';
+
+    protected static ?int $navigationSort = 2;
 
     public static function infolist(Schema $schema): Schema
     {

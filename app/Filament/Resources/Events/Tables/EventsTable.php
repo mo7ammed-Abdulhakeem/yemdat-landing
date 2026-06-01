@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class EventsTable
@@ -15,43 +16,32 @@ class EventsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultSort('start_date', 'desc')
             ->columns([
-                TextColumn::make('id')
-                    ->label('ID')
-                    ->searchable(),
-                TextColumn::make('created_by')
-                    ->numeric()
-                    ->sortable(),
+                ImageColumn::make('image'),
                 TextColumn::make('title_en')
-                    ->searchable(),
-                TextColumn::make('title_ar')
-                    ->searchable(),
-                TextColumn::make('slug')
-                    ->searchable(),
+                    ->label('Title')
+                    ->description(fn ($record) => $record->title_ar)
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('start_date')
                     ->dateTime()
                     ->sortable(),
                 TextColumn::make('end_date')
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('location')
-                    ->searchable(),
-                TextColumn::make('join_url')
-                    ->searchable(),
-                ImageColumn::make('image'),
+                    ->searchable()
+                    ->toggleable(),
                 TextColumn::make('lecturer_name_en')
-                    ->searchable(),
-                TextColumn::make('lecturer_name_ar')
-                    ->searchable(),
-                TextColumn::make('lecturer_title_en')
-                    ->searchable(),
-                TextColumn::make('lecturer_title_ar')
-                    ->searchable(),
-                ImageColumn::make('lecturer_image'),
-                TextColumn::make('lecturer_linkedin')
-                    ->searchable(),
+                    ->label('Lecturer')
+                    ->searchable()
+                    ->toggleable(),
                 IconColumn::make('is_active')
-                    ->boolean(),
+                    ->label('Active')
+                    ->boolean()
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -62,7 +52,7 @@ class EventsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                TernaryFilter::make('is_active')->label('Active'),
             ])
             ->recordActions([
                 EditAction::make(),

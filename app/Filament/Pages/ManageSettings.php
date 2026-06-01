@@ -23,6 +23,10 @@ class ManageSettings extends Page implements HasSchemas
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Settings';
+
+    protected static ?int $navigationSort = 4;
+
     protected static ?string $navigationLabel = 'Settings';
 
     protected static ?string $title = 'Site Settings';

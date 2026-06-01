@@ -23,6 +23,10 @@ class ManageCertificateTemplate extends Page implements HasSchemas
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Settings';
+
+    protected static ?int $navigationSort = 3;
+
     protected static ?string $navigationLabel = 'Certificate Template';
 
     protected static ?string $title = 'Certificate Template';
