@@ -27,6 +27,24 @@
 
 @if ($href)
     <a href="{{ $href }}" {{ $attributes->merge(['class' => $classes]) }}>{{ $slot }}</a>
+@elseif ($type === 'submit')
+    {{-- Submit buttons get a built-in loading state: once the form actually submits we show a
+         spinner and disable the button, preventing double-submits and giving instant feedback.
+         We hook the form's `submit` event (not the click) so disabling never cancels the
+         in-flight submission. --}}
+    <button
+        type="submit"
+        x-data="{ loading: false }"
+        x-init="$el.form && $el.form.addEventListener('submit', () => loading = true)"
+        x-bind:disabled="loading"
+        {{ $attributes->merge(['class' => $classes]) }}
+    >
+        <svg x-show="loading" x-cloak class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+        </svg>
+        {{ $slot }}
+    </button>
 @else
     <button type="{{ $type }}" {{ $attributes->merge(['class' => $classes]) }}>{{ $slot }}</button>
 @endif

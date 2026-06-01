@@ -53,6 +53,11 @@
     --shadow-pop: 0 12px 40px rgb(62 43 32 / 0.16);
 }
 
+/* Hide Alpine-managed elements until Alpine initializes (prevents flash of spinners/toasts) */
+[x-cloak] {
+    display: none !important;
+}
+
 /* Custom Typography for Event Details (Prose) */
 .prose h1 {
     font-size: 2.25rem;

@@ -20,6 +20,7 @@
         <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('logo.png') }}" onerror="this.onerror=null; this.href='/favicon.ico';">
     </head>
     <body class="{{ app()->getLocale() === 'ar' ? 'font-arabic' : 'font-sans' }} antialiased bg-yemdat-beige text-yemdat-brown">
+        <x-ui.toast />
         <div class="min-h-screen">
             <!-- Notification Bar -->
             @if(isset($settings['notification_bar_enabled']) && $settings['notification_bar_enabled'])
