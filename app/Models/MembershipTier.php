@@ -45,9 +45,26 @@ class MembershipTier extends Model
 
     /**
      * Get the features based on the current locale.
+     *
+     * Always returns a clean, indexed array. Tolerates legacy/malformed data
+     * (a JSON-encoded string or a comma-joined string instead of an array) so
+     * the public page never 500s on `count()`.
      */
-    public function getFeaturesAttribute()
+    public function getFeaturesAttribute(): array
     {
-        return app()->getLocale() === 'ar' ? $this->features_ar : $this->features_en;
+        $features = app()->getLocale() === 'ar' ? $this->features_ar : $this->features_en;
+
+        if (is_string($features)) {
+            $decoded = json_decode($features, true);
+            $features = is_array($decoded)
+                ? $decoded
+                : array_map('trim', explode(',', $features));
+        }
+
+        if (! is_array($features)) {
+            return [];
+        }
+
+        return array_values(array_filter($features, fn ($f) => filled($f)));
     }
 }

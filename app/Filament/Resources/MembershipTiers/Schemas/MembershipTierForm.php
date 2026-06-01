@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\MembershipTiers\Schemas;
 
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
@@ -25,11 +26,16 @@ class MembershipTierForm
                 Textarea::make('description_ar')
                     ->required()
                     ->columnSpanFull(),
-                Textarea::make('features_en')
-                    ->default(null)
+                // Stored as JSON arrays (model casts features_en/features_ar to array).
+                // TagsInput keeps them as arrays — a Textarea would save a string and
+                // corrupt the cast (each feature = one tag; press Enter to add).
+                TagsInput::make('features_en')
+                    ->label('Features (English)')
+                    ->placeholder('Add a feature')
                     ->columnSpanFull(),
-                Textarea::make('features_ar')
-                    ->default(null)
+                TagsInput::make('features_ar')
+                    ->label('Features (Arabic)')
+                    ->placeholder('أضف ميزة')
                     ->columnSpanFull(),
                 Toggle::make('is_active')
                     ->required(),
