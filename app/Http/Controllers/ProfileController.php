@@ -17,13 +17,33 @@ class ProfileController extends Controller
             return redirect()->route('home')->withErrors(['error' => 'You do not have a registered community profile.']);
         }
 
+        // Load registered events once, then split into upcoming vs past for the dashboard.
+        $events = $member->events()->orderBy('start_date', 'desc')->get();
+        $now = now();
+        [$upcomingEvents, $pastEvents] = $events->partition(
+            fn ($event) => ($event->end_date ?? $event->start_date) >= $now
+        );
+        // Soonest upcoming event first; past events stay newest-first.
+        $upcomingEvents = $upcomingEvents->sortBy('start_date')->values();
+        $pastEvents = $pastEvents->values();
+        $nextEvent = $upcomingEvents->first();
+
         // Map of event_id => valid certificate, for the "Download Certificate" buttons.
         $certificatesByEvent = $member->certificates()
             ->whereNull('revoked_at')
             ->get()
             ->keyBy('event_id');
 
-        return view('profile.show', compact('member', 'certificatesByEvent'));
+        $completion = $member->profileCompletion();
+
+        return view('profile.show', compact(
+            'member',
+            'upcomingEvents',
+            'pastEvents',
+            'nextEvent',
+            'certificatesByEvent',
+            'completion'
+        ));
     }
 
     public function edit()

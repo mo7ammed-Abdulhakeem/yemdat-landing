@@ -72,4 +72,37 @@ class Member extends Authenticatable
     {
         return $this->hasMany(Contact::class);
     }
+
+    /**
+     * Profile completeness for the member dashboard.
+     *
+     * Returns the percent complete plus the keys of any fields still missing,
+     * so the profile page can nudge members to finish filling it in.
+     *
+     * @return array{percent:int, completed:int, total:int, missing:array<int,string>}
+     */
+    public function profileCompletion(): array
+    {
+        $fields = [
+            'full_name'       => filled($this->full_name),
+            'email'           => filled($this->email),
+            'phone_number'    => filled($this->phone_number),
+            'country'         => filled($this->country),
+            'gender'          => filled($this->gender),
+            'specialty'       => filled($this->specialty),
+            'education_level' => filled($this->education_level),
+            'bio'             => filled($this->bio),
+            'linkedin_url'    => filled($this->linkedin_url),
+        ];
+
+        $total = count($fields);
+        $completed = count(array_filter($fields));
+
+        return [
+            'percent'   => (int) round($completed / $total * 100),
+            'completed' => $completed,
+            'total'     => $total,
+            'missing'   => array_keys(array_filter($fields, fn ($done) => ! $done)),
+        ];
+    }
 }
