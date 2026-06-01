@@ -21,7 +21,7 @@
 <article class="bg-white rounded-[1.5rem] shadow-sm border border-gray-200 overflow-hidden flex flex-col h-full hover:shadow-2xl transition-all duration-500 group">
     <a href="{{ route('news.show', $post->slug) }}" class="relative block h-64 bg-yemdat-brown overflow-hidden shrink-0">
         @if ($post->image)
-            <img src="{{ asset('storage/'.$post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover group-hover:scale-105 group-hover:opacity-90 transition duration-700 ease-in-out">
+            <img src="{{ asset('storage/'.$post->image) }}" alt="{{ $post->title }}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 group-hover:opacity-90 transition duration-700 ease-in-out">
         @else
             <div class="w-full h-full flex items-center justify-center bg-yemdat-brown">
                 <svg class="h-20 w-20 text-yemdat-gold/50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" /></svg>

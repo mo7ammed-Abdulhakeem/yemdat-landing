@@ -18,18 +18,9 @@ class BroadcastJobTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function tearDown(): void
-    {
-        putenv('BROADCAST_DAILY_LIMIT');
-        unset($_ENV['BROADCAST_DAILY_LIMIT'], $_SERVER['BROADCAST_DAILY_LIMIT']);
-        parent::tearDown();
-    }
-
     private function setDailyLimit(int $limit): void
     {
-        putenv("BROADCAST_DAILY_LIMIT={$limit}");
-        $_ENV['BROADCAST_DAILY_LIMIT'] = (string) $limit;
-        $_SERVER['BROADCAST_DAILY_LIMIT'] = (string) $limit;
+        config(['yemdat.broadcast_daily_limit' => $limit]);
     }
 
     private function seedBroadcastWithRecipients(int $count): EmailBroadcast

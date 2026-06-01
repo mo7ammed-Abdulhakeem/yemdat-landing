@@ -20,7 +20,7 @@ class ContactUsAdminAlert extends Mailable
 
     public function build()
     {
-        return $this->subject('New Contact Us Submission - ' . env('APP_NAME'))
+        return $this->subject('New Contact Us Submission - ' . config('app.name'))
             ->view('emails.admin-alert')
             ->with([
             'contact' => $this->contact

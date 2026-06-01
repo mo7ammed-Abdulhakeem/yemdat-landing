@@ -5,40 +5,15 @@ use App\Http\Controllers\MembershipController;
 
 use App\Http\Controllers\ContactController;
 
-use App\Models\Event;
-use Carbon\Carbon;
-
-Route::get('/', function () {
-    $upcomingEvents = Event::where('is_active', true)
-        ->where('end_date', '>=', Carbon::now()) // Not ended yet
-        ->orderBy('start_date', 'asc')
-        ->take(3)
-        ->get();
-
-    $latestNews = \App\Models\Post::where('is_published', true)
-        ->latest()
-        ->take(2)
-        ->get();
-
-    return view('welcome', compact('upcomingEvents', 'latestNews'));
-})->name('home');
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::view('/about', 'about')->name('about');
 Route::view('/vision', 'vision')->name('vision');
-Route::get('lang/{locale}', function ($locale) {
-    \Illuminate\Support\Facades\Log::info('Route: Switching language to ' . $locale);
-    if (in_array($locale, ['en', 'ar'])) {
-        session(['locale' => $locale]);
-        \Illuminate\Support\Facades\Log::info('Route: Session set. Current session locale: ' . session('locale'));
-    }
-    return back();
-})->name('lang.switch');
+Route::get('lang/{locale}', [App\Http\Controllers\LanguageController::class, 'switch'])->name('lang.switch');
 
 Route::get('/membership', [MembershipController::class , 'create'])->name('membership');
 Route::post('/membership', [MembershipController::class , 'store'])->name('membership.store')->middleware('throttle:3,1');
-Route::get('/training', function () {
-    return redirect()->route('events.index');
-})->name('training');
+Route::redirect('/training', '/events')->name('training');
 Route::get('/news', [App\Http\Controllers\PostController::class , 'index'])->name('news');
 Route::get('/news/{slug}', [App\Http\Controllers\PostController::class , 'show'])->name('news.show');
 Route::get('/contact', [ContactController::class , 'index'])->name('contact');
@@ -192,6 +167,4 @@ if (app()->environment('local')) {
 }
 
 // Fallback Route for true 404 handling with active Sessions (Arabic Localization support)
-Route::fallback(function () {
-    abort(404);
-});
+Route::fallback(App\Http\Controllers\FallbackController::class);

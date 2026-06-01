@@ -19,7 +19,7 @@ class ProcessBroadcastJob implements ShouldQueue
 
     private function dailyLimit(): int
     {
-        return (int) env('BROADCAST_DAILY_LIMIT', 80);
+        return (int) config('yemdat.broadcast_daily_limit', 80);
     }
 
     public function handle(): void
