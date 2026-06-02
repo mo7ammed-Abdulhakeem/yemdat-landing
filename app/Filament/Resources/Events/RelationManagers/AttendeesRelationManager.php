@@ -5,12 +5,14 @@ namespace App\Filament\Resources\Events\RelationManagers;
 use App\Actions\Certificates\IssueCertificate;
 use App\Models\Certificate;
 use App\Services\CertificatePdf;
+use App\Support\CsvExport;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
+use Illuminate\Support\Str;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -47,6 +49,27 @@ class AttendeesRelationManager extends RelationManager
                     ->badge()
                     ->color(fn ($state) => $state === '—' ? 'gray' : 'success')
                     ->getStateUsing(fn ($record) => optional($this->certificateFor($record))->serial ?? '—'),
+            ])
+            ->headerActions([
+                Action::make('exportAttendees')
+                    ->label('Export CSV')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('gray')
+                    ->action(function () {
+                        $event = $this->getOwnerRecord();
+
+                        return CsvExport::download(
+                            'attendees-'.Str::slug($event->title_en ?: 'event').'.csv',
+                            ['Member', 'Email', 'Registered at', 'Attended at', 'Completed at'],
+                            $event->members()->orderBy('full_name')->lazy()->map(fn ($member) => [
+                                $member->full_name,
+                                $member->email,
+                                $member->pivot->created_at,
+                                $member->pivot->attended_at,
+                                $member->pivot->completed_at,
+                            ]),
+                        );
+                    }),
             ])
             ->recordActions([
                 ActionGroup::make([

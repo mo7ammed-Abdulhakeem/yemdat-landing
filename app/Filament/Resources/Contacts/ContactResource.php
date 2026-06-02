@@ -20,9 +20,29 @@ class ContactResource extends Resource
 
     protected static ?string $model = Contact::class;
 
+    protected static ?string $recordTitleAttribute = 'subject';
+
     protected static function permissionKey(): ?string
     {
         return 'messages';
+    }
+
+    /**
+     * Columns the top-bar global search looks at for contact messages.
+     */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'email', 'subject'];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'From' => $record->name,
+        ];
     }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedInbox;

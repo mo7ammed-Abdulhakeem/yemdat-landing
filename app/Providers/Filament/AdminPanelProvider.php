@@ -28,6 +28,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            // Built-in "Edit profile" page (name / email / password) in the user menu.
+            ->profile()
             ->brandName('Yemdat Admin')
             ->colors([
                 'primary' => Color::hex('#593E2D'),

@@ -24,7 +24,7 @@ You have received a new application through the "Be a Trainer" form.
 {!! $trainerRequest->getRawOriginal('help_topic') ?? $trainerRequest->help_topic !!}
 </div>
 @endif
-<x-mail::button :url="route('admin.trainers.show', $trainerRequest->id)">
+<x-mail::button :url="\App\Filament\Resources\TrainerRequests\TrainerRequestResource::getUrl('view', ['record' => $trainerRequest->id])">
 View Full Application
 </x-mail::button>
 

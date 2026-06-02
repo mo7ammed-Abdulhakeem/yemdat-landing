@@ -52,7 +52,7 @@
                                 </ul>
                             @endif
 
-                            <a href="{{ route('register') }}" class="mt-auto block text-center w-full py-3 rounded-lg border-2 border-yemdat-brown text-yemdat-brown font-bold hover:bg-yemdat-brown hover:text-white transition">
+                            <a href="{{ route('register', ['tier' => $tier->slug]) }}" class="mt-auto block text-center w-full py-3 rounded-lg border-2 border-yemdat-brown text-yemdat-brown font-bold hover:bg-yemdat-brown hover:text-white transition">
                                 {{ __('membership.register_now') }}
                             </a>
                         </div>

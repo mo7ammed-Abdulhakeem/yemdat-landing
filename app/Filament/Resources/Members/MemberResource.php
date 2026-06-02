@@ -25,9 +25,29 @@ class MemberResource extends Resource
 
     protected static ?string $model = Member::class;
 
+    protected static ?string $recordTitleAttribute = 'full_name';
+
     protected static function permissionKey(): ?string
     {
         return 'members';
+    }
+
+    /**
+     * Columns the top-bar global search looks at for members.
+     */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['full_name', 'email', 'phone_number'];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Email' => $record->email,
+        ];
     }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;

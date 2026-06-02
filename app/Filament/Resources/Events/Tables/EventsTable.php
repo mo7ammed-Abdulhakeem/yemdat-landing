@@ -42,6 +42,10 @@ class EventsTable
                     ->label('Active')
                     ->boolean()
                     ->sortable(),
+                TextColumn::make('creator.name')
+                    ->label('Created by')
+                    ->placeholder('—')
+                    ->toggleable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -27,7 +27,15 @@ class RegisterController extends Controller
         }
         $tiers = MembershipTier::where('is_active', true)->get();
         $specialties = Specialty::active()->ordered()->get();
-        return view('auth.register', compact('tiers', 'specialties'));
+
+        // Pre-select a membership tier when arriving from a tier card on /membership
+        // (e.g. /register?tier=expert). Ignore unknown/inactive slugs.
+        $selectedTier = null;
+        if ($request->filled('tier') && $tiers->contains('slug', $request->query('tier'))) {
+            $selectedTier = $request->query('tier');
+        }
+
+        return view('auth.register', compact('tiers', 'specialties', 'selectedTier'));
     }
 
     public function register(Request $request)

@@ -19,6 +19,17 @@ class EventResource extends Resource
 {
     protected static ?string $model = Event::class;
 
+    protected static ?string $recordTitleAttribute = 'title_en';
+
+    /**
+     * Search both the English and Arabic title columns so global search
+     * works regardless of the locale the admin types in.
+     */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['title_en', 'title_ar'];
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;
 
     protected static string|\UnitEnum|null $navigationGroup = 'Content';

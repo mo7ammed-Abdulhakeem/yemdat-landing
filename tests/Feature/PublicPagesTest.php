@@ -41,7 +41,7 @@ class PublicPagesTest extends TestCase
             'member register' => ['/register'],
             'forgot password' => ['/forgot-password'],
             'claim profile' => ['/claim-profile'],
-            'admin login' => ['/admincpanel/login'],
+            'admin login' => ['/admin/login'],
         ];
     }
 

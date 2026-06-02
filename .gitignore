@@ -35,3 +35,6 @@ envcopy
 /.claude
 /.env.production
 /.env.testing
+
+# Release review artifacts — local-only screenshot captures (20MB+ of PNGs)
+/v5screenshots

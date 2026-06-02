@@ -9,7 +9,7 @@
                     <svg class="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                 </div>
                 <h1 class="text-3xl md:text-4xl font-extrabold text-ink mb-4">
-                    {{ $ar ? ($settings['trainer_form_title_ar'] ?? 'كن مدرباً') : ($settings['trainer_form_title_en'] ?? 'Be A Trainer') }}
+                    {{ $ar ? ($settings['trainer_form_title_ar'] ?? 'علّم معنا') : ($settings['trainer_form_title_en'] ?? 'Teach with Us') }}
                 </h1>
                 <p class="text-lg text-ink-soft">
                     {{ $ar ? ($settings['trainer_form_notes_ar'] ?? 'يرجى ملء النموذج أدناه إذا كنت مهتمًا بتقديم دورة تدريبية معنا.') : ($settings['trainer_form_notes_en'] ?? 'Please fill out the form below if you are interested in making a course with us.') }}
@@ -18,7 +18,7 @@
 
             <x-ui.card class="p-8 md:p-10">
                 <h2 class="text-2xl font-bold text-primary mb-8 text-center">
-                    {{ $ar ? 'نموذج المدرب' : 'Trainer Registration Form' }}
+                    {{ $ar ? 'نموذج التقديم' : 'Application Form' }}
                 </h2>
 
                 @if ($errors->any())

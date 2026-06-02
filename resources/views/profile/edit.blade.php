@@ -198,6 +198,16 @@
                     sortField: { field: "text", direction: "asc" }
                 });
             }
+
+            // Searchable specialty picker. TomSelect hides the native <select>, so the
+            // inline onchange no longer fires — call the toggle from TomSelect's onChange.
+            if (document.getElementById('specialty')) {
+                new TomSelect("#specialty", {
+                    create: false,
+                    sortField: { field: "text", direction: "asc" },
+                    onChange: toggleSpecialtyOther
+                });
+            }
         });
     </script>
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">

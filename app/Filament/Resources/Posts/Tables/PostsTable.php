@@ -37,6 +37,10 @@ class PostsTable
                     ->label('Featured')
                     ->boolean()
                     ->sortable(),
+                TextColumn::make('author.name')
+                    ->label('Created by')
+                    ->placeholder('—')
+                    ->toggleable(),
                 TextColumn::make('created_at')
                     ->label('Created')
                     ->dateTime()

@@ -1,116 +1,147 @@
-<nav x-data="{ open: false }" class="bg-yemdat-beige relative z-50 shadow-sm">
-    <!-- Primary Navigation Menu -->
+@php
+    $aboutActive = request()->routeIs('about') || request()->routeIs('vision');
+    $member = auth()->guard('member')->user();
+    $memberFirstName = $member ? \Illuminate\Support\Str::before(trim($member->full_name), ' ') : '';
+    $isAdmin = auth()->guard('web')->check()
+        && (auth()->guard('web')->user()->isSuperAdmin() || auth()->guard('web')->user()->role === 'admin');
+@endphp
+
+<nav x-data="{ open: false, scrolled: false }"
+     @scroll.window="scrolled = window.scrollY > 8"
+     class="sticky top-0 z-50 bg-surface-raised border-b border-border transition-shadow duration-200"
+     :class="scrolled ? 'shadow-md' : 'shadow-sm'">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-20"> <!-- Increased height for better spacing -->
-            <div class="flex items-center">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('home') }}" class="flex items-center gap-3">
-                        <!-- SVG Logo -->
-                        <svg width="40" height="40" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="10" y="5" width="30" height="8" rx="2" fill="#F2CB57"/>
-                            <rect x="5" y="16" width="35" height="8" rx="2" fill="#C88D16"/>
-                            <rect x="0" y="27" width="40" height="8" rx="2" fill="#593E2D"/>
+        <div class="flex justify-between items-center h-20">
+            <!-- Logo -->
+            <div class="shrink-0 flex items-center">
+                <a href="{{ route('home') }}" class="flex items-center gap-3">
+                    <svg width="40" height="40" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <rect x="10" y="5" width="30" height="8" rx="2" fill="#F2CB57"/>
+                        <rect x="5" y="16" width="35" height="8" rx="2" fill="#C88D16"/>
+                        <rect x="0" y="27" width="40" height="8" rx="2" fill="#593E2D"/>
+                    </svg>
+                    <span class="font-bold text-2xl text-primary tracking-wide">YEMDAT</span>
+                </a>
+            </div>
+
+            <!-- Desktop Navigation Links -->
+            <div class="hidden xl:flex items-center gap-6">
+                <x-nav-link :href="route('home')" :active="request()->routeIs('home')">{{ __('nav.home') }}</x-nav-link>
+
+                <!-- About dropdown (About Us + Vision & Mission) -->
+                <div class="relative" x-data="{ aboutOpen: false }" @keydown.escape.window="aboutOpen = false">
+                    <button type="button"
+                            @click="aboutOpen = ! aboutOpen"
+                            :aria-expanded="aboutOpen.toString()"
+                            aria-haspopup="true"
+                            class="inline-flex items-center gap-1 whitespace-nowrap px-1 pt-1 border-b-2 text-sm leading-5 focus:outline-none transition duration-150 ease-in-out {{ $aboutActive ? 'border-accent text-primary font-semibold' : 'border-transparent text-ink-soft font-medium hover:text-primary hover:border-border' }}">
+                        {{ __('nav.about') }}
+                        <svg class="w-4 h-4 transition-transform duration-150" :class="aboutOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
-                        <span class="font-bold text-2xl text-yemdat-brown tracking-wide">YEMDAT</span>
-                    </a>
+                    </button>
+                    <div x-show="aboutOpen" x-cloak
+                         @click.away="aboutOpen = false"
+                         x-transition:enter="transition ease-out duration-150"
+                         x-transition:enter-start="opacity-0 -translate-y-1"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         class="absolute start-0 mt-3 w-52 py-1 bg-surface-raised border border-border rounded-card shadow-pop z-50">
+                        <a href="{{ route('about') }}" class="block px-4 py-2 text-sm text-ink-soft hover:text-primary hover:bg-surface-sunken transition">{{ __('nav.about_us') }}</a>
+                        <a href="{{ route('vision') }}" class="block px-4 py-2 text-sm text-ink-soft hover:text-primary hover:bg-surface-sunken transition">{{ __('nav.vision_mission') }}</a>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Navigation Links (Desktop) -->
-            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex items-center">
-                <a href="{{ route('home') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('home') ? 'border-yemdat-brown' : 'border-transparent hover:border-gray-300' }} text-sm font-medium leading-5 text-yemdat-brown focus:outline-none focus:border-yemdat-orange transition duration-150 ease-in-out">
-                    {{ __('nav.home') }}
-                </a>
-                <a href="{{ route('about') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('about') ? 'border-yemdat-brown' : 'border-transparent hover:border-gray-300' }} text-sm font-medium leading-5 text-gray-500 hover:text-yemdat-brown focus:outline-none focus:text-yemdat-brown focus:border-gray-300 transition duration-150 ease-in-out">
-                    {{ __('nav.about') }}
-                </a>
-                <a href="{{ route('vision') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('vision') ? 'border-yemdat-brown' : 'border-transparent hover:border-gray-300' }} text-sm font-medium leading-5 text-gray-500 hover:text-yemdat-brown focus:outline-none focus:text-yemdat-brown focus:border-gray-300 transition duration-150 ease-in-out">
-                    {{ __('nav.vision_mission') }}
-                </a>
-                 <a href="{{ route('membership') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('membership') ? 'border-yemdat-brown' : 'border-transparent hover:border-gray-300' }} text-sm font-medium leading-5 text-gray-500 hover:text-yemdat-brown focus:outline-none focus:text-yemdat-brown focus:border-gray-300 transition duration-150 ease-in-out">
-                    {{ __('nav.membership') }}
-                </a>
-                  <a href="{{ route('events.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('events.*') ? 'border-yemdat-brown' : 'border-transparent hover:border-gray-300' }} text-sm font-medium leading-5 text-gray-500 hover:text-yemdat-brown focus:outline-none focus:text-yemdat-brown focus:border-gray-300 transition duration-150 ease-in-out">
-                    {{ __('nav.training_events') }}
-                </a>
-                 <a href="{{ route('news') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('news') ? 'border-yemdat-brown' : 'border-transparent hover:border-gray-300' }} text-sm font-medium leading-5 text-gray-500 hover:text-yemdat-brown focus:outline-none focus:text-yemdat-brown focus:border-gray-300 transition duration-150 ease-in-out">
-                    {{ __('nav.news') }}
-                </a>
-                <a href="{{ route('contact') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('contact') ? 'border-yemdat-brown' : 'border-transparent hover:border-gray-300' }} text-sm font-medium leading-5 text-gray-500 hover:text-yemdat-brown focus:outline-none focus:text-yemdat-brown focus:border-gray-300 transition duration-150 ease-in-out">
-                    {{ __('nav.contact') }}
-                </a>
-                <a href="{{ route('trainer.create') }}" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('trainer.*') ? 'border-yemdat-brown' : 'border-transparent hover:border-gray-300' }} text-sm font-medium leading-5 text-gray-500 hover:text-yemdat-brown focus:outline-none focus:text-yemdat-brown focus:border-gray-300 transition duration-150 ease-in-out">
-                    {{ app()->getLocale() == 'ar' ? 'كن مدرباً' : 'Be A Trainer' }}
+                <x-nav-link :href="route('membership')" :active="request()->routeIs('membership')">{{ __('nav.membership') }}</x-nav-link>
+                <x-nav-link :href="route('events.index')" :active="request()->routeIs('events.*')">{{ __('nav.training_events') }}</x-nav-link>
+                <x-nav-link :href="route('news')" :active="request()->routeIs('news')">{{ __('nav.news') }}</x-nav-link>
+                <x-nav-link :href="route('contact')" :active="request()->routeIs('contact')">{{ __('nav.contact') }}</x-nav-link>
+
+                <!-- Be a Trainer CTA -->
+                <a href="{{ route('trainer.create') }}"
+                   class="inline-flex items-center whitespace-nowrap shrink-0 px-4 py-1.5 rounded-btn border text-sm font-semibold transition duration-150 {{ request()->routeIs('trainer.*') ? 'bg-primary text-white border-primary' : 'border-primary text-primary hover:bg-primary hover:text-white' }}">
+                    {{ __('nav.be_a_trainer') }}
                 </a>
             </div>
 
-            <!-- Language Switcher & Desktop Buttons -->
-            <div class="hidden sm:flex sm:items-center sm:ml-6 gap-4">
-                @if(auth()->guard('web')->check() && (auth()->guard('web')->user()->isSuperAdmin() || auth()->guard('web')->user()->role === 'admin'))
-                    <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-yemdat-brown border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-yemdat-brown/90 focus:outline-none transition ease-in-out duration-150">
-                        {{ app()->getLocale() == 'ar' ? 'لوحة التحكم' : 'Dashboard' }}
+            <!-- Desktop right cluster: auth + language -->
+            <div class="hidden xl:flex items-center gap-3">
+                @if($isAdmin)
+                    <a href="{{ url('/admin') }}" class="inline-flex items-center whitespace-nowrap shrink-0 px-4 py-2 bg-primary border border-transparent rounded-btn font-semibold text-xs text-white uppercase tracking-widest hover:bg-primary-hover focus:outline-none transition duration-150">
+                        {{ __('nav.dashboard') }}
                     </a>
-                @elseif(auth()->guard('member')->check())
-                    <a href="{{ route('profile.show') }}" class="flex items-center justify-center p-2 text-sm font-bold text-gray-600 hover:text-yemdat-brown hover:bg-gray-100 rounded-lg transition duration-150 ease-in-out">
-                        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                        {{ app()->getLocale() == 'ar' ? 'ملفي الشخصي' : 'My Profile' }}
-                    </a>
+                @elseif($member)
+                    <!-- Member dropdown -->
+                    <div class="relative" x-data="{ userOpen: false }" @keydown.escape.window="userOpen = false">
+                        <button type="button"
+                                @click="userOpen = ! userOpen"
+                                :aria-expanded="userOpen.toString()"
+                                aria-haspopup="true"
+                                class="inline-flex items-center gap-2 shrink-0 px-2 py-1.5 rounded-btn text-sm font-semibold text-ink-soft hover:text-primary hover:bg-surface-sunken focus:outline-none transition duration-150">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-surface-sunken text-primary">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                            </span>
+                            <span class="max-w-[8rem] truncate">{{ $memberFirstName }}</span>
+                            <svg class="w-4 h-4 transition-transform duration-150" :class="userOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                        <div x-show="userOpen" x-cloak
+                             @click.away="userOpen = false"
+                             x-transition:enter="transition ease-out duration-150"
+                             x-transition:enter-start="opacity-0 -translate-y-1"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             class="absolute end-0 mt-3 w-56 py-1 bg-surface-raised border border-border rounded-card shadow-pop z-50">
+                            <div class="px-4 py-2 border-b border-border">
+                                <p class="text-sm font-semibold text-ink truncate">{{ $member->full_name }}</p>
+                                <p class="text-xs text-ink-soft truncate">{{ $member->email }}</p>
+                            </div>
+                            <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-ink-soft hover:text-primary hover:bg-surface-sunken transition">{{ __('nav.my_profile') }}</a>
+                            <form method="POST" action="{{ route('public.logout') }}">
+                                @csrf
+                                <button type="submit" class="w-full text-start px-4 py-2 text-sm text-danger hover:bg-danger-soft transition">{{ __('nav.log_out') }}</button>
+                            </form>
+                        </div>
+                    </div>
                 @else
-                    <a href="{{ route('public.login') }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-50 focus:outline-none transition ease-in-out duration-150">
-                        {{ app()->getLocale() == 'ar' ? 'تسجيل الدخول' : 'Sign In' }}
+                    <a href="{{ route('public.login') }}" class="inline-flex items-center whitespace-nowrap shrink-0 px-4 py-2 bg-surface-raised border border-border rounded-btn font-semibold text-xs text-ink uppercase tracking-widest hover:bg-surface-sunken focus:outline-none transition duration-150">
+                        {{ __('nav.sign_in') }}
                     </a>
-                    <a href="{{ route('register') }}" class="inline-flex items-center px-4 py-2 bg-yemdat-gold border border-transparent rounded-md font-semibold text-xs text-yemdat-brown uppercase tracking-widest hover:bg-yemdat-gold/90 focus:outline-none transition ease-in-out duration-150 shadow-sm">
+                    <a href="{{ route('register') }}" class="inline-flex items-center whitespace-nowrap shrink-0 px-4 py-2 bg-accent border border-transparent rounded-btn font-semibold text-xs text-primary uppercase tracking-widest hover:bg-accent-hover focus:outline-none transition duration-150 shadow-sm">
                         {{ __('home.btn_join') }}
                     </a>
                 @endif
 
+                <!-- Language switcher -->
                 @if (app()->getLocale() == 'en')
-                    <a href="{{ route('lang.switch', 'ar') }}" class="flex items-center justify-center p-2 text-sm font-bold text-gray-500 hover:text-yemdat-brown hover:bg-gray-100 rounded-lg transition duration-150 ease-in-out" title="العربية">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 mr-1">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S13.627 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.627 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
-                        </svg>
+                    <a href="{{ route('lang.switch', 'ar') }}" class="inline-flex items-center gap-1 shrink-0 p-2 rounded-btn text-sm font-bold text-ink-soft hover:text-primary hover:bg-surface-sunken transition duration-150" title="العربية">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S13.627 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.627 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" /></svg>
                         AR
                     </a>
                 @else
-                    <a href="{{ route('lang.switch', 'en') }}" class="flex items-center justify-center p-2 text-sm font-bold text-gray-500 hover:text-yemdat-brown hover:bg-gray-100 rounded-lg transition duration-150 ease-in-out" title="English">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 mr-1">
-                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S13.627 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.627 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
-                        </svg>
+                    <a href="{{ route('lang.switch', 'en') }}" class="inline-flex items-center gap-1 shrink-0 p-2 rounded-btn text-sm font-bold text-ink-soft hover:text-primary hover:bg-surface-sunken transition duration-150" title="English">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S13.627 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.627 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" /></svg>
                         EN
                     </a>
                 @endif
             </div>
 
-            <!-- Mobile Language Switcher & Hamburger -->
-            <div class="flex items-center sm:hidden gap-1">
-                @if(auth()->guard('member')->check())
-                    <a href="{{ route('profile.show') }}" class="flex items-center p-2 text-gray-500 hover:text-yemdat-brown hover:bg-gray-100 rounded-md transition duration-150" title="{{ app()->getLocale() == 'ar' ? 'ملفي الشخصي' : 'My Profile' }}">
-                        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                        <span class="font-bold text-sm hidden sm:inline-block">{{ app()->getLocale() == 'ar' ? 'الملف' : 'Profile' }}</span>
-                    </a>
-                @endif
+            <!-- Mobile right cluster: language + hamburger -->
+            <div class="flex items-center gap-1 xl:hidden">
                 @if (app()->getLocale() == 'en')
-                    <a href="{{ route('lang.switch', 'ar') }}" class="flex items-center p-2 text-gray-500 hover:text-yemdat-brown hover:bg-gray-100 rounded-md transition duration-150" title="العربية">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 mr-1">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S13.627 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.627 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
-                        </svg>
-                        <span class="font-bold text-sm">AR</span>
+                    <a href="{{ route('lang.switch', 'ar') }}" class="inline-flex items-center gap-1 shrink-0 p-2 rounded-btn text-sm font-bold text-ink-soft hover:text-primary hover:bg-surface-sunken transition duration-150" title="العربية">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S13.627 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.627 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" /></svg>
+                        AR
                     </a>
                 @else
-                    <a href="{{ route('lang.switch', 'en') }}" class="flex items-center p-2 text-gray-500 hover:text-yemdat-brown hover:bg-gray-100 rounded-md transition duration-150" title="English">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 ml-1">
-                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S13.627 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.627 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
-                        </svg>
-                        <span class="font-bold text-sm">EN</span>
+                    <a href="{{ route('lang.switch', 'en') }}" class="inline-flex items-center gap-1 shrink-0 p-2 rounded-btn text-sm font-bold text-ink-soft hover:text-primary hover:bg-surface-sunken transition duration-150" title="English">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S13.627 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.627 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" /></svg>
+                        EN
                     </a>
                 @endif
 
                 <button @click="open = ! open" type="button"
                         :aria-expanded="open.toString()"
                         aria-controls="mobile-menu"
-                        aria-label="{{ app()->getLocale() == 'ar' ? 'القائمة' : 'Menu' }}"
-                        class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-yemdat-brown hover:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                        aria-label="{{ __('nav.menu') }}"
+                        class="inline-flex items-center justify-center p-2 rounded-btn text-ink-soft hover:text-primary hover:bg-surface-sunken focus:outline-none transition duration-150">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24" aria-hidden="true">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -120,80 +151,60 @@
         </div>
     </div>
 
-    <!-- Responsive Navigation Menu -->
-    <div id="mobile-menu" :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+    <!-- Mobile menu -->
+    <div id="mobile-menu" x-show="open" x-cloak
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 -translate-y-2"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         class="xl:hidden border-t border-border">
         <div class="pt-2 pb-3 space-y-1">
-             <a href="{{ route('home') }}" class="block pl-3 pr-4 py-2 border-l-4 {{ request()->routeIs('home') ? 'border-yemdat-brown text-yemdat-brown bg-indigo-50' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300' }} text-base font-medium focus:outline-none transition duration-150 ease-in-out">
-                {{ __('nav.home') }}
-            </a>
-             <a href="{{ route('about') }}" class="block pl-3 pr-4 py-2 border-l-4 {{ request()->routeIs('about') ? 'border-yemdat-brown text-yemdat-brown bg-indigo-50' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300' }} text-base font-medium focus:outline-none transition duration-150 ease-in-out">
-                {{ __('nav.about') }}
-            </a>
-            <a href="{{ route('vision') }}" class="block pl-3 pr-4 py-2 border-l-4 {{ request()->routeIs('vision') ? 'border-yemdat-brown text-yemdat-brown bg-indigo-50' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300' }} text-base font-medium focus:outline-none transition duration-150 ease-in-out">
-                {{ __('nav.vision_mission') }}
-            </a>
-             <a href="{{ route('membership') }}" class="block pl-3 pr-4 py-2 border-l-4 {{ request()->routeIs('membership') ? 'border-yemdat-brown text-yemdat-brown bg-indigo-50' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300' }} text-base font-medium focus:outline-none transition duration-150 ease-in-out">
-                {{ __('nav.membership') }}
-            </a>
-             <a href="{{ route('events.index') }}" class="block pl-3 pr-4 py-2 border-l-4 {{ request()->routeIs('events.*') ? 'border-yemdat-brown text-yemdat-brown bg-indigo-50' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300' }} text-base font-medium focus:outline-none transition duration-150 ease-in-out">
-                {{ __('nav.training_events') }}
-            </a>
-             <a href="{{ route('news') }}" class="block pl-3 pr-4 py-2 border-l-4 {{ request()->routeIs('news') ? 'border-yemdat-brown text-yemdat-brown bg-indigo-50' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300' }} text-base font-medium focus:outline-none transition duration-150 ease-in-out">
-                {{ __('nav.news') }}
-            </a>
-            <a href="{{ route('contact') }}" class="block pl-3 pr-4 py-2 border-l-4 {{ request()->routeIs('contact') ? 'border-yemdat-brown text-yemdat-brown bg-indigo-50' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300' }} text-base font-medium focus:outline-none transition duration-150 ease-in-out">
-                {{ __('nav.contact') }}
-            </a>
-             <a href="{{ route('trainer.create') }}" class="block pl-3 pr-4 py-2 border-l-4 {{ request()->routeIs('trainer.*') ? 'border-yemdat-brown text-yemdat-brown bg-indigo-50' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300' }} text-base font-medium focus:outline-none transition duration-150 ease-in-out">
-                {{ app()->getLocale() == 'ar' ? 'كن مدرباً' : 'Be A Trainer' }}
-            </a>
-        <!-- Mobile Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            @if(auth()->guard('web')->check() && (auth()->guard('web')->user()->isSuperAdmin() || auth()->guard('web')->user()->role === 'admin'))
+            <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">{{ __('nav.home') }}</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('about')" :active="request()->routeIs('about')">{{ __('nav.about_us') }}</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('vision')" :active="request()->routeIs('vision')">{{ __('nav.vision_mission') }}</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('membership')" :active="request()->routeIs('membership')">{{ __('nav.membership') }}</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('events.index')" :active="request()->routeIs('events.*')">{{ __('nav.training_events') }}</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('news')" :active="request()->routeIs('news')">{{ __('nav.news') }}</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('contact')" :active="request()->routeIs('contact')">{{ __('nav.contact') }}</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('trainer.create')" :active="request()->routeIs('trainer.*')">{{ __('nav.be_a_trainer') }}</x-responsive-nav-link>
+        </div>
+
+        <!-- Settings / account -->
+        <div class="pt-4 pb-3 border-t border-border">
+            @if($isAdmin)
                 <div class="px-4">
-                    <div class="font-medium text-base text-gray-800">{{ auth()->guard('web')->user()->name }}</div>
-                    <div class="font-medium text-sm text-gray-500">{{ auth()->guard('web')->user()->email }}</div>
+                    <div class="font-medium text-base text-ink">{{ auth()->guard('web')->user()->name }}</div>
+                    <div class="font-medium text-sm text-ink-soft">{{ auth()->guard('web')->user()->email }}</div>
                 </div>
-
                 <div class="mt-3 space-y-1">
-                    <a href="{{ route('admin.dashboard') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 text-base font-medium focus:outline-none transition duration-150 ease-in-out">
-                        {{ app()->getLocale() == 'ar' ? 'لوحة التحكم' : 'Dashboard' }}
-                    </a>
-
-                    <!-- Authentication -->
-                    <form method="POST" action="{{ route('logout') }}">
+                    <x-responsive-nav-link :href="url('/admin')">{{ __('nav.dashboard') }}</x-responsive-nav-link>
+                    <form method="POST" action="{{ route('filament.admin.auth.logout') }}">
                         @csrf
-                        <button type="submit" class="w-full text-start block pl-3 pr-4 py-2 border-l-4 border-transparent text-red-600 hover:text-red-800 hover:bg-red-50 hover:border-red-300 text-base font-medium focus:outline-none transition duration-150 ease-in-out">
-                            {{ app()->getLocale() == 'ar' ? 'تسجيل الخروج' : 'Log Out' }}
+                        <button type="submit" class="w-full text-start block ps-3 pe-4 py-2 border-s-4 border-transparent text-danger font-medium hover:bg-danger-soft focus:outline-none transition duration-150">
+                            {{ __('nav.log_out') }}
                         </button>
                     </form>
                 </div>
-            @elseif(auth()->guard('member')->check())
+            @elseif($member)
                 <div class="px-4">
-                    <div class="font-medium text-base text-gray-800">{{ auth()->guard('member')->user()->full_name }}</div>
-                    <div class="font-medium text-sm text-gray-500">{{ auth()->guard('member')->user()->email }}</div>
+                    <div class="font-medium text-base text-ink">{{ $member->full_name }}</div>
+                    <div class="font-medium text-sm text-ink-soft">{{ $member->email }}</div>
                 </div>
-                
                 <div class="mt-3 space-y-1">
-                    <a href="{{ route('profile.show') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 text-base font-medium focus:outline-none transition duration-150 ease-in-out">
-                        {{ app()->getLocale() == 'ar' ? 'ملفي الشخصي' : 'My Profile' }}
-                    </a>
-
-                    <!-- Authentication -->
+                    <x-responsive-nav-link :href="route('profile.show')" :active="request()->routeIs('profile.*')">{{ __('nav.my_profile') }}</x-responsive-nav-link>
                     <form method="POST" action="{{ route('public.logout') }}">
                         @csrf
-                        <button type="submit" class="w-full text-start block pl-3 pr-4 py-2 border-l-4 border-transparent text-red-600 hover:text-red-800 hover:bg-red-50 hover:border-red-300 text-base font-medium focus:outline-none transition duration-150 ease-in-out">
-                            {{ app()->getLocale() == 'ar' ? 'تسجيل الخروج' : 'Log Out' }}
+                        <button type="submit" class="w-full text-start block ps-3 pe-4 py-2 border-s-4 border-transparent text-danger font-medium hover:bg-danger-soft focus:outline-none transition duration-150">
+                            {{ __('nav.log_out') }}
                         </button>
                     </form>
                 </div>
             @else
-                <a href="{{ route('public.login') }}" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 text-base font-medium focus:outline-none transition duration-150 ease-in-out">
-                    {{ app()->getLocale() == 'ar' ? 'تسجيل الدخول' : 'Sign In' }}
-                </a>
-                <a href="{{ route('register') }}" class="block pl-3 pr-4 py-2 border-l-4 border-yemdat-gold text-yemdat-brown bg-yemdat-gold/10 font-bold focus:outline-none transition duration-150 ease-in-out">
-                    {{ __('home.btn_join') }}
-                </a>
+                <div class="space-y-1">
+                    <x-responsive-nav-link :href="route('public.login')">{{ __('nav.sign_in') }}</x-responsive-nav-link>
+                    <a href="{{ route('register') }}" class="block ps-3 pe-4 py-2 border-s-4 border-accent text-primary bg-accent/10 font-bold focus:outline-none transition duration-150">
+                        {{ __('home.btn_join') }}
+                    </a>
+                </div>
             @endif
         </div>
     </div>

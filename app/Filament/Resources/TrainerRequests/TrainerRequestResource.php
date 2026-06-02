@@ -17,6 +17,26 @@ class TrainerRequestResource extends Resource
 {
     protected static ?string $model = TrainerRequest::class;
 
+    protected static ?string $recordTitleAttribute = 'name';
+
+    /**
+     * Columns the top-bar global search looks at for trainer requests.
+     */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'email', 'phone_number'];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Email' => $record->email,
+        ];
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserPlus;
 
     protected static string|\UnitEnum|null $navigationGroup = 'Community';
