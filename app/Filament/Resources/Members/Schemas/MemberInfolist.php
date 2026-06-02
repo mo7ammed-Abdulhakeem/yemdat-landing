@@ -57,9 +57,7 @@ class MemberInfolist
                             ->getStateUsing(fn ($record) => $record->events()->count()),
                         TextEntry::make('specialty')
                             ->label('Specialty')
-                            ->placeholder('—'),
-                        TextEntry::make('specialty_other')
-                            ->label('Specialty (other)')
+                            ->formatStateUsing(fn ($state, $record) => $record->specialty_label)
                             ->placeholder('—'),
                         TextEntry::make('bio')
                             ->label('Bio')

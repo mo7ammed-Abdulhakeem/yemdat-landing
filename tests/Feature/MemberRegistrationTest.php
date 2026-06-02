@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Mail\SignupOtpEmail;
 use App\Models\Member;
 use App\Models\MembershipTier;
+use Database\Seeders\SpecialtySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -14,6 +15,12 @@ use Tests\TestCase;
 class MemberRegistrationTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(SpecialtySeeder::class);
+    }
 
     private function tier(string $slug = 'member'): MembershipTier
     {
@@ -39,7 +46,7 @@ class MemberRegistrationTest extends TestCase
             'country' => 'Yemen',
             'gender' => 'Male',
             'education_level' => 'Bachelor',
-            'specialty' => 'Data Science',
+            'specialty' => 'data-science',
             'membership_type' => 'member',
         ], $overrides);
     }
@@ -55,7 +62,7 @@ class MemberRegistrationTest extends TestCase
             'country' => 'Yemen',
             'gender' => 'Male',
             'education_level' => 'Bachelor',
-            'specialty' => 'Data Science',
+            'specialty' => 'data-science',
             'specialty_other' => null,
             'membership_type' => 'member',
             'otp_code' => Hash::make('123456'),

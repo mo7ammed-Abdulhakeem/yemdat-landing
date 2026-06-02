@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Members\Schemas;
 
 use App\Models\MembershipTier;
+use App\Models\Specialty;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -47,9 +48,15 @@ class MemberForm
                     ->required(),
                 TextInput::make('country')
                     ->required(),
-                TextInput::make('specialty')
+                Select::make('specialty')
+                    ->label('Specialty')
+                    ->options(fn () => Specialty::active()->ordered()->pluck('name_en', 'slug'))
+                    ->searchable()
+                    ->live()
                     ->required(),
                 TextInput::make('specialty_other')
+                    ->label('Specialty (other detail)')
+                    ->visible(fn ($get) => $get('specialty') === 'other')
                     ->default(null),
                 TextInput::make('education_level')
                     ->default(null),

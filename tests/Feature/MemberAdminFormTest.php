@@ -6,6 +6,7 @@ use App\Filament\Resources\Members\Pages\EditMember;
 use App\Models\Member;
 use App\Models\MembershipTier;
 use App\Models\User;
+use Database\Seeders\SpecialtySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Livewire;
@@ -26,6 +27,8 @@ class MemberAdminFormTest extends TestCase
             'is_active' => true, 'sort_order' => 1,
         ]);
 
+        $this->seed(SpecialtySeeder::class);
+
         $this->actingAs(User::factory()->create(['role' => 'super_admin']));
     }
 
@@ -38,7 +41,7 @@ class MemberAdminFormTest extends TestCase
             'phone_number' => '733333333',
             'country' => 'Yemen',
             'gender' => 'Male',
-            'specialty' => 'Data',
+            'specialty' => 'data-analytics',
             'membership_type' => 'member',
             'password' => 'secret-password',
         ]);

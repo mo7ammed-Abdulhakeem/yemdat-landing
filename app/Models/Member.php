@@ -66,6 +66,32 @@ class Member extends Authenticatable
     }
 
     /**
+     * The unified specialty taxonomy entry this member belongs to (by slug).
+     */
+    public function specialtyOption()
+    {
+        return $this->belongsTo(Specialty::class, 'specialty', 'slug');
+    }
+
+    /**
+     * Human-readable, localized specialty label for display.
+     * Prefers the free-text detail for "Other"; falls back to the raw value for any
+     * legacy/unmigrated rows.
+     */
+    public function getSpecialtyLabelAttribute(): ?string
+    {
+        if ($this->specialty === 'other' && filled($this->specialty_other)) {
+            return $this->specialty_other;
+        }
+
+        if ($option = $this->specialtyOption) {
+            return $option->name;
+        }
+
+        return $this->specialty_other ?: $this->specialty;
+    }
+
+    /**
      * Get the contact messages sent by the member.
      */
     public function contacts()

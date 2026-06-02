@@ -108,15 +108,14 @@
 
                             <!-- Specialty -->
                             <x-ui.select name="specialty" id="specialty" :label="__('membership.label_speciality')" :required="true" onchange="toggleSpecialtyOther()">
-                                <option value="Data Management" {{ old('specialty', $member->specialty) == 'Data Management' ? 'selected' : '' }}>{{ __('membership.spec_data_mgmt') }}</option>
-                                <option value="Data Governance" {{ old('specialty', $member->specialty) == 'Data Governance' ? 'selected' : '' }}>{{ __('membership.spec_governance') }}</option>
-                                <option value="Artificial Intelligence" {{ old('specialty', $member->specialty) == 'Artificial Intelligence' ? 'selected' : '' }}>{{ __('membership.spec_ai') }}</option>
-                                <option value="Data Analytics" {{ old('specialty', $member->specialty) == 'Data Analytics' ? 'selected' : '' }}>{{ __('membership.spec_analytics') }}</option>
-                                <option value="Other" {{ old('specialty', $member->specialty) == 'Other' ? 'selected' : '' }}>{{ __('membership.spec_other') }}</option>
+                                <option value="" disabled {{ old('specialty', $member->specialty) ? '' : 'selected' }}>{{ __('membership.select_speciality') }}</option>
+                                @foreach($specialties as $s)
+                                    <option value="{{ $s->slug }}" {{ old('specialty', $member->specialty) == $s->slug ? 'selected' : '' }}>{{ $s->name }}</option>
+                                @endforeach
                             </x-ui.select>
 
                             <!-- Other Specialty -->
-                            <div id="specialty_other_wrapper" class="{{ old('specialty', $member->specialty) === 'Other' ? '' : 'hidden' }}">
+                            <div id="specialty_other_wrapper" class="{{ old('specialty', $member->specialty) === 'other' ? '' : 'hidden' }}">
                                 <x-ui.input name="specialty_other" :label="__('membership.specialty_other')" :value="$member->specialty_other" />
                             </div>
 
@@ -185,7 +184,7 @@
         function toggleSpecialtyOther() {
             const select = document.getElementById('specialty');
             const wrapper = document.getElementById('specialty_other_wrapper');
-            if (select.value === 'Other') {
+            if (select.value === 'other') {
                 wrapper.classList.remove('hidden');
             } else {
                 wrapper.classList.add('hidden');

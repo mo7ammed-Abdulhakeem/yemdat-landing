@@ -91,17 +91,15 @@
                         </x-ui.select>
 
                         <!-- Specialty -->
-                        <x-ui.select name="specialty" :label="__('membership.label_speciality')" x-model="specialty">
+                        <x-ui.select name="specialty" :label="__('membership.label_speciality')" :required="true" x-model="specialty">
                             <option value="" disabled {{ old('specialty') ? '' : 'selected' }}>{{ __('membership.select_speciality') }}</option>
-                            <option value="Data Management" {{ old('specialty') == 'Data Management' ? 'selected' : '' }}>{{ __('membership.spec_data_mgmt') }}</option>
-                            <option value="Data Governance" {{ old('specialty') == 'Data Governance' ? 'selected' : '' }}>{{ __('membership.spec_governance') }}</option>
-                            <option value="Artificial Intelligence" {{ old('specialty') == 'Artificial Intelligence' ? 'selected' : '' }}>{{ __('membership.spec_ai') }}</option>
-                            <option value="Data Analytics" {{ old('specialty') == 'Data Analytics' ? 'selected' : '' }}>{{ __('membership.spec_analytics') }}</option>
-                            <option value="Other" {{ old('specialty') == 'Other' ? 'selected' : '' }}>{{ __('membership.spec_other') }}</option>
+                            @foreach($specialties as $s)
+                                <option value="{{ $s->slug }}" {{ old('specialty') == $s->slug ? 'selected' : '' }}>{{ $s->name }}</option>
+                            @endforeach
                         </x-ui.select>
 
                         <!-- Other Specialty -->
-                        <div x-show="specialty === 'Other'" style="display: none;">
+                        <div x-show="specialty === 'other'" style="display: none;">
                             <x-ui.input name="specialty_other" :label="__('membership.specialty_other')" :placeholder="__('membership.specialty_placeholder')" />
                         </div>
 

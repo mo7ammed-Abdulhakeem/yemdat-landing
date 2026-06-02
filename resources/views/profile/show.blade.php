@@ -195,10 +195,7 @@
                         <div>
                             <dt class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">{{ app()->getLocale() == 'ar' ? 'التخصص' : 'Specialty' }}</dt>
                             <dd class="text-base text-gray-900 font-medium">
-                                {{ __('membership.spec_' . strtolower(str_replace(' ', '_', $member->specialty))) }}
-                                @if($member->specialty === 'Other' && $member->specialty_other)
-                                    ({{ $member->specialty_other }})
-                                @endif
+                                {{ $member->specialty_label }}
                             </dd>
                         </div>
                     </dl>

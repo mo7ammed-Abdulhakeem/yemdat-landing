@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rule;
 use App\Models\MembershipTier;
+use App\Models\Specialty;
 
 class RegisterController extends Controller
 {
@@ -24,7 +26,8 @@ class RegisterController extends Controller
             }
         }
         $tiers = MembershipTier::where('is_active', true)->get();
-        return view('auth.register', compact('tiers'));
+        $specialties = Specialty::active()->ordered()->get();
+        return view('auth.register', compact('tiers', 'specialties'));
     }
 
     public function register(Request $request)
@@ -38,8 +41,8 @@ class RegisterController extends Controller
             'country' => 'required|string|max:255',
             'gender' => 'required|string|in:Male,Female',
             'education_level' => 'required|string|max:255',
-            'specialty' => 'required|string|max:255',
-            'specialty_other' => 'nullable|string|max:255',
+            'specialty' => ['required', 'string', Rule::exists('specialties', 'slug')->where('is_active', true)],
+            'specialty_other' => 'nullable|string|max:255|required_if:specialty,other',
             'membership_type' => 'required|string|exists:membership_tiers,slug',
         ]);
 

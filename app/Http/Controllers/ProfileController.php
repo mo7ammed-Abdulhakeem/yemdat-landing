@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use App\Models\Member;
+use App\Models\Specialty;
 
 class ProfileController extends Controller
 {
@@ -54,7 +56,9 @@ class ProfileController extends Controller
             return redirect()->route('home')->withErrors(['error' => 'You do not have a registered community profile.']);
         }
 
-        return view('profile.edit', compact('member'));
+        $specialties = Specialty::active()->ordered()->get();
+
+        return view('profile.edit', compact('member', 'specialties'));
     }
 
     public function update(Request $request)
@@ -74,8 +78,9 @@ class ProfileController extends Controller
             'education_level' => 'nullable|string|max:255',
             // `members.specialty` is NOT NULL (and required at registration + in the form),
             // so it must be required here too — otherwise an absent value writes null and 500s.
-            'specialty' => 'required|string|max:255',
-            'specialty_other' => 'nullable|string|max:255',
+            // Now constrained to the unified specialty taxonomy (slug).
+            'specialty' => ['required', 'string', Rule::exists('specialties', 'slug')->where('is_active', true)],
+            'specialty_other' => 'nullable|string|max:255|required_if:specialty,other',
             'linkedin_url' => 'nullable|url|max:255',
             'bio' => 'nullable|string',
             'password' => ['nullable', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],

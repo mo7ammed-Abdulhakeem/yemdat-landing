@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Member;
+use Database\Seeders\SpecialtySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
@@ -10,6 +11,12 @@ use Tests\TestCase;
 class ProfileUpdateTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(SpecialtySeeder::class);
+    }
 
     private function member(): Member
     {
@@ -37,7 +44,7 @@ class ProfileUpdateTest extends TestCase
                 'phone_number' => '5551234',
                 'country' => 'USA',
                 'gender' => 'Female',
-                'specialty' => 'Data Engineering',
+                'specialty' => 'data-engineering',
                 'bio' => 'Data enthusiast',
             ]);
 
@@ -80,7 +87,7 @@ class ProfileUpdateTest extends TestCase
                 'phone_number' => '700000000',
                 'country' => 'Yemen',
                 'gender' => 'Male',
-                'specialty' => 'Data',
+                'specialty' => 'data-analytics',
                 'password' => 'new-password-123',
                 'password_confirmation' => 'new-password-123',
             ])

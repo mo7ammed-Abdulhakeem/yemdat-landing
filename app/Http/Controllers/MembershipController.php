@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Member;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class MembershipController extends Controller
 {
@@ -77,7 +78,7 @@ class MembershipController extends Controller
             'phone_number' => 'required|string|max:20|unique:members,phone_number',
             'gender' => 'required|in:male,female',
             'country' => 'required|string|max:255',
-            'specialty' => 'required|string|max:255',
+            'specialty' => ['required', 'string', Rule::exists('specialties', 'slug')->where('is_active', true)],
             'specialty_other' => 'nullable|string|max:255|required_if:specialty,other',
             'education_level' => 'required|string|max:255',
             'membership_type' => 'required|string|exists:membership_tiers,slug',

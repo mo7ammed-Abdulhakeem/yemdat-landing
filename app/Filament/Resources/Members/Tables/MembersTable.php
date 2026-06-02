@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Members\Tables;
 
 use App\Filament\Resources\Members\MemberResource;
 use App\Models\MembershipTier;
+use App\Models\Specialty;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -19,6 +20,7 @@ class MembersTable
     {
         return $table
             ->defaultSort('created_at', 'desc')
+            ->modifyQueryUsing(fn ($query) => $query->with('specialtyOption'))
             ->columns([
                 TextColumn::make('full_name')
                     ->searchable()
@@ -35,7 +37,8 @@ class MembersTable
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('specialty')
-                    ->searchable()
+                    ->label('Specialty')
+                    ->formatStateUsing(fn ($state, $record) => $record->specialty_label)
                     ->toggleable(),
                 TextColumn::make('phone_number')
                     ->label('Phone')
@@ -67,6 +70,9 @@ class MembersTable
                     ->options(fn () => MembershipTier::orderBy('sort_order')->pluck('name_en', 'slug')),
                 SelectFilter::make('gender')
                     ->options(['Male' => 'Male', 'Female' => 'Female']),
+                SelectFilter::make('specialty')
+                    ->label('Specialty')
+                    ->options(fn () => Specialty::ordered()->pluck('name_en', 'slug')),
                 TernaryFilter::make('email_verified_at')
                     ->label('Email verified')
                     ->nullable(),
