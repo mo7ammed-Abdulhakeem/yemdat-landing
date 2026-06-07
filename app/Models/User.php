@@ -12,11 +12,17 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable implements FilamentUser
 {
     /**
-     * Restrict Filament admin-panel access to staff accounts.
-     * (All rows in the `users` table are admins; gate on role for safety.)
+     * Gate Filament panel access by panel + role:
+     *  - the `trainer` panel is for trainers only,
+     *  - every other panel (the `admin` panel) is for admins / super-admins only.
+     * This keeps trainers out of /admin and admins out of /trainer.
      */
     public function canAccessPanel(Panel $panel): bool
     {
+        if ($panel->getId() === 'trainer') {
+            return $this->role === 'trainer';
+        }
+
         return in_array($this->role, ['admin', 'super_admin'], true);
     }
 
@@ -88,5 +94,21 @@ class User extends Authenticatable implements FilamentUser
     public function member()
     {
         return $this->hasOne(Member::class);
+    }
+
+    /**
+     * Events this user is assigned to teach (as the trainer/lecturer).
+     */
+    public function trainedEvents()
+    {
+        return $this->hasMany(Event::class, 'trainer_id');
+    }
+
+    /**
+     * Whether this user is a trainer account.
+     */
+    public function isTrainer(): bool
+    {
+        return $this->role === 'trainer';
     }
 }

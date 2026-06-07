@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call(SpecialtySeeder::class);
         $this->call(CertificateTemplateSeeder::class);
+        $this->call(LearningPathSeeder::class);
     }
 }

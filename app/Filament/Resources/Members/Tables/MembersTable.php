@@ -3,9 +3,15 @@
 namespace App\Filament\Resources\Members\Tables;
 
 use App\Filament\Resources\Members\MemberResource;
+use App\Filament\Resources\Members\Pages\ViewMember;
+use App\Models\Member;
 use App\Models\MembershipTier;
 use App\Models\Specialty;
+use App\Support\CsvExport;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -20,7 +26,7 @@ class MembersTable
     {
         return $table
             ->defaultSort('created_at', 'desc')
-            ->modifyQueryUsing(fn ($query) => $query->with('specialtyOption'))
+            ->modifyQueryUsing(fn ($query) => $query->with(['specialtyOption', 'user']))
             ->columns([
                 TextColumn::make('full_name')
                     ->searchable()
@@ -33,6 +39,13 @@ class MembersTable
                     ->label('Membership')
                     ->badge()
                     ->sortable(),
+                TextColumn::make('trainer_status')
+                    ->label('Trainer')
+                    ->badge()
+                    ->color('warning')
+                    ->getStateUsing(fn (Member $record) => $record->isTrainer() ? 'Trainer' : null)
+                    ->placeholder('—')
+                    ->toggleable(),
                 TextColumn::make('country')
                     ->searchable()
                     ->sortable(),
@@ -89,13 +102,48 @@ class MembersTable
             ])
             ->recordUrl(fn ($record): string => MemberResource::getUrl('view', ['record' => $record]))
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                    ViewMember::makeTrainerAction(),
+                    ViewMember::resendTrainerInviteAction(),
+                    ViewMember::revokeTrainerAction(),
+                    DeleteAction::make(),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    self::exportBulkAction(),
                     DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    protected static function exportBulkAction(): BulkAction
+    {
+        return BulkAction::make('export')
+            ->label('Export selected')
+            ->icon('heroicon-o-arrow-down-tray')
+            ->color('gray')
+            ->action(fn ($records) => CsvExport::download(
+                'members-'.now()->format('Y-m-d').'.csv',
+                ['Full name', 'Email', 'Membership', 'Gender', 'Phone', 'Country', 'Specialty', 'Education', 'LinkedIn', 'Bio', 'Email verified at', 'Unsubscribed at', 'Joined'],
+                $records->map(fn (Member $m) => [
+                    $m->full_name,
+                    $m->email,
+                    $m->membership_type,
+                    $m->gender,
+                    trim(($m->phone_code ? $m->phone_code.' ' : '').$m->phone_number),
+                    $m->country,
+                    $m->specialty_label,
+                    $m->education_level,
+                    $m->linkedin_url,
+                    $m->bio,
+                    $m->email_verified_at,
+                    $m->unsubscribed_at,
+                    $m->created_at,
+                ]),
+            ))
+            ->deselectRecordsAfterCompletion();
     }
 }

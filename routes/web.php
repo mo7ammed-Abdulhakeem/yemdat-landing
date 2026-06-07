@@ -22,6 +22,9 @@ Route::post('/contact', [ContactController::class , 'store'])->name('contact.sto
 Route::get('/be-a-trainer', [App\Http\Controllers\TrainerController::class , 'create'])->name('trainer.create');
 Route::post('/be-a-trainer', [App\Http\Controllers\TrainerController::class , 'store'])->name('trainer.store')->middleware('throttle:3,1');
 
+Route::get('/paths', [App\Http\Controllers\PathController::class , 'index'])->name('paths.index');
+Route::get('/paths/{slug}', [App\Http\Controllers\PathController::class , 'show'])->name('paths.show');
+
 Route::get('/events', [App\Http\Controllers\EventController::class , 'index'])->name('events.index');
 Route::get('/events/{slug}', [App\Http\Controllers\EventController::class , 'show'])->name('events.show');
 Route::post('/events/{slug}/register', [App\Http\Controllers\EventController::class , 'register'])

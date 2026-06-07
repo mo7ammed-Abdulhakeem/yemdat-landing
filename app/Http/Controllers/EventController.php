@@ -4,50 +4,76 @@ namespace App\Http\Controllers;
 
 use App\Actions\Events\RegisterMemberForEvent;
 use App\Models\Event;
+use App\Models\Specialty;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $now = Carbon::now();
 
-        // Happening Now: Started but not ended
-        $happeningNow = Event::where('is_active', true)
-            ->where('start_date', '<=', $now)
-            ->where(function ($q) use ($now) {
-            // If end_date is present, it must be in future. 
-            // If end_date is null, assume it's a short event that counts as 'past' immediately after start? 
-            // Or maybe 'happening' for the day? Let's assume strict end_date or +2 hours if null? 
-            // For simplicity: If end_date is null, it's NOT happening now (it's past).
-            $q->where('end_date', '>=', $now);
-        })
-            ->orderBy('start_date', 'asc') // Earliest started first
-            ->get();
+        // Sanitise filters; invalid enum values are simply ignored.
+        $format = in_array($request->query('format'), ['event', 'workshop', 'course'], true)
+            ? $request->query('format') : null;
+        $level = in_array($request->query('level'), ['beginner', 'intermediate', 'advanced'], true)
+            ? $request->query('level') : null;
+        $specialty = $request->filled('specialty') ? (string) $request->query('specialty') : null;
+        $q = trim((string) $request->query('q', ''));
 
-        // Upcoming: Starts in future
-        $upcomingEvents = Event::where('is_active', true)
-            ->where('start_date', '>', $now)
-            ->orderBy('start_date', 'asc')
-            ->get();
-
-        // Past: Ended
-        $pastEvents = Event::where('is_active', true)
-            ->where(function ($q) use ($now) {
-            $q->where('end_date', '<', $now)
-                ->orWhere(function ($sub) use ($now) {
-                $sub->whereNull('end_date')
-                    ->where('start_date', '<', $now);
+        $applyFilters = function ($query) use ($format, $level, $specialty, $q) {
+            if ($format) {
+                $query->where('format', $format);
             }
-            );
-        })
-            ->orderBy('start_date', 'desc')
-            ->take(6)
-            ->get();
+            if ($level) {
+                $query->where('level', $level);
+            }
+            if ($specialty) {
+                $query->where('specialty', $specialty);
+            }
+            if ($q !== '') {
+                $query->where(function ($sub) use ($q) {
+                    $sub->where('title_en', 'like', "%{$q}%")
+                        ->orWhere('title_ar', 'like', "%{$q}%")
+                        ->orWhere('description_en', 'like', "%{$q}%")
+                        ->orWhere('description_ar', 'like', "%{$q}%");
+                });
+            }
 
-        return view('events.index', compact('happeningNow', 'upcomingEvents', 'pastEvents'));
+            return $query;
+        };
+
+        // Happening Now: started but not ended.
+        $happeningNow = $applyFilters(
+            Event::where('is_active', true)
+                ->where('start_date', '<=', $now)
+                ->where(fn ($sub) => $sub->where('end_date', '>=', $now))
+        )->orderBy('start_date', 'asc')->get();
+
+        // Upcoming: starts in the future.
+        $upcomingEvents = $applyFilters(
+            Event::where('is_active', true)
+                ->where('start_date', '>', $now)
+        )->orderBy('start_date', 'asc')->get();
+
+        // Past: ended (or single-moment events whose start has passed).
+        $pastEvents = $applyFilters(
+            Event::where('is_active', true)
+                ->where(function ($sub) use ($now) {
+                    $sub->where('end_date', '<', $now)
+                        ->orWhere(fn ($q2) => $q2->whereNull('end_date')->where('start_date', '<', $now));
+                })
+        )->orderBy('start_date', 'desc')->take(6)->get();
+
+        $specialties = Specialty::query()->where('is_active', true)->orderBy('sort_order')->get();
+        $activeFilters = array_filter(compact('format', 'level', 'specialty', 'q'), fn ($v) => $v !== null && $v !== '');
+
+        return view('events.index', compact(
+            'happeningNow', 'upcomingEvents', 'pastEvents',
+            'specialties', 'format', 'level', 'specialty', 'q', 'activeFilters',
+        ));
     }
 
     public function show($slug)

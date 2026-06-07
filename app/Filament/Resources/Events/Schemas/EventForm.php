@@ -2,8 +2,11 @@
 
 namespace App\Filament\Resources\Events\Schemas;
 
+use App\Models\Specialty;
+use App\Models\User;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
@@ -29,6 +32,28 @@ class EventForm
                             ->required()
                             ->columnSpanFull()
                             ->helperText('URL-friendly identifier, e.g. data-bootcamp-2026. Lowercase, words separated by hyphens.'),
+                        Select::make('format')
+                            ->options([
+                                'event' => 'Event',
+                                'workshop' => 'Workshop',
+                                'course' => 'Course',
+                            ])
+                            ->default('event')
+                            ->required()
+                            ->native(false),
+                        Select::make('level')
+                            ->options([
+                                'beginner' => 'Beginner',
+                                'intermediate' => 'Intermediate',
+                                'advanced' => 'Advanced',
+                            ])
+                            ->native(false),
+                        Select::make('specialty')
+                            ->label('Topic / Specialty')
+                            ->options(fn () => Specialty::query()->orderBy('sort_order')->pluck('name_en', 'slug'))
+                            ->searchable()
+                            ->columnSpanFull()
+                            ->native(false),
                         Textarea::make('description_en')
                             ->label('Description (English)')
                             ->default(null)
@@ -58,9 +83,37 @@ class EventForm
                             ->helperText('Only active events are listed on the public site.'),
                     ]),
 
+                Section::make('Learning details')
+                    ->description('Optional. Shown on the public event page and useful when this event is a step in a learning path.')
+                    ->columns(2)
+                    ->collapsed()
+                    ->schema([
+                        Textarea::make('outcomes_en')
+                            ->label("What you'll learn (English)")
+                            ->helperText('One point per line.')
+                            ->columnSpanFull(),
+                        Textarea::make('outcomes_ar')
+                            ->label("What you'll learn (Arabic)")
+                            ->helperText('One point per line.')
+                            ->columnSpanFull(),
+                        Textarea::make('prerequisites_en')
+                            ->label('Prerequisites (English)')
+                            ->columnSpanFull(),
+                        Textarea::make('prerequisites_ar')
+                            ->label('Prerequisites (Arabic)')
+                            ->columnSpanFull(),
+                    ]),
+
                 Section::make('Lecturer')
                     ->columns(2)
                     ->schema([
+                        Select::make('trainer_id')
+                            ->label('Assigned trainer')
+                            ->options(fn () => User::where('role', 'trainer')->orderBy('name')->pluck('name', 'id'))
+                            ->searchable()
+                            ->preload()
+                            ->columnSpanFull()
+                            ->helperText('A trainer (promoted member) who can manage this event\'s registrations and certificates from the trainer dashboard. The lecturer fields below are still used for public display.'),
                         TextInput::make('lecturer_name_en')
                             ->default(null),
                         TextInput::make('lecturer_name_ar')

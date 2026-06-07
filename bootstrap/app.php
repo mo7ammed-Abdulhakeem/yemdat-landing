@@ -13,6 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
             \App\Http\Middleware\SetLocale::class,
+            // 404s public pages an admin has switched off (config/pages.php).
+            \App\Http\Middleware\EnsurePageActive::class,
         ]);
 
         // Unauthenticated visitors to community member routes go to the member login.

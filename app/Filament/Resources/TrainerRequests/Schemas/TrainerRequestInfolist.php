@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\TrainerRequests\Schemas;
 
+use App\Models\TrainerRequest;
 use Filament\Infolists\Components\IconEntry;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -20,6 +22,11 @@ class TrainerRequestInfolist
                         TextEntry::make('name')
                             ->label('Full name')
                             ->weight(FontWeight::Bold),
+                        TextEntry::make('status')
+                            ->label('Status')
+                            ->badge()
+                            ->formatStateUsing(fn ($state) => TrainerRequest::statusOptions()[$state] ?? ucfirst((string) $state))
+                            ->color(fn ($record) => $record->statusColor()),
                         TextEntry::make('country')
                             ->label('Country')
                             ->placeholder('—'),
@@ -69,6 +76,28 @@ class TrainerRequestInfolist
                         TextEntry::make('created_at')
                             ->label('Submitted')
                             ->dateTime('F j, Y, g:i A'),
+                    ]),
+
+                Section::make('Reply history')
+                    ->visible(fn ($record) => $record->replies()->exists())
+                    ->schema([
+                        RepeatableEntry::make('replies')
+                            ->hiddenLabel()
+                            ->schema([
+                                TextEntry::make('subject')
+                                    ->weight(FontWeight::Bold)
+                                    ->columnSpanFull(),
+                                TextEntry::make('body')
+                                    ->hiddenLabel()
+                                    ->html()
+                                    ->columnSpanFull(),
+                                TextEntry::make('from_email')
+                                    ->label('Sent from'),
+                                TextEntry::make('created_at')
+                                    ->label('Sent at')
+                                    ->dateTime('F j, Y, g:i A'),
+                            ])
+                            ->columns(2),
                     ]),
             ]);
     }

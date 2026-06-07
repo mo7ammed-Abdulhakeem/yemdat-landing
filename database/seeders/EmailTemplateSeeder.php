@@ -60,6 +60,20 @@ class EmailTemplateSeeder extends Seeder
                 'body_ar' => 'مرحباً {name}،<br><br>لقد طلبت حذف حسابك في يمدات. يرجى استخدام رمز التحقق أدناه للتأكيد:<br><br><strong>{otp}</strong><br><br>ينتهي صلاحية هذا الرمز خلال 15 دقيقة. إذا لم تقم بهذا الطلب، يمكنك تجاهل هذه الرسالة بأمان.',
             ],
             [
+                'mailable_class' => 'TrainerInviteEmail',
+                'subject_en' => "You're now a Yemdat Trainer — set your password",
+                'subject_ar' => 'أصبحت الآن مدرباً في يمدات — قم بتعيين كلمة المرور',
+                'body_en' => 'Hi {name},<br><br>You have been added as a <strong>Trainer</strong> on Yemdat. As a trainer you can manage the events you teach, view their registrations, and issue certificates from your trainer dashboard.<br><br>To get started, set your password using the secure link below:<br><br><a href="{set_password_url}">Set your password</a><br><br>After setting it, you can always sign in here: <a href="{login_url}">{login_url}</a><br><br>If you did not expect this, you can safely ignore this email.<br><br>Welcome aboard,<br>The Yemdat Team',
+                'body_ar' => 'مرحباً {name}،<br><br>تمت إضافتك <strong>كمدرب</strong> في يمدات. بصفتك مدرباً يمكنك إدارة الفعاليات التي تقدّمها، والاطلاع على تسجيلاتها، وإصدار الشهادات من لوحة تحكم المدرب الخاصة بك.<br><br>للبدء، قم بتعيين كلمة المرور عبر الرابط الآمن أدناه:<br><br><a href="{set_password_url}">تعيين كلمة المرور</a><br><br>بعد تعيينها، يمكنك تسجيل الدخول دائماً من هنا: <a href="{login_url}">{login_url}</a><br><br>إذا لم تكن تتوقع هذا، يمكنك تجاهل هذه الرسالة بأمان.<br><br>أهلاً بك،<br>فريق يمدات',
+            ],
+            [
+                'mailable_class' => 'CertificateIssuedEmail',
+                'subject_en' => 'Your Certificate from Yemdat: {event_title}',
+                'subject_ar' => 'شهادتك من يمدات: {event_title}',
+                'body_en' => 'Hi {name},<br><br>Congratulations! Your certificate of completion for <strong>{event_title}</strong> is attached to this email as a PDF.<br><br><strong>Certificate serial:</strong> {serial}<br><strong>Issued:</strong> {issued_date}<br><br>You (or anyone) can verify this certificate at any time here:<br><a href="{verify_url}">{verify_url}</a><br><br>Thank you for learning with us.<br>Yemdat Team',
+                'body_ar' => 'مرحباً {name}،<br><br>تهانينا! تجد شهادة إتمامك لـ <strong>{event_title}</strong> مرفقة بهذا البريد بصيغة PDF.<br><br><strong>الرقم التسلسلي للشهادة:</strong> {serial}<br><strong>تاريخ الإصدار:</strong> {issued_date}<br><br>يمكنك (أو أي شخص) التحقق من صحة هذه الشهادة في أي وقت عبر الرابط التالي:<br><a href="{verify_url}">{verify_url}</a><br><br>شكراً لتعلّمك معنا.<br>فريق يمدات',
+            ],
+            [
                 'mailable_class' => 'TrainerAutoReplyEmail',
                 'subject_en' => 'Thank you for your interest in becoming a Trainer - Yemdat',
                 'subject_ar' => 'شكراً لاهتمامك بالانضمام كمدرب - يمدات',

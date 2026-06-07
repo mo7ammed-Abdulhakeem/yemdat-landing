@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
@@ -24,6 +25,10 @@ class EventsTable
                     ->description(fn ($record) => $record->title_ar)
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('format')
+                    ->badge()
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('start_date')
                     ->dateTime()
                     ->sortable(),
@@ -42,6 +47,10 @@ class EventsTable
                     ->label('Active')
                     ->boolean()
                     ->sortable(),
+                TextColumn::make('trainer.name')
+                    ->label('Trainer')
+                    ->placeholder('—')
+                    ->toggleable(),
                 TextColumn::make('creator.name')
                     ->label('Created by')
                     ->placeholder('—')
@@ -57,6 +66,12 @@ class EventsTable
             ])
             ->filters([
                 TernaryFilter::make('is_active')->label('Active'),
+                SelectFilter::make('format')
+                    ->options([
+                        'event' => 'Event',
+                        'workshop' => 'Workshop',
+                        'course' => 'Course',
+                    ]),
             ])
             ->recordActions([
                 EditAction::make(),

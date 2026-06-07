@@ -7,6 +7,7 @@ return [
     'vision_mission' => 'الرؤية والرسالة',
     'membership' => 'العضوية',
     'training_events' => 'الدورات والفعاليات',
+    'paths' => 'مسارات التعلّم',
     'news' => 'الأخبار',
     'contact' => 'تواصل معنا',
     'be_a_trainer' => 'علّم معنا',

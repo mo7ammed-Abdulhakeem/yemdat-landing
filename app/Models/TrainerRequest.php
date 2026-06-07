@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasEmailReplies;
 use Illuminate\Database\Eloquent\Model;
 
 class TrainerRequest extends Model
 {
+    use HasEmailReplies;
+
     protected $fillable = [
         'name',
         'phone_number',
@@ -17,5 +20,6 @@ class TrainerRequest extends Model
         'duration_days',
         'agenda',
         'agreed_to_free_provision',
+        'status',
     ];
 }

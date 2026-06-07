@@ -12,11 +12,11 @@ use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
-use Illuminate\Support\Str;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Str;
 
 class AttendeesRelationManager extends RelationManager
 {
@@ -117,7 +117,7 @@ class AttendeesRelationManager extends RelationManager
                             $cert = $this->certificateFor($record);
 
                             return response()->streamDownload(
-                                fn () => print(app(CertificatePdf::class)->render($cert)),
+                                fn () => print (app(CertificatePdf::class)->render($cert)),
                                 'certificate-'.$cert->serial.'.pdf',
                             );
                         }),
@@ -134,7 +134,10 @@ class AttendeesRelationManager extends RelationManager
                             $skipped = 0;
                             foreach ($records as $record) {
                                 try {
-                                    app(IssueCertificate::class)->execute($this->getOwnerRecord(), $record, auth()->user());
+                                    // autoEmail: false — bulk issuance must not fire one
+                                    // synchronous email per certificate. Admins email them
+                                    // from the certificate "Email to member" action instead.
+                                    app(IssueCertificate::class)->execute($this->getOwnerRecord(), $record, auth()->user(), autoEmail: false);
                                     $issued++;
                                 } catch (\Throwable $e) {
                                     $skipped++;
@@ -142,6 +145,7 @@ class AttendeesRelationManager extends RelationManager
                             }
                             Notification::make()
                                 ->title("Issued {$issued}, skipped {$skipped}")
+                                ->body($issued > 0 ? 'Use “Email to member” on a certificate to send it.' : null)
                                 ->success()
                                 ->send();
                         })

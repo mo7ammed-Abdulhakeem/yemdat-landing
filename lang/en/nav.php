@@ -7,6 +7,7 @@ return [
     'vision_mission' => 'Vision & Mission',
     'membership' => 'Membership',
     'training_events' => 'Training & Events',
+    'paths' => 'Learning Paths',
     'news' => 'News',
     'contact' => 'Contact',
     'be_a_trainer' => 'Teach with Us',

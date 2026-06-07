@@ -58,6 +58,10 @@ class ManageSettings extends Page implements HasSchemas
                     TextInput::make('site_email')->label('Public contact email')->email(),
                     TextInput::make('admin_email')->label('Internal admin email (receives form submissions)')->email(),
                 ]),
+                Section::make('Admin Replies')->columns(2)->schema([
+                    TextInput::make('reply_from_name')->label('Default "from" name')->helperText('Pre-fills the reply composer for contact messages and trainer requests.'),
+                    TextInput::make('reply_from_email')->label('Default "from" email')->email(),
+                ]),
                 Section::make('Social Media Links')->columns(2)->schema([
                     TextInput::make('site_facebook')->label('Facebook URL')->url(),
                     TextInput::make('site_twitter')->label('Twitter (X) URL')->url(),

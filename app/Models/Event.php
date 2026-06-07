@@ -14,7 +14,12 @@ class Event extends Model
     protected $fillable = [
         'title_en', 'title_ar',
         'slug',
+        'format',
+        'level',
+        'specialty',
         'description_en', 'description_ar',
+        'outcomes_en', 'outcomes_ar',
+        'prerequisites_en', 'prerequisites_ar',
         'start_date',
         'end_date',
         'location',
@@ -26,11 +31,54 @@ class Event extends Model
         'join_url',
         'is_active',
         'created_by',
+        'trainer_id',
     ];
 
     public function creator()
     {
         return $this->belongsTo(User::class , 'created_by');
+    }
+
+    /**
+     * The trainer (staff User, role=trainer) assigned to teach this event.
+     */
+    public function trainer()
+    {
+        return $this->belongsTo(User::class, 'trainer_id');
+    }
+
+    /**
+     * The specialty taxonomy entry this event is tagged with (if any).
+     */
+    public function specialtyOption()
+    {
+        return $this->belongsTo(Specialty::class, 'specialty', 'slug');
+    }
+
+    /**
+     * Published learning paths this event is a step of (for the detail page).
+     */
+    public function learningPaths()
+    {
+        return $this->belongsToMany(LearningPath::class, 'path_steps', 'event_id', 'learning_path_id')
+            ->where('learning_paths.is_published', true)
+            ->distinct();
+    }
+
+    /**
+     * Get the dynamic "what you'll learn" outcomes based on locale.
+     */
+    public function getOutcomesAttribute()
+    {
+        return app()->getLocale() === 'ar' ? $this->outcomes_ar : $this->outcomes_en;
+    }
+
+    /**
+     * Get the dynamic prerequisites based on locale.
+     */
+    public function getPrerequisitesAttribute()
+    {
+        return app()->getLocale() === 'ar' ? $this->prerequisites_ar : $this->prerequisites_en;
     }
 
     /**

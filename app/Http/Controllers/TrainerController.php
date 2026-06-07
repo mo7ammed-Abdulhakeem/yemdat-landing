@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\EmailTemplate;
 use App\Models\Setting;
 use App\Models\TrainerRequest;
+use App\Support\AdminNotifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -31,6 +32,16 @@ class TrainerController extends Controller
         ]);
 
         $trainerRequest = TrainerRequest::create($validated);
+
+        // Notify admins (bell) — never let this block the submission.
+        try {
+            AdminNotifier::notifyAll(
+                'New trainer application',
+                $trainerRequest->name.' — '.($trainerRequest->program_type ?: 'application'),
+            );
+        } catch (\Throwable $e) {
+            Log::error('Failed to send new-trainer-request admin notification: '.$e->getMessage());
+        }
 
         // Format the new data into a cohesive string for the legacy {help_topic} email template placeholder
         $programStr = ucfirst($validated['program_type']) . " (" . $validated['duration_days'] . " Days, " . $validated['duration_hours'] . " Hours)";

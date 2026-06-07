@@ -13,6 +13,7 @@ use App\Models\Setting;
 use App\Mail\ContactUsAutoReplyEmail;
 use App\Mail\ContactUsAdminAlert;
 use App\Models\EmailTemplate;
+use App\Support\AdminNotifier;
 
 class ContactController extends Controller
 {
@@ -36,6 +37,17 @@ class ContactController extends Controller
         }
 
         $contact = Contact::create($validated);
+
+        // Notify admins (bell) — never let this block the submission.
+        try {
+            AdminNotifier::notifyPermission(
+                'messages',
+                'New contact message',
+                $contact->name.' — '.$contact->subject,
+            );
+        } catch (\Throwable $e) {
+            \Log::error('Failed to send new-contact admin notification: '.$e->getMessage());
+        }
 
         if (EmailTemplate::isActiveFor('ContactUsAutoReplyEmail')) {
             try {

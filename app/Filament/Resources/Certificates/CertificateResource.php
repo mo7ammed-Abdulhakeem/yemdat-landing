@@ -6,10 +6,13 @@ use App\Filament\Resources\Certificates\Pages\ListCertificates;
 use App\Filament\Resources\Certificates\Pages\ViewCertificate;
 use App\Filament\Resources\Certificates\Schemas\CertificateInfolist;
 use App\Filament\Resources\Certificates\Tables\CertificatesTable;
+use App\Actions\Certificates\SendCertificateEmail;
 use App\Models\Certificate;
 use App\Services\CertificatePdf;
 use BackedEnum;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
@@ -34,6 +37,40 @@ class CertificateResource extends Resource
                 fn () => print(app(CertificatePdf::class)->render($record)),
                 'certificate-'.$record->serial.'.pdf',
             ));
+    }
+
+    public static function emailAction(): Action
+    {
+        return Action::make('email')
+            ->label(fn (Certificate $record) => $record->emailed_at ? 'Resend email' : 'Email to member')
+            ->icon('heroicon-o-paper-airplane')
+            ->color('primary')
+            ->visible(fn (Certificate $record) => $record->revoked_at === null)
+            ->modalHeading('Email certificate to member')
+            ->modalSubmitActionLabel('Send')
+            ->fillForm(fn (): array => ['locale' => app()->getLocale()])
+            ->schema([
+                Select::make('locale')
+                    ->label('Language')
+                    ->options(['en' => 'English', 'ar' => 'العربية'])
+                    ->required(),
+            ])
+            ->action(function (Certificate $record, array $data): void {
+                try {
+                    app(SendCertificateEmail::class)->execute($record, $data['locale']);
+
+                    Notification::make()
+                        ->title('Certificate emailed to '.($record->member?->email ?? 'member'))
+                        ->success()
+                        ->send();
+                } catch (\Throwable $e) {
+                    Notification::make()
+                        ->title('Could not send certificate')
+                        ->body($e->getMessage())
+                        ->danger()
+                        ->send();
+                }
+            });
     }
 
     public static function revokeAction(): Action

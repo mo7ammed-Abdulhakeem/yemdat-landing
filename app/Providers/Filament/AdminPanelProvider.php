@@ -37,6 +37,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             // Collapsible sidebar on desktop too (burger toggles it like on mobile).
             ->sidebarCollapsibleOnDesktop()
+            // Bell + database-backed notifications (e.g. new contact / trainer submissions).
+            ->databaseNotifications()
             // Group related resources/pages in the sidebar for easier navigation.
             ->navigationGroups([
                 'Community',

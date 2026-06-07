@@ -25,6 +25,7 @@ class Member extends Authenticatable
         'bio',
         'linkedin_url',
         'unsubscribed_at',
+        'user_id',
     ];
 
     protected $hidden = [
@@ -63,6 +64,22 @@ class Member extends Authenticatable
     public function membershipTier()
     {
         return $this->belongsTo(MembershipTier::class , 'membership_type', 'slug');
+    }
+
+    /**
+     * The staff User account linked to this member (set when promoted to trainer).
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Whether this member has been promoted to a trainer.
+     */
+    public function isTrainer(): bool
+    {
+        return $this->user && $this->user->role === 'trainer';
     }
 
     /**

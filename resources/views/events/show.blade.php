@@ -26,6 +26,29 @@
                 <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight">
                     {{ $event->title }}
                 </h1>
+
+                @php
+                    $ar = app()->getLocale() === 'ar';
+                    $formatLabels = [
+                        'event' => $ar ? 'فعالية' : 'Event',
+                        'workshop' => $ar ? 'ورشة عمل' : 'Workshop',
+                        'course' => $ar ? 'دورة' : 'Course',
+                    ];
+                    $levelLabels = [
+                        'beginner' => $ar ? 'مبتدئ' : 'Beginner',
+                        'intermediate' => $ar ? 'متوسط' : 'Intermediate',
+                        'advanced' => $ar ? 'متقدم' : 'Advanced',
+                    ];
+                @endphp
+                <div class="flex flex-wrap items-center gap-2 mt-4">
+                    <x-ui.badge variant="accent">{{ $formatLabels[$event->format] ?? $formatLabels['event'] }}</x-ui.badge>
+                    @if ($event->level)
+                        <x-ui.badge variant="info">{{ $levelLabels[$event->level] ?? $event->level }}</x-ui.badge>
+                    @endif
+                    @if ($event->specialtyOption)
+                        <x-ui.badge variant="neutral">{{ $event->specialtyOption->name }}</x-ui.badge>
+                    @endif
+                </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -54,6 +77,58 @@
                             {!! $event->description !!}
                         </div>
                     </div>
+
+                    <!-- What you'll learn -->
+                    @if($event->outcomes)
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+                            <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-yemdat-gold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                                {{ $ar ? 'ماذا ستتعلّم' : "What you'll learn" }}
+                            </h2>
+                            <ul class="space-y-2">
+                                @foreach(preg_split('/\r\n|\r|\n/', trim($event->outcomes)) as $point)
+                                    @if(trim($point) !== '')
+                                        <li class="flex items-start gap-2 text-gray-600">
+                                            <svg class="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                            <span>{{ $point }}</span>
+                                        </li>
+                                    @endif
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <!-- Prerequisites -->
+                    @if($event->prerequisites)
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+                            <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-yemdat-brown" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"/></svg>
+                                {{ $ar ? 'المتطلبات المسبقة' : 'Prerequisites' }}
+                            </h2>
+                            <div class="prose max-w-none text-gray-600 leading-relaxed whitespace-pre-line">{{ $event->prerequisites }}</div>
+                        </div>
+                    @endif
+
+                    <!-- Part of these learning paths (only when the Learning Paths page is live) -->
+                    @pageactive('paths')
+                    @php $eventPaths = $event->learningPaths; @endphp
+                    @if($eventPaths->count() > 0)
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+                            <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-yemdat-brown" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z"/></svg>
+                                {{ $ar ? 'جزء من مسارات التعلّم' : 'Part of these learning paths' }}
+                            </h2>
+                            <div class="space-y-3">
+                                @foreach($eventPaths as $eventPath)
+                                    <a href="{{ route('paths.show', $eventPath->slug) }}" class="flex items-center justify-between gap-3 p-4 rounded-xl border border-gray-100 hover:border-yemdat-gold hover:bg-yemdat-beige/30 transition group">
+                                        <span class="font-bold text-gray-900 group-hover:text-yemdat-brown">{{ $eventPath->title }}</span>
+                                        <svg class="w-5 h-5 text-yemdat-gold rtl:rotate-180 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                    @endpageactive
                 </div>
 
                 <!-- Right Column: Info & Speaker -->
@@ -65,14 +140,18 @@
                             <h3 class="font-bold text-gray-900 text-lg">{{ app()->getLocale() == 'ar' ? 'معلومات الحدث' : 'Event Info' }}</h3>
                             
                             @php
-                                $statusColor = 'bg-yemdat-brown/10 text-yemdat-brown border-yemdat-brown/20'; // Default/Upcoming
-                                $statusText = $event->status;
-                                
-                                if($event->status === 'Happening Now') {
+                                // Derive the badge from Event::getStatusAttribute (Upcoming/Ongoing/Past),
+                                // which correctly handles single-moment events that have no end_date.
+                                $arLocale = app()->getLocale() === 'ar';
+                                $statusColor = 'bg-yemdat-brown/10 text-yemdat-brown border-yemdat-brown/20'; // Upcoming
+                                $statusText = $arLocale ? 'قادم' : 'Upcoming';
+
+                                if ($event->status === 'Ongoing') {
                                     $statusColor = 'bg-green-100 text-green-700 border-green-200';
-                                } elseif($event->end_date < now()) {
+                                    $statusText = $arLocale ? 'يحدث الآن' : 'Happening Now';
+                                } elseif ($event->status === 'Past') {
                                     $statusColor = 'bg-red-100 text-red-700 border-red-200';
-                                    $statusText = app()->getLocale() == 'ar' ? 'انتهى' : 'Ended';
+                                    $statusText = $arLocale ? 'انتهى' : 'Ended';
                                 }
                             @endphp
                             

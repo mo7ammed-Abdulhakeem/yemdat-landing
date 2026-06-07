@@ -17,11 +17,13 @@ class Certificate extends Model
         'type',
         'issued_by',
         'issued_at',
+        'emailed_at',
         'revoked_at',
     ];
 
     protected $casts = [
         'issued_at' => 'datetime',
+        'emailed_at' => 'datetime',
         'revoked_at' => 'datetime',
     ];
 

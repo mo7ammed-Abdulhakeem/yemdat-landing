@@ -51,16 +51,25 @@
                     </div>
                 </div>
 
-                <x-nav-link :href="route('membership')" :active="request()->routeIs('membership')">{{ __('nav.membership') }}</x-nav-link>
+                @pageactive('membership')
+                    <x-nav-link :href="route('membership')" :active="request()->routeIs('membership')">{{ __('nav.membership') }}</x-nav-link>
+                @endpageactive
                 <x-nav-link :href="route('events.index')" :active="request()->routeIs('events.*')">{{ __('nav.training_events') }}</x-nav-link>
-                <x-nav-link :href="route('news')" :active="request()->routeIs('news')">{{ __('nav.news') }}</x-nav-link>
+                @pageactive('paths')
+                    <x-nav-link :href="route('paths.index')" :active="request()->routeIs('paths.*')">{{ __('nav.paths') }}</x-nav-link>
+                @endpageactive
+                @pageactive('news')
+                    <x-nav-link :href="route('news')" :active="request()->routeIs('news')">{{ __('nav.news') }}</x-nav-link>
+                @endpageactive
                 <x-nav-link :href="route('contact')" :active="request()->routeIs('contact')">{{ __('nav.contact') }}</x-nav-link>
 
                 <!-- Be a Trainer CTA -->
-                <a href="{{ route('trainer.create') }}"
-                   class="inline-flex items-center whitespace-nowrap shrink-0 px-4 py-1.5 rounded-btn border text-sm font-semibold transition duration-150 {{ request()->routeIs('trainer.*') ? 'bg-primary text-white border-primary' : 'border-primary text-primary hover:bg-primary hover:text-white' }}">
-                    {{ __('nav.be_a_trainer') }}
-                </a>
+                @pageactive('trainer')
+                    <a href="{{ route('trainer.create') }}"
+                       class="inline-flex items-center whitespace-nowrap shrink-0 px-4 py-1.5 rounded-btn border text-sm font-semibold transition duration-150 {{ request()->routeIs('trainer.*') ? 'bg-primary text-white border-primary' : 'border-primary text-primary hover:bg-primary hover:text-white' }}">
+                        {{ __('nav.be_a_trainer') }}
+                    </a>
+                @endpageactive
             </div>
 
             <!-- Desktop right cluster: auth + language -->
@@ -161,11 +170,20 @@
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">{{ __('nav.home') }}</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('about')" :active="request()->routeIs('about')">{{ __('nav.about_us') }}</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('vision')" :active="request()->routeIs('vision')">{{ __('nav.vision_mission') }}</x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('membership')" :active="request()->routeIs('membership')">{{ __('nav.membership') }}</x-responsive-nav-link>
+            @pageactive('membership')
+                <x-responsive-nav-link :href="route('membership')" :active="request()->routeIs('membership')">{{ __('nav.membership') }}</x-responsive-nav-link>
+            @endpageactive
             <x-responsive-nav-link :href="route('events.index')" :active="request()->routeIs('events.*')">{{ __('nav.training_events') }}</x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('news')" :active="request()->routeIs('news')">{{ __('nav.news') }}</x-responsive-nav-link>
+            @pageactive('paths')
+                <x-responsive-nav-link :href="route('paths.index')" :active="request()->routeIs('paths.*')">{{ __('nav.paths') }}</x-responsive-nav-link>
+            @endpageactive
+            @pageactive('news')
+                <x-responsive-nav-link :href="route('news')" :active="request()->routeIs('news')">{{ __('nav.news') }}</x-responsive-nav-link>
+            @endpageactive
             <x-responsive-nav-link :href="route('contact')" :active="request()->routeIs('contact')">{{ __('nav.contact') }}</x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('trainer.create')" :active="request()->routeIs('trainer.*')">{{ __('nav.be_a_trainer') }}</x-responsive-nav-link>
+            @pageactive('trainer')
+                <x-responsive-nav-link :href="route('trainer.create')" :active="request()->routeIs('trainer.*')">{{ __('nav.be_a_trainer') }}</x-responsive-nav-link>
+            @endpageactive
         </div>
 
         <!-- Settings / account -->

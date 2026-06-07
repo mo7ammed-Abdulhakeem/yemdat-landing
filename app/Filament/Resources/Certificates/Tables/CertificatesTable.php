@@ -2,10 +2,16 @@
 
 namespace App\Filament\Resources\Certificates\Tables;
 
+use App\Actions\Certificates\SendCertificateEmail;
 use App\Filament\Resources\Certificates\CertificateResource;
+use App\Models\Certificate;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -38,6 +44,12 @@ class CertificatesTable
                     ->label('Issued')
                     ->dateTime()
                     ->sortable(),
+                TextColumn::make('emailed_at')
+                    ->label('Emailed')
+                    ->dateTime()
+                    ->placeholder('Not sent')
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('issuer.name')
                     ->label('Issued by')
                     ->toggleable(),
@@ -55,13 +67,46 @@ class CertificatesTable
                     ),
             ])
             ->recordActions([
-                ViewAction::make(),
-                CertificateResource::downloadAction(),
-                CertificateResource::revokeAction(),
-                CertificateResource::reinstateAction(),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    CertificateResource::downloadAction(),
+                    CertificateResource::emailAction(),
+                    CertificateResource::revokeAction(),
+                    CertificateResource::reinstateAction(),
+                    DeleteAction::make(),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    BulkAction::make('email')
+                        ->label('Email to members')
+                        ->icon('heroicon-o-paper-airplane')
+                        ->color('primary')
+                        ->requiresConfirmation()
+                        ->modalDescription('Emails each selected, non-revoked certificate to its member.')
+                        ->action(function ($records): void {
+                            $sent = 0;
+                            $skipped = 0;
+
+                            foreach ($records as $certificate) {
+                                if ($certificate->revoked_at !== null) {
+                                    $skipped++;
+                                    continue;
+                                }
+                                try {
+                                    app(SendCertificateEmail::class)->execute($certificate);
+                                    $sent++;
+                                } catch (\Throwable $e) {
+                                    $skipped++;
+                                }
+                            }
+
+                            Notification::make()
+                                ->title("Emailed {$sent} certificate(s)".($skipped ? ", skipped {$skipped}." : '.'))
+                                ->{$sent > 0 ? 'success' : 'warning'}()
+                                ->send();
+                        })
+                        ->deselectRecordsAfterCompletion(),
                     DeleteBulkAction::make(),
                 ]),
             ]);

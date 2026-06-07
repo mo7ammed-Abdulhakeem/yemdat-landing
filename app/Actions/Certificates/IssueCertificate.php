@@ -3,9 +3,11 @@
 namespace App\Actions\Certificates;
 
 use App\Models\Certificate;
+use App\Models\EmailTemplate;
 use App\Models\Event;
 use App\Models\Member;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
 /**
@@ -17,7 +19,7 @@ use RuntimeException;
  */
 class IssueCertificate
 {
-    public function execute(Event $event, Member $member, ?User $issuer = null): Certificate
+    public function execute(Event $event, Member $member, ?User $issuer = null, bool $autoEmail = true): Certificate
     {
         $registration = $event->members()->where('member_id', $member->id)->first();
 
@@ -29,9 +31,24 @@ class IssueCertificate
             throw new RuntimeException('Mark the member as completed before issuing a certificate.');
         }
 
-        return Certificate::firstOrCreate(
+        $certificate = Certificate::firstOrCreate(
             ['member_id' => $member->id, 'event_id' => $event->id],
             ['type' => 'completion', 'issued_by' => $issuer?->id],
         );
+
+        // Auto-email the member only for a freshly issued certificate, and only
+        // when the template is active (toggling it off disables auto-send).
+        // Bulk issuance passes $autoEmail = false so we don't fire dozens of
+        // synchronous emails (mail is sync) in one request on shared hosting.
+        // Mail failures must never block issuance.
+        if ($autoEmail && $certificate->wasRecentlyCreated && EmailTemplate::isActiveFor('CertificateIssuedEmail')) {
+            try {
+                app(SendCertificateEmail::class)->execute($certificate);
+            } catch (\Throwable $e) {
+                Log::error('Auto-send certificate email failed: '.$e->getMessage());
+            }
+        }
+
+        return $certificate;
     }
 }

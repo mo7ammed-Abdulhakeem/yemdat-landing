@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Mail\Events\MessageSent;
 use Illuminate\Support\Facades\Cache;
+use App\Support\PageVisibility;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +24,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // @pageactive('paths') ... @endpageactive — hides nav links for pages an
+        // admin has switched off (see config/pages.php + Settings → Page Visibility).
+        Blade::if('pageactive', fn (string $key) => PageVisibility::isActive($key));
+
         if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
             $settings = \App\Models\Setting::all()->pluck('value', 'key');
             \Illuminate\Support\Facades\View::share('settings', $settings);

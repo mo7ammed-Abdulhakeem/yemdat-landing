@@ -79,6 +79,11 @@ class MemberInfolist
                             ->label('Unsubscribed')
                             ->dateTime('F j, Y')
                             ->placeholder('Subscribed'),
+                        TextEntry::make('trainer_status')
+                            ->label('Trainer')
+                            ->badge()
+                            ->color('warning')
+                            ->state(fn ($record) => $record->isTrainer() ? 'Trainer' : 'No'),
                     ]),
             ]);
     }
