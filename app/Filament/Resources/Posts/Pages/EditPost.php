@@ -16,4 +16,10 @@ class EditPost extends EditRecord
             DeleteAction::make(),
         ];
     }
+
+    // Return to the posts list after saving (don't stay on the edit screen).
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

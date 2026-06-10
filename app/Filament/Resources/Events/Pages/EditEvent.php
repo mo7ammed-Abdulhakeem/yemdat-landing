@@ -17,6 +17,12 @@ class EditEvent extends EditRecord
         ];
     }
 
+    // Return to the events list after saving (don't stay on the edit screen).
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
     /**
      * Attendance & certificate issuing live on the View page now, so the Edit
      * screen is event-details only — no relation managers render here.

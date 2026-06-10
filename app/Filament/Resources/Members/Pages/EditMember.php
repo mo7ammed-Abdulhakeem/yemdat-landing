@@ -26,4 +26,10 @@ class EditMember extends EditRecord
             DeleteAction::make(),
         ];
     }
+
+    // Return to the members list after saving (don't stay on the edit screen).
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
