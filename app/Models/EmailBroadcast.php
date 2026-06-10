@@ -11,7 +11,7 @@ class EmailBroadcast extends Model
     protected $fillable = [
         'subject_en', 'subject_ar',
         'body_en', 'body_ar',
-        'audience_type', 'event_id', 'language',
+        'audience_type', 'audience_value', 'event_id', 'language',
         'from_email', 'from_name',
         'sent_by', 'status', 'total_recipients', 'sent_at',
     ];
@@ -51,5 +51,22 @@ class EmailBroadcast extends Model
     public function getUnsubscribesCountAttribute(): int
     {
         return $this->recipients()->whereNotNull('unsubscribed_at')->count();
+    }
+
+    /**
+     * Human-readable description of who this broadcast targets, for the admin table + detail view.
+     */
+    public function getAudienceLabelAttribute(): string
+    {
+        return match ($this->audience_type) {
+            'all_members'        => 'All members',
+            'event_members'      => 'Event: ' . ($this->event?->title_en ?? '—'),
+            'trainers_only'      => 'Trainers',
+            'by_membership_tier' => 'Tier: ' . (
+                MembershipTier::where('slug', $this->audience_value)->value('name_en')
+                    ?? $this->audience_value
+            ),
+            default              => ucfirst(str_replace('_', ' ', (string) $this->audience_type)),
+        };
     }
 }

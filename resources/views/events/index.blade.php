@@ -7,7 +7,7 @@
 
     <div class="py-12 bg-white" dir="{{ $ar ? 'rtl' : 'ltr' }}">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-10">
+            <div class="text-center mb-10" data-reveal>
                 <h2 class="text-3xl font-extrabold text-yemdat-brown sm:text-4xl">
                     {{ __('nav.training_events') }}
                 </h2>
@@ -78,7 +78,7 @@
                         </h3>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-reveal-group>
                         @foreach($happeningNow as $event)
                             <x-events.event-card :event="$event" variant="live" />
                         @endforeach
@@ -89,12 +89,12 @@
             <!-- Upcoming Events -->
             @if($upcomingEvents->count() > 0 || ! $hasFilters)
                 <div class="mb-16">
-                    <h3 class="text-2xl font-bold text-gray-900 mb-6 border-l-4 rtl:border-l-0 rtl:border-r-4 border-yemdat-gold pl-4 rtl:pl-0 rtl:pr-4">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6 border-l-4 rtl:border-l-0 rtl:border-r-4 border-yemdat-gold pl-4 rtl:pl-0 rtl:pr-4" data-reveal>
                         {{ $ar ? 'الفعاليات القادمة' : 'Upcoming Events' }}
                     </h3>
 
                     @if($upcomingEvents->count() > 0)
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-reveal-group>
                             @foreach($upcomingEvents as $event)
                                 <x-events.event-card :event="$event" variant="upcoming" />
                             @endforeach
@@ -110,10 +110,10 @@
             <!-- Past Events -->
             @if($pastEvents->count() > 0)
                 <div>
-                    <h3 class="text-2xl font-bold text-gray-400 mb-6 border-l-4 rtl:border-l-0 rtl:border-r-4 border-gray-300 pl-4 rtl:pl-0 rtl:pr-4">
+                    <h3 class="text-2xl font-bold text-gray-400 mb-6 border-l-4 rtl:border-l-0 rtl:border-r-4 border-gray-300 pl-4 rtl:pl-0 rtl:pr-4" data-reveal>
                         {{ $ar ? 'الفعاليات السابقة' : 'Past Events' }}
                     </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-reveal-group>
                         @foreach($pastEvents as $event)
                             <x-events.event-card :event="$event" variant="past" />
                         @endforeach

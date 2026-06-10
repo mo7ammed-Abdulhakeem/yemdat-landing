@@ -3,7 +3,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-y-16">
 
             <!-- Vision & Mission Section -->
-            <div class="flex flex-col gap-y-12">
+            <div class="flex flex-col gap-y-12" data-reveal-group>
                 <!-- Vision Card -->
                 <x-ui.card padding="p-10" class="flex flex-col md:flex-row items-center gap-8">
                     <div class="w-16 h-16 bg-yemdat-brown rounded-2xl flex items-center justify-center text-white shrink-0">
@@ -29,8 +29,8 @@
 
             <!-- Objectives Section -->
             <div>
-                <h2 class="text-2xl font-bold text-primary text-center mb-10">{{ __('vision.objectives_title') }}</h2>
-                <div class="flex flex-col gap-y-6">
+                <h2 class="text-2xl font-bold text-primary text-center mb-10" data-reveal>{{ __('vision.objectives_title') }}</h2>
+                <div class="flex flex-col gap-y-6" data-reveal-group>
                     @foreach(['obj_1', 'obj_2', 'obj_3', 'obj_4', 'obj_5'] as $obj)
                         <x-ui.card padding="p-6" class="flex items-center gap-6 ltr:border-l-4 rtl:border-r-4 border-yemdat-gold hover:shadow-md transition">
                             <div class="w-8 h-8 rounded-full border-2 border-yemdat-gold flex items-center justify-center text-yemdat-gold shrink-0">
@@ -44,7 +44,7 @@
 
             <!-- Footer Tagline -->
             <div class="mt-8">
-                <div class="bg-yemdat-beige border border-yemdat-gold/30 rounded-2xl p-10 text-center">
+                <div class="bg-yemdat-beige border border-yemdat-gold/30 rounded-2xl p-10 text-center" data-reveal>
                     <p class="text-primary font-bold text-xl italic">
                         {{ __('vision.footer_tagline') }}
                     </p>

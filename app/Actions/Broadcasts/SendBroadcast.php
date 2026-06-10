@@ -6,6 +6,7 @@ use App\Jobs\ProcessBroadcastJob;
 use App\Models\EmailBroadcast;
 use App\Models\EmailBroadcastRecipient;
 use App\Models\Member;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -23,9 +24,11 @@ class SendBroadcast
      */
     public function send(EmailBroadcast $broadcast): int
     {
-        $members = $broadcast->audience_type === 'all_members'
-            ? Member::whereNull('unsubscribed_at')->get()
-            : ($broadcast->event ? $broadcast->event->members()->get() : collect());
+        $members = $broadcast->audience_type === 'event_members'
+            ? ($broadcast->event
+                ? $broadcast->event->members()->whereNull('members.unsubscribed_at')->get()
+                : collect())
+            : ($this->audienceQuery($broadcast)?->get() ?? collect());
 
         if ($members->isEmpty()) {
             return 0;
@@ -50,7 +53,10 @@ class SendBroadcast
     public function sendToNew(EmailBroadcast $broadcast): int
     {
         $existingMemberIds = EmailBroadcastRecipient::where('broadcast_id', $broadcast->id)->pluck('member_id');
-        $newMembers = $broadcast->event->members()->whereNotIn('members.id', $existingMemberIds)->get();
+        $newMembers = $broadcast->event->members()
+            ->whereNull('members.unsubscribed_at')
+            ->whereNotIn('members.id', $existingMemberIds)
+            ->get();
 
         if ($newMembers->isEmpty()) {
             return 0;
@@ -64,6 +70,25 @@ class SendBroadcast
         $broadcast->increment('total_recipients', $newMembers->count());
 
         return $newMembers->count();
+    }
+
+    /**
+     * Member query for the non-event audience types. Returns null for unknown types
+     * (event_members is resolved separately via the event relationship).
+     */
+    private function audienceQuery(EmailBroadcast $broadcast): ?Builder
+    {
+        return match ($broadcast->audience_type) {
+            'all_members'        => Member::whereNull('unsubscribed_at'),
+            // Guard a blank tier: without it, where('membership_type', null) becomes
+            // whereNull(...) and would silently target untiered members. Treat as "no audience".
+            'by_membership_tier' => filled($broadcast->audience_value)
+                ? Member::whereNull('unsubscribed_at')->where('membership_type', $broadcast->audience_value)
+                : null,
+            'trainers_only'      => Member::whereNull('unsubscribed_at')
+                ->whereHas('user', fn ($q) => $q->where('role', 'trainer')),
+            default              => null,
+        };
     }
 
     private function rows(EmailBroadcast $broadcast, $members): array

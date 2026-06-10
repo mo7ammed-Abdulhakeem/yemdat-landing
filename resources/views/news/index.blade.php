@@ -3,7 +3,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <!-- Header -->
-            <div class="text-center max-w-3xl mx-auto mb-16">
+            <div class="text-center max-w-3xl mx-auto mb-16" data-reveal>
                  <div class="w-16 h-16 bg-white shadow-sm border border-gray-100 rounded-2xl flex items-center justify-center text-yemdat-gold mx-auto mb-6 transform -rotate-6">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
                 </div>
@@ -50,7 +50,7 @@
 
             <!-- Hero Post (Only shows on initial load) -->
             @if($showHero && $heroPost)
-                <div class="mb-16">
+                <div class="mb-16" data-reveal>
                     <a href="{{ route('news.show', $heroPost->slug) }}" class="group block relative bg-white rounded-[2rem] shadow-sm border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-500">
                         <div class="grid grid-cols-1 lg:grid-cols-2 min-h-[500px]">
                             <!-- Left: Image -->
@@ -100,7 +100,7 @@
 
             <!-- News Grid -->
             @if($posts->count() > 0)
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10" data-reveal-group>
                     @foreach($posts as $post)
                         <x-posts.post-card :post="$post" />
                     @endforeach

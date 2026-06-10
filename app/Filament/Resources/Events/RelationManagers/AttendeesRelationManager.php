@@ -16,6 +16,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class AttendeesRelationManager extends RelationManager
@@ -23,6 +24,9 @@ class AttendeesRelationManager extends RelationManager
     protected static string $relationship = 'members';
 
     protected static ?string $title = 'Attendees';
+
+    /** Per-render cache of this event's certificates, keyed by member_id (avoids N+1 across rows). */
+    protected ?\Illuminate\Support\Collection $certificateMap = null;
 
     public function table(Table $table): Table
     {
@@ -103,6 +107,7 @@ class AttendeesRelationManager extends RelationManager
                         ->action(function ($record) {
                             try {
                                 $cert = app(IssueCertificate::class)->execute($this->getOwnerRecord(), $record, auth()->user());
+                                $this->certificateMap = null; // refresh so the new cert shows
                                 Notification::make()->title('Certificate issued')->body('Serial: '.$cert->serial)->success()->send();
                             } catch (\Throwable $e) {
                                 Notification::make()->title('Could not issue certificate')->body($e->getMessage())->danger()->send();
@@ -141,8 +146,12 @@ class AttendeesRelationManager extends RelationManager
                                     $issued++;
                                 } catch (\Throwable $e) {
                                     $skipped++;
+                                    // Usually "not completed" / "already issued" — log so the
+                                    // bulk "skipped N" count is diagnosable.
+                                    Log::warning('Bulk certificate issue skipped member '.$record->id.' (event '.$this->getOwnerRecord()->getKey().'): '.$e->getMessage());
                                 }
                             }
+                            $this->certificateMap = null; // refresh so new certs show
                             Notification::make()
                                 ->title("Issued {$issued}, skipped {$skipped}")
                                 ->body($issued > 0 ? 'Use “Email to member” on a certificate to send it.' : null)
@@ -162,8 +171,12 @@ class AttendeesRelationManager extends RelationManager
 
     protected function certificateFor($record): ?Certificate
     {
-        return Certificate::where('member_id', $record->id)
-            ->where('event_id', $this->getOwnerRecord()->getKey())
-            ->first();
+        if ($this->certificateMap === null) {
+            $this->certificateMap = Certificate::where('event_id', $this->getOwnerRecord()->getKey())
+                ->get()
+                ->keyBy('member_id');
+        }
+
+        return $this->certificateMap->get($record->id);
     }
 }

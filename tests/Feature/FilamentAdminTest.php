@@ -73,6 +73,23 @@ class FilamentAdminTest extends TestCase
         $this->actingAs($plain)->get('/admin/email-broadcasts')->assertForbidden();
     }
 
+    public function test_events_and_certificates_respect_the_events_permission(): void
+    {
+        $super = User::factory()->create(['role' => 'super_admin']);
+        $this->actingAs($super)->get('/admin/events')->assertOk();
+        $this->actingAs($super)->get('/admin/certificates')->assertOk();
+
+        // An admin without the 'events' permission must reach neither resource.
+        $plain = User::factory()->create(['role' => 'admin', 'permissions' => []]);
+        $this->actingAs($plain)->get('/admin/events')->assertForbidden();
+        $this->actingAs($plain)->get('/admin/certificates')->assertForbidden();
+
+        // Granting 'events' opens both (certificates are gated under the same key).
+        $permitted = User::factory()->create(['role' => 'admin', 'permissions' => ['events']]);
+        $this->actingAs($permitted)->get('/admin/events')->assertOk();
+        $this->actingAs($permitted)->get('/admin/certificates')->assertOk();
+    }
+
     public function test_resources_respect_granular_permissions(): void
     {
         // Admin granted only the 'members' permission.

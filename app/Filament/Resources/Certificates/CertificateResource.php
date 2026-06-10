@@ -7,6 +7,7 @@ use App\Filament\Resources\Certificates\Pages\ViewCertificate;
 use App\Filament\Resources\Certificates\Schemas\CertificateInfolist;
 use App\Filament\Resources\Certificates\Tables\CertificatesTable;
 use App\Actions\Certificates\SendCertificateEmail;
+use App\Filament\Concerns\AuthorizesViaPermission;
 use App\Models\Certificate;
 use App\Services\CertificatePdf;
 use BackedEnum;
@@ -19,7 +20,15 @@ use Filament\Tables\Table;
 
 class CertificateResource extends Resource
 {
+    use AuthorizesViaPermission;
+
     protected static ?string $model = Certificate::class;
+
+    // Certificates belong to the events domain — gate them on the same permission.
+    protected static function permissionKey(): ?string
+    {
+        return 'events';
+    }
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-academic-cap';
 

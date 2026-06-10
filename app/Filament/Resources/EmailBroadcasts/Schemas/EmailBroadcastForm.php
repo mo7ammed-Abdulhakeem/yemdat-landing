@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\EmailBroadcasts\Schemas;
 
+use App\Models\MembershipTier;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -19,10 +20,20 @@ class EmailBroadcastForm
                     ->required()
                     ->live(),
                 Select::make('audience_type')
-                    ->options(['all_members' => 'All Members', 'event_members' => 'Event Registrants'])
+                    ->options([
+                        'all_members' => 'All Members',
+                        'by_membership_tier' => 'By Membership Tier',
+                        'trainers_only' => 'Trainers Only',
+                        'event_members' => 'Event Registrants',
+                    ])
                     ->default('all_members')
                     ->required()
                     ->live(),
+                Select::make('audience_value')
+                    ->label('Membership Tier')
+                    ->options(fn () => MembershipTier::orderBy('sort_order')->pluck('name_en', 'slug'))
+                    ->visible(fn ($get) => $get('audience_type') === 'by_membership_tier')
+                    ->required(fn ($get) => $get('audience_type') === 'by_membership_tier'),
                 Select::make('event_id')
                     ->label('Event')
                     ->relationship('event', 'title_en')

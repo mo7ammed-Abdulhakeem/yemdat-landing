@@ -5,7 +5,9 @@ namespace App\Filament\Resources\EmailBroadcasts;
 use App\Filament\Resources\EmailBroadcasts\Pages\CreateEmailBroadcast;
 use App\Filament\Resources\EmailBroadcasts\Pages\EditEmailBroadcast;
 use App\Filament\Resources\EmailBroadcasts\Pages\ListEmailBroadcasts;
+use App\Filament\Resources\EmailBroadcasts\Pages\ViewEmailBroadcast;
 use App\Filament\Resources\EmailBroadcasts\Schemas\EmailBroadcastForm;
+use App\Filament\Resources\EmailBroadcasts\Schemas\EmailBroadcastInfolist;
 use App\Filament\Resources\EmailBroadcasts\Tables\EmailBroadcastsTable;
 use App\Models\EmailBroadcast;
 use BackedEnum;
@@ -45,6 +47,11 @@ class EmailBroadcastResource extends Resource
         return static::userCanManage();
     }
 
+    public static function canView(Model $record): bool
+    {
+        return static::userCanManage();
+    }
+
     public static function canEdit(Model $record): bool
     {
         return static::userCanManage();
@@ -65,6 +72,11 @@ class EmailBroadcastResource extends Resource
         return EmailBroadcastForm::configure($schema);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return EmailBroadcastInfolist::configure($schema);
+    }
+
     public static function table(Table $table): Table
     {
         return EmailBroadcastsTable::configure($table);
@@ -82,6 +94,7 @@ class EmailBroadcastResource extends Resource
         return [
             'index' => ListEmailBroadcasts::route('/'),
             'create' => CreateEmailBroadcast::route('/create'),
+            'view' => ViewEmailBroadcast::route('/{record}/view'),
             'edit' => EditEmailBroadcast::route('/{record}/edit'),
         ];
     }

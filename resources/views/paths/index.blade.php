@@ -5,7 +5,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             {{-- Hero --}}
-            <div class="text-center mb-12 max-w-3xl mx-auto">
+            <div class="text-center mb-12 max-w-3xl mx-auto" data-reveal>
                 <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/20 text-primary text-sm font-semibold mb-4">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25M3 6.7v12.48c0 .84.88 1.38 1.63 1.01l3.87-1.94c.31-.16.69-.16 1 0l5 2.5c.31.16.69.16 1 0l3.87-1.94c.38-.19.63-.58.63-1V4.82c0-.84-.88-1.38-1.63-1.01l-3.87 1.94c-.31.16-.69.16-1 0l-5-2.5a1.12 1.12 0 0 0-1 0L3.63 5.19C3.25 5.38 3 5.77 3 6.7Z"/></svg>
                     {{ $ar ? 'مسارات التعلّم' : 'Learning Paths' }}
@@ -22,7 +22,7 @@
 
             {{-- Grid --}}
             @if ($paths->count() > 0)
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-reveal-group>
                     @foreach ($paths as $path)
                         <x-paths.path-card :path="$path" />
                     @endforeach

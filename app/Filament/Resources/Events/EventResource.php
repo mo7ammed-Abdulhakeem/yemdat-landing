@@ -2,11 +2,14 @@
 
 namespace App\Filament\Resources\Events;
 
+use App\Filament\Concerns\AuthorizesViaPermission;
 use App\Filament\Resources\Events\Pages\CreateEvent;
 use App\Filament\Resources\Events\Pages\EditEvent;
 use App\Filament\Resources\Events\Pages\ListEvents;
+use App\Filament\Resources\Events\Pages\ViewEvent;
 use App\Filament\Resources\Events\RelationManagers\AttendeesRelationManager;
 use App\Filament\Resources\Events\Schemas\EventForm;
+use App\Filament\Resources\Events\Schemas\EventInfolist;
 use App\Filament\Resources\Events\Tables\EventsTable;
 use App\Models\Event;
 use BackedEnum;
@@ -17,9 +20,16 @@ use Filament\Tables\Table;
 
 class EventResource extends Resource
 {
+    use AuthorizesViaPermission;
+
     protected static ?string $model = Event::class;
 
     protected static ?string $recordTitleAttribute = 'title_en';
+
+    protected static function permissionKey(): ?string
+    {
+        return 'events';
+    }
 
     /**
      * Search both the English and Arabic title columns so global search
@@ -41,6 +51,11 @@ class EventResource extends Resource
         return EventForm::configure($schema);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return EventInfolist::configure($schema);
+    }
+
     public static function table(Table $table): Table
     {
         return EventsTable::configure($table);
@@ -58,6 +73,7 @@ class EventResource extends Resource
         return [
             'index' => ListEvents::route('/'),
             'create' => CreateEvent::route('/create'),
+            'view' => ViewEvent::route('/{record}'),
             'edit' => EditEvent::route('/{record}/edit'),
         ];
     }

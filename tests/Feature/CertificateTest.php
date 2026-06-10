@@ -202,13 +202,15 @@ class CertificateTest extends TestCase
         $this->actingAs($admin)->get('/admin/certificates/'.$cert->id)->assertOk();
     }
 
-    public function test_event_edit_page_with_attendees_relation_manager_loads(): void
+    public function test_event_view_page_with_attendees_relation_manager_loads(): void
     {
+        // The attendees/certificate roster now lives on the View page (not Edit).
         $admin = User::factory()->create(['role' => 'super_admin']);
         $member = $this->makeMember();
         $event = $this->makeEvent();
         $event->members()->attach($member->id, ['completed_at' => now()]);
 
+        $this->actingAs($admin)->get('/admin/events/'.$event->id)->assertOk();
         $this->actingAs($admin)->get('/admin/events/'.$event->id.'/edit')->assertOk();
     }
 

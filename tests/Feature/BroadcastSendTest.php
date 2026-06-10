@@ -23,10 +23,10 @@ class BroadcastSendTest extends TestCase
 
     private int $phoneSeq = 0;
 
-    private function member(string $email, ?string $unsubscribedAt = null): Member
+    private function member(string $email, ?string $unsubscribedAt = null, array $overrides = []): Member
     {
         // phone_number is unique in the members table — keep each test member distinct.
-        return Member::create([
+        return Member::create(array_merge([
             'full_name' => 'Member '.$email,
             'email' => $email,
             'phone_code' => '+967',
@@ -35,7 +35,7 @@ class BroadcastSendTest extends TestCase
             'specialty' => 'Data',
             'membership_type' => 'member',
             'unsubscribed_at' => $unsubscribedAt,
-        ]);
+        ], $overrides));
     }
 
     private function draft(array $overrides = []): EmailBroadcast
@@ -80,7 +80,10 @@ class BroadcastSendTest extends TestCase
         ]);
         $registered = $this->member('registered@example.com');
         $this->member('outsider@example.com');
+        // An unsubscribed registrant must be excluded — the unsubscribe is global.
+        $unsubscribed = $this->member('unsubbed@example.com', now()->toDateTimeString());
         $event->members()->attach($registered->id);
+        $event->members()->attach($unsubscribed->id);
 
         $broadcast = $this->draft(['audience_type' => 'event_members', 'event_id' => $event->id]);
 
@@ -91,6 +94,7 @@ class BroadcastSendTest extends TestCase
         $this->assertEquals(1, $broadcast->total_recipients);
         $this->assertDatabaseHas('email_broadcast_recipients', ['email' => 'registered@example.com']);
         $this->assertDatabaseMissing('email_broadcast_recipients', ['email' => 'outsider@example.com']);
+        $this->assertDatabaseMissing('email_broadcast_recipients', ['email' => 'unsubbed@example.com']);
         Queue::assertPushed(ProcessBroadcastJob::class);
     }
 
@@ -131,5 +135,74 @@ class BroadcastSendTest extends TestCase
         $this->assertEquals(2, $broadcast->fresh()->recipients()->count());
         $this->assertDatabaseHas('email_broadcast_recipients', ['email' => 'late@example.com']);
         Queue::assertPushed(ProcessBroadcastJob::class, 2); // once for send, once for sendToNew
+    }
+
+    public function test_membership_tier_broadcast_targets_only_that_tier_and_excludes_unsubscribed(): void
+    {
+        Queue::fake();
+        $this->member('expert@example.com', null, ['membership_type' => 'expert']);
+        $this->member('intern@example.com', null, ['membership_type' => 'intern']);
+        $this->member('gone@example.com', now()->toDateTimeString(), ['membership_type' => 'expert']);
+
+        $broadcast = $this->draft(['audience_type' => 'by_membership_tier', 'audience_value' => 'expert']);
+
+        $count = app(SendBroadcast::class)->send($broadcast);
+
+        $this->assertSame(1, $count);
+        $this->assertEquals(1, $broadcast->fresh()->total_recipients);
+        $this->assertDatabaseHas('email_broadcast_recipients', ['email' => 'expert@example.com']);
+        $this->assertDatabaseMissing('email_broadcast_recipients', ['email' => 'intern@example.com']);
+        $this->assertDatabaseMissing('email_broadcast_recipients', ['email' => 'gone@example.com']);
+        Queue::assertPushed(ProcessBroadcastJob::class);
+    }
+
+    public function test_membership_tier_broadcast_with_blank_value_sends_to_nobody(): void
+    {
+        Queue::fake();
+        // Real tiered members exist; a tier broadcast with no tier selected must target nobody
+        // (not silently fall back to matching everyone / untiered rows).
+        $this->member('expert@example.com', null, ['membership_type' => 'expert']);
+        $broadcast = $this->draft(['audience_type' => 'by_membership_tier', 'audience_value' => null]);
+
+        $count = app(SendBroadcast::class)->send($broadcast);
+
+        $this->assertSame(0, $count);
+        $this->assertSame('draft', $broadcast->fresh()->status);
+        $this->assertDatabaseCount('email_broadcast_recipients', 0);
+        Queue::assertNothingPushed();
+    }
+
+    public function test_trainers_only_broadcast_targets_promoted_trainers(): void
+    {
+        Queue::fake();
+        $trainerUser = User::factory()->create(['role' => 'trainer']);
+        $this->member('trainer@example.com', null, ['user_id' => $trainerUser->id]);
+        $this->member('plain@example.com');
+        // A member linked to a non-trainer staff user must not be included.
+        $adminUser = User::factory()->create(['role' => 'admin']);
+        $this->member('adminmember@example.com', null, ['user_id' => $adminUser->id]);
+
+        $broadcast = $this->draft(['audience_type' => 'trainers_only']);
+
+        $count = app(SendBroadcast::class)->send($broadcast);
+
+        $this->assertSame(1, $count);
+        $this->assertDatabaseHas('email_broadcast_recipients', ['email' => 'trainer@example.com']);
+        $this->assertDatabaseMissing('email_broadcast_recipients', ['email' => 'plain@example.com']);
+        $this->assertDatabaseMissing('email_broadcast_recipients', ['email' => 'adminmember@example.com']);
+        Queue::assertPushed(ProcessBroadcastJob::class);
+    }
+
+    public function test_unknown_audience_type_sends_to_nobody_and_keeps_draft(): void
+    {
+        Queue::fake();
+        $this->member('someone@example.com');
+        $broadcast = $this->draft(['audience_type' => 'bogus_type']);
+
+        $count = app(SendBroadcast::class)->send($broadcast);
+
+        $this->assertSame(0, $count);
+        $this->assertSame('draft', $broadcast->fresh()->status);
+        Queue::assertNothingPushed();
     }
 }

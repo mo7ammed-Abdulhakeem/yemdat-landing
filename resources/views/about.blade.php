@@ -2,7 +2,7 @@
     <div class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-y-32">
             <!-- Header -->
-            <div class="text-center max-w-4xl mx-auto">
+            <div class="text-center max-w-4xl mx-auto" data-reveal>
                 <h1 class="text-3xl md:text-5xl font-bold text-yemdat-brown mb-8">
                     {{ __('about.title') }}
                 </h1>
@@ -14,8 +14,8 @@
 
             <!-- Why YEMDAT -->
             <div>
-                <h2 class="text-3xl font-bold text-yemdat-brown text-center mb-16">{{ __('about.why_title') }}</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <h2 class="text-3xl font-bold text-yemdat-brown text-center mb-16" data-reveal>{{ __('about.why_title') }}</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8" data-reveal-group>
                     <!-- Item 1 -->
                     <x-ui.card padding="p-8" class="flex items-center gap-6 hover:shadow-md transition">
                         <div class="w-14 h-14 bg-yemdat-beige rounded-xl flex items-center justify-center text-yemdat-gold shrink-0">
@@ -51,7 +51,7 @@
             </div>
 
              <!-- Footer Tagline -->
-            <div class="max-w-4xl mx-auto w-full">
+            <div class="max-w-4xl mx-auto w-full" data-reveal>
                  <div class="bg-yemdat-beige/30 border border-yemdat-gold/30 rounded-2xl p-10 text-center">
                     <p class="text-gray-700 text-lg mb-6 leading-relaxed">
                         {{ __('about.footer_text') }}

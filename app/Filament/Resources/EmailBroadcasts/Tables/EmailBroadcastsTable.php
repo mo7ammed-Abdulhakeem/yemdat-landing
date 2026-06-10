@@ -8,6 +8,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -24,9 +25,9 @@ class EmailBroadcastsTable
                     ->searchable()
                     ->limit(40)
                     ->description(fn ($record) => $record->subject_ar),
-                TextColumn::make('audience_type')
-                    ->badge()
-                    ->formatStateUsing(fn ($state) => $state === 'all_members' ? 'All Members' : 'Event'),
+                TextColumn::make('audience_label')
+                    ->label('Audience')
+                    ->badge(),
                 TextColumn::make('language')->badge(),
                 TextColumn::make('status')
                     ->badge()
@@ -36,6 +37,9 @@ class EmailBroadcastsTable
                         default => 'gray',
                     }),
                 TextColumn::make('total_recipients')->label('Recipients')->numeric()->sortable(),
+                TextColumn::make('opens_count')->label('Opened')->numeric()->toggleable(),
+                TextColumn::make('open_rate')->label('Open rate')->suffix('%')->toggleable(),
+                TextColumn::make('unsubscribes_count')->label('Unsub')->numeric()->toggleable(),
                 TextColumn::make('sent_at')->dateTime()->sortable()->placeholder('—'),
                 TextColumn::make('created_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
@@ -51,6 +55,8 @@ class EmailBroadcastsTable
                     ->label('Audience')
                     ->options([
                         'all_members' => 'All Members',
+                        'by_membership_tier' => 'By Tier',
+                        'trainers_only' => 'Trainers',
                         'event_members' => 'Event',
                     ]),
             ])
@@ -83,6 +89,7 @@ class EmailBroadcastsTable
                             ->{$count > 0 ? 'success' : 'warning'}()
                             ->send();
                     }),
+                ViewAction::make(),
                 EditAction::make()->visible(fn ($record) => $record->status === 'draft'),
                 DeleteAction::make()->before(fn ($record) => $record->recipients()->delete()),
             ])

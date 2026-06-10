@@ -16,4 +16,13 @@ class EditEvent extends EditRecord
             DeleteAction::make(),
         ];
     }
+
+    /**
+     * Attendance & certificate issuing live on the View page now, so the Edit
+     * screen is event-details only — no relation managers render here.
+     */
+    protected function getAllRelationManagers(): array
+    {
+        return [];
+    }
 }

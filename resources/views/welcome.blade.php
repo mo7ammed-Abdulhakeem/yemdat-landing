@@ -1,7 +1,7 @@
 <x-app-layout>
 <!-- Hero Section -->
     <section class="bg-surface border-b border-border">
-        <div class="max-w-5xl mx-auto text-center px-4 sm:px-6 lg:px-8 pt-16 pb-20 md:pt-24 md:pb-28">
+        <div class="max-w-5xl mx-auto text-center px-4 sm:px-6 lg:px-8 pt-16 pb-20 md:pt-24 md:pb-28" data-reveal>
             <p class="text-sm md:text-base font-bold uppercase tracking-[0.1em] text-accent-hover mb-5">YEMDAT</p>
 
             <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold text-primary leading-tight tracking-tight mb-4 md:mb-6">
@@ -35,7 +35,7 @@
     <!-- Features Section -->
     <div class="py-16 bg-white/50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8" data-reveal-group>
                 <!-- Data Management -->
                 <x-ui.card padding="p-8" class="text-center flex flex-col items-center hover:border-yemdat-gold/50 transition duration-300">
                     <div class="w-16 h-16 bg-yemdat-beige rounded-2xl flex items-center justify-center mb-6 text-yemdat-gold">
@@ -70,11 +70,11 @@
     @if(isset($upcomingEvents) && $upcomingEvents->count() > 0)
     <div class="py-16 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-center text-2xl font-bold text-yemdat-brown mb-12">
+            <h2 class="text-center text-2xl font-bold text-yemdat-brown mb-12" data-reveal>
                 {{ app()->getLocale() == 'ar' ? 'الفعاليات القادمة' : 'Upcoming Events' }}
             </h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12" data-reveal-group>
                 @foreach($upcomingEvents as $event)
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-full hover:shadow-lg transition-all duration-300 group hover:-translate-y-1">
                         <div class="relative bg-gray-50 overflow-hidden shrink-0" style="height: 14rem; border-bottom: 1px solid #e5e7eb;">
@@ -126,9 +126,9 @@
     <!-- Latest News -->
     <div class="py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-center text-2xl font-bold text-yemdat-brown mb-12">{{ __('home.news_title') }}</h2>
+            <h2 class="text-center text-2xl font-bold text-yemdat-brown mb-12" data-reveal>{{ __('home.news_title') }}</h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto" data-reveal-group>
                 @foreach($latestNews as $post)
                     <article class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-full hover:shadow-lg transition-all duration-300 group hover:-translate-y-1">
                         <!-- Image container with fixed aspect ratio -->

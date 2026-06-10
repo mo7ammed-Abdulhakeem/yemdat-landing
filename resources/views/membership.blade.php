@@ -3,7 +3,7 @@
         
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-y-32">
             <!-- Header -->
-            <div class="text-center">
+            <div class="text-center" data-reveal>
                 <h1 class="text-3xl md:text-5xl font-bold text-yemdat-brown mb-6">
                     {{ __('membership.title') }}
                 </h1>
@@ -17,8 +17,8 @@
 
             <!-- Membership Types -->
             <div>
-                <h2 class="text-3xl font-bold text-yemdat-brown text-center mb-16">{{ __('membership.types_title') }}</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <h2 class="text-3xl font-bold text-yemdat-brown text-center mb-16" data-reveal>{{ __('membership.types_title') }}</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10" data-reveal-group>
                     @forelse ($membershipTiers as $tier)
                         <div class="bg-white p-10 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition flex flex-col items-start h-full relative">
                             <div class="w-16 h-16 bg-yemdat-beige rounded-2xl flex items-center justify-center mb-8 text-yemdat-gold">
@@ -67,8 +67,8 @@
 
             <!-- Benefits -->
             <div>
-                <h2 class="text-3xl font-bold text-yemdat-brown text-center mb-16">{{ __('membership.benefits_title') }}</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <h2 class="text-3xl font-bold text-yemdat-brown text-center mb-16" data-reveal>{{ __('membership.benefits_title') }}</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8" data-reveal-group>
                     <!-- Benefit 1 -->
                     <div class="bg-white p-8 rounded-xl border border-gray-100 shadow-sm flex items-center gap-6 ltr:border-l-4 rtl:border-r-4 border-yemdat-gold hover:shadow-md transition">
                         <div class="w-12 h-12 bg-yemdat-beige rounded-lg flex items-center justify-center text-yemdat-gold shrink-0">
@@ -104,7 +104,7 @@
             </div>
 
             <!-- Footer Note -->
-            <div class="max-w-3xl mx-auto w-full space-y-6">
+            <div class="max-w-3xl mx-auto w-full space-y-6" data-reveal>
                 <div class="border border-yemdat-gold rounded-xl p-6 flex items-center justify-center gap-4 bg-yemdat-beige/20 shadow-sm">
                      <div class="rounded-full border-2 border-yemdat-gold p-1 shrink-0">
                         <svg class="w-5 h-5 text-yemdat-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
