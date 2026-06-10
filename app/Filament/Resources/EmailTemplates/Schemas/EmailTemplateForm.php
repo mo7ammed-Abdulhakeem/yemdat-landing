@@ -79,7 +79,9 @@ class EmailTemplateForm
                     ->required()
                     ->columnSpanFull(),
                 FileUpload::make('banner_image')
-                    ->image(),
+                    ->image()
+                    ->disk('public')
+                    ->directory('email-banners'),
             ]);
     }
 

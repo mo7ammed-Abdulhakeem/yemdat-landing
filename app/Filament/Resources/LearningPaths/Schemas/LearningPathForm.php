@@ -73,6 +73,8 @@ class LearningPathForm
                             ->required(),
                         FileUpload::make('image')
                             ->image()
+                            ->disk('public')
+                            ->directory('paths')
                             ->columnSpanFull()
                             ->helperText('Cover image for the path. Recommended 1200×630px (landscape).'),
                         Toggle::make('is_published')

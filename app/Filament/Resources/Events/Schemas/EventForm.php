@@ -75,6 +75,8 @@ class EventForm
                             ->helperText('Online meeting link (Zoom, Google Meet, …) shown to registered members.'),
                         FileUpload::make('image')
                             ->image()
+                            ->disk('public')
+                            ->directory('events')
                             ->columnSpanFull()
                             ->helperText('Event cover image. Recommended 1200×630px (landscape).'),
                         Toggle::make('is_active')
@@ -124,6 +126,8 @@ class EventForm
                             ->default(null),
                         FileUpload::make('lecturer_image')
                             ->image()
+                            ->disk('public')
+                            ->directory('lecturers')
                             ->columnSpanFull(),
                         TextInput::make('lecturer_linkedin')
                             ->url()

@@ -45,6 +45,8 @@ class PostForm
                             ->helperText('Controls how the post is labelled and grouped on the public site.'),
                         FileUpload::make('image')
                             ->image()
+                            ->disk('public')
+                            ->directory('posts')
                             ->helperText('Cover image for the post. Recommended 1200×630px (landscape).'),
                         TagsInput::make('tags')
                             ->default(null)
