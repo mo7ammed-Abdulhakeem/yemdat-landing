@@ -12,3 +12,8 @@ if ('serviceWorker' in navigator && !import.meta.env.DEV) {
         navigator.serviceWorker.register('/service-worker.js').catch(() => {});
     });
 }
+
+// Custom "Install app" banner (Chrome/Edge/Android prompt + iOS Add-to-Home-Screen hint).
+if (!import.meta.env.DEV) {
+    import('./pwa-install').then(({ initInstallBanner }) => initInstallBanner());
+}

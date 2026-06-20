@@ -12,7 +12,7 @@
  * Bump CACHE_VERSION on every release so old caches are purged on activate.
  */
 
-const CACHE_VERSION = 'yemdat-v5.7.0';
+const CACHE_VERSION = 'yemdat-v5.7.1';
 
 const PRECACHE = `${CACHE_VERSION}-precache`;
 const PAGE_CACHE = `${CACHE_VERSION}-pages`;
