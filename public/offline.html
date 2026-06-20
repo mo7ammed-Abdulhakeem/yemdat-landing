@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#593E2D">
+    <title>Offline — Yemdat</title>
+    <style>
+        :root {
+            --beige: #FAF8F3;
+            --brown: #593E2D;
+            --gold: #F2CB57;
+            --orange: #C88D16;
+            --dark: #3E2B20;
+        }
+        * { box-sizing: border-box; }
+        html, body { height: 100%; margin: 0; }
+        body {
+            background: var(--beige);
+            color: var(--brown);
+            font-family: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        html[dir="rtl"] body {
+            font-family: 'Tajawal', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
+        }
+        .card {
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+        }
+        .logo { margin: 0 auto 28px; width: 88px; height: 88px; }
+        h1 { font-size: 1.6rem; margin: 0 0 12px; color: var(--dark); font-weight: 700; }
+        p { font-size: 1.02rem; margin: 0 0 28px; color: #6b5444; }
+        .actions { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+        .btn {
+            display: inline-block;
+            width: 100%;
+            max-width: 280px;
+            padding: 13px 20px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: opacity .15s ease;
+        }
+        .btn:hover { opacity: .9; }
+        .btn-primary { background: var(--brown); color: var(--gold); }
+        .btn-ghost { background: transparent; color: var(--brown); border: 1.5px solid rgba(89,62,45,.25); }
+        .hint { margin-top: 24px; font-size: .85rem; color: #9a8775; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <svg class="logo" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="10" y="5" width="30" height="8" rx="2" fill="#F2CB57"/>
+            <rect x="5" y="16" width="35" height="8" rx="2" fill="#C88D16"/>
+            <rect x="0" y="27" width="40" height="8" rx="2" fill="#593E2D"/>
+        </svg>
+        <h1 id="title">You're offline</h1>
+        <p id="body">It looks like you've lost your connection. Pages you've already opened are still available — we'll reconnect automatically when you're back online.</p>
+        <div class="actions">
+            <button class="btn btn-primary" id="retry" onclick="location.reload()">Try again</button>
+            <a class="btn btn-ghost" id="home" href="/">Go to home</a>
+            <a class="btn btn-ghost" id="events" href="/events">Browse events</a>
+        </div>
+        <p class="hint" id="hint">Yemdat — Data Community</p>
+    </div>
+
+    <script>
+        (function () {
+            var t = {
+                en: {
+                    dir: 'ltr', title: "You're offline",
+                    body: "It looks like you've lost your connection. Pages you've already opened are still available — we'll reconnect automatically when you're back online.",
+                    retry: 'Try again', home: 'Go to home', events: 'Browse events', hint: 'Yemdat — Data Community'
+                },
+                ar: {
+                    dir: 'rtl', title: 'أنت غير متصل بالإنترنت',
+                    body: 'يبدو أنك فقدت الاتصال بالإنترنت. الصفحات التي فتحتها سابقاً لا تزال متاحة، وسنعيد الاتصال تلقائياً عند عودة الإنترنت.',
+                    retry: 'حاول مرة أخرى', home: 'الصفحة الرئيسية', events: 'تصفّح الفعاليات', hint: 'يمدات — مجتمع البيانات'
+                }
+            };
+            var locale = 'en';
+            try { if (localStorage.getItem('yemdat_locale') === 'ar') locale = 'ar'; } catch (e) {}
+            var s = t[locale];
+            var html = document.documentElement;
+            html.lang = locale;
+            html.dir = s.dir;
+            document.getElementById('title').textContent = s.title;
+            document.getElementById('body').textContent = s.body;
+            document.getElementById('retry').textContent = s.retry;
+            document.getElementById('home').textContent = s.home;
+            document.getElementById('events').textContent = s.events;
+            document.getElementById('hint').textContent = s.hint;
+
+            // Auto-reload when connectivity returns.
+            window.addEventListener('online', function () { location.reload(); });
+        })();
+    </script>
+</body>
+</html>

@@ -7,6 +7,17 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
+        <!-- PWA -->
+        <link rel="manifest" href="{{ asset('manifest.json') }}">
+        <meta name="theme-color" content="#593E2D">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="Yemdat">
+        <link rel="apple-touch-icon" href="{{ asset('icons/apple-touch-icon-180.png') }}">
+        {{-- Mirror the server locale so the offline page can render the right language + direction --}}
+        <script>try{localStorage.setItem('yemdat_locale','{{ app()->getLocale() }}');}catch(e){}</script>
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
