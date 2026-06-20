@@ -2,21 +2,28 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Widgets\Concerns\InteractsWithAnalytics;
 use App\Models\Event;
 use Filament\Widgets\ChartWidget;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Str;
 
 class TopEventsChart extends ChartWidget
 {
-    protected ?string $heading = 'Top events by registrations';
+    use InteractsWithAnalytics;
 
     protected int|string|array $columnSpan = 'full';
 
-    protected static ?int $sort = 6;
+    protected ?string $maxHeight = '320px';
 
-    public static function canView(): bool
+    public function getHeading(): string|Htmlable|null
     {
-        return (bool) (auth()->user()?->hasPermission('analytics'));
+        return __('analytics.charts.top_events.heading');
+    }
+
+    public function getDescription(): string|Htmlable|null
+    {
+        return __('analytics.common.all_time');
     }
 
     protected function getType(): string
@@ -26,26 +33,28 @@ class TopEventsChart extends ChartWidget
 
     protected function getData(): array
     {
-        $events = Event::withCount('members')
-            ->orderByDesc('members_count')
-            ->limit(10)
-            ->get();
+        return $this->analyticsCache('top-events', function (): array {
+            $events = Event::withCount('members')
+                ->orderByDesc('members_count')
+                ->limit(10)
+                ->get();
 
-        return [
-            'datasets' => [[
-                'label' => 'Registrations',
-                'data' => $events->pluck('members_count')->map(fn ($v) => (int) $v)->all(),
-                'backgroundColor' => '#2F855A',
-            ]],
-            'labels' => $events->map(fn ($e) => Str::limit($e->title, 30))->all(),
-        ];
+            return [
+                'datasets' => [[
+                    'label' => __('analytics.charts.registrations.dataset'),
+                    'data' => $events->pluck('members_count')->map(fn ($v) => (int) $v)->all(),
+                    'backgroundColor' => '#2F855A',
+                ]],
+                'labels' => $events->map(fn ($e) => Str::limit($e->title, 30))->all(),
+            ];
+        });
     }
 
     protected function getOptions(): array
     {
-        return [
+        return $this->analyticsBaseOptions([
             'indexAxis' => 'y',
             'plugins' => ['legend' => ['display' => false]],
-        ];
+        ]);
     }
 }

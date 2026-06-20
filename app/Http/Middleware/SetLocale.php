@@ -2,11 +2,12 @@
 
 namespace App\Http\Middleware;
 
+use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
+use Symfony\Component\HttpFoundation\Response;
 
 class SetLocale
 {
@@ -20,6 +21,10 @@ class SetLocale
         if (Session::has('locale')) {
             App::setLocale(Session::get('locale'));
         }
+
+        // Laravel doesn't sync Carbon's locale with the app locale, so
+        // translatedFormat() (month names etc.) needs this to render Arabic.
+        Carbon::setLocale(App::getLocale());
 
         return $next($request);
     }

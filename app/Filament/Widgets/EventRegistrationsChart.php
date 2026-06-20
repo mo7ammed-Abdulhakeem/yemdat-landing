@@ -3,21 +3,21 @@
 namespace App\Filament\Widgets;
 
 use App\Filament\Widgets\Concerns\InteractsWithAnalytics;
-use App\Models\Member;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\DB;
 
-class MemberGrowthChart extends ChartWidget
+class EventRegistrationsChart extends ChartWidget
 {
     use InteractsWithAnalytics;
 
-    protected int|string|array $columnSpan = ['default' => 'full', 'xl' => 3];
+    protected int|string|array $columnSpan = ['default' => 'full', 'xl' => 2];
 
     protected ?string $maxHeight = '280px';
 
     public function getHeading(): string|Htmlable|null
     {
-        return __('analytics.charts.member_growth.heading');
+        return __('analytics.charts.registrations.heading');
     }
 
     public function getDescription(): string|Htmlable|null
@@ -32,16 +32,16 @@ class MemberGrowthChart extends ChartWidget
 
     protected function getData(): array
     {
-        return $this->analyticsCache('member-growth', function (): array {
+        return $this->analyticsCache('event-registrations', function (): array {
             [$start, $end] = $this->analyticsRange();
-            $series = $this->analyticsTimeSeries(Member::query(), 'created_at', $start, $end);
+            $series = $this->analyticsTimeSeries(DB::table('event_member'), 'created_at', $start, $end);
 
             return [
                 'datasets' => [[
-                    'label' => __('analytics.charts.member_growth.dataset'),
+                    'label' => __('analytics.charts.registrations.dataset'),
                     'data' => $series['data'],
-                    'borderColor' => '#593E2D',
-                    'backgroundColor' => 'rgba(242, 203, 87, 0.25)',
+                    'borderColor' => '#2B6CB0',
+                    'backgroundColor' => 'rgba(43, 108, 176, 0.15)',
                     'fill' => true,
                     'tension' => 0.3,
                 ]],

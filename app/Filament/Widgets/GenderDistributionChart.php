@@ -2,18 +2,27 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Widgets\Concerns\InteractsWithAnalytics;
 use App\Models\Member;
 use Filament\Widgets\ChartWidget;
+use Illuminate\Contracts\Support\Htmlable;
 
 class GenderDistributionChart extends ChartWidget
 {
-    protected ?string $heading = 'Members by gender';
+    use InteractsWithAnalytics;
 
-    protected static ?int $sort = 3;
+    protected int|string|array $columnSpan = ['default' => 'full', 'md' => 1, 'xl' => 1];
 
-    public static function canView(): bool
+    protected ?string $maxHeight = '220px';
+
+    public function getHeading(): string|Htmlable|null
     {
-        return (bool) (auth()->user()?->hasPermission('analytics'));
+        return __('analytics.charts.gender.heading');
+    }
+
+    public function getDescription(): string|Htmlable|null
+    {
+        return __('analytics.common.all_time');
     }
 
     protected function getType(): string
@@ -23,16 +32,34 @@ class GenderDistributionChart extends ChartWidget
 
     protected function getData(): array
     {
-        $rows = Member::selectRaw("COALESCE(NULLIF(gender, ''), 'Not specified') as g, COUNT(*) as c")
-            ->groupBy('g')
-            ->pluck('c', 'g');
+        return $this->analyticsCache('gender', function (): array {
+            $rows = Member::selectRaw("COALESCE(NULLIF(gender, ''), 'unspecified') as g, COUNT(*) as c")
+                ->groupBy('g')
+                ->pluck('c', 'g');
 
-        return [
-            'datasets' => [[
-                'data' => $rows->values()->all(),
-                'backgroundColor' => ['#593E2D', '#F2CB57', '#C88D16', '#6B5847'],
-            ]],
-            'labels' => $rows->keys()->all(),
-        ];
+            $labels = $rows->keys()
+                ->map(fn (string $g): string => match (strtolower($g)) {
+                    'male' => __('analytics.common.gender.male'),
+                    'female' => __('analytics.common.gender.female'),
+                    'unspecified' => __('analytics.common.unspecified'),
+                    default => $g,
+                })
+                ->all();
+
+            return [
+                'datasets' => [[
+                    'data' => $rows->values()->all(),
+                    'backgroundColor' => ['#593E2D', '#F2CB57', '#C88D16', '#6B5847'],
+                ]],
+                'labels' => $labels,
+            ];
+        });
+    }
+
+    protected function getOptions(): array
+    {
+        return $this->analyticsBaseOptions([
+            'plugins' => ['legend' => ['position' => 'bottom']],
+        ]);
     }
 }

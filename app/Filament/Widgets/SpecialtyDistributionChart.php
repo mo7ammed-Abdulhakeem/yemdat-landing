@@ -2,21 +2,28 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Widgets\Concerns\InteractsWithAnalytics;
 use App\Models\Member;
 use App\Models\Specialty;
 use Filament\Widgets\ChartWidget;
+use Illuminate\Contracts\Support\Htmlable;
 
 class SpecialtyDistributionChart extends ChartWidget
 {
-    protected ?string $heading = 'Members by specialty';
+    use InteractsWithAnalytics;
 
-    protected int|string|array $columnSpan = 'full';
+    protected int|string|array $columnSpan = ['default' => 'full', 'xl' => 2];
 
-    protected static ?int $sort = 2;
+    protected ?string $maxHeight = '320px';
 
-    public static function canView(): bool
+    public function getHeading(): string|Htmlable|null
     {
-        return (bool) (auth()->user()?->hasPermission('analytics'));
+        return __('analytics.charts.specialty.heading');
+    }
+
+    public function getDescription(): string|Htmlable|null
+    {
+        return __('analytics.common.all_time');
     }
 
     protected function getType(): string
@@ -26,36 +33,39 @@ class SpecialtyDistributionChart extends ChartWidget
 
     protected function getData(): array
     {
-        $names = Specialty::ordered()->get()->keyBy('slug');
+        return $this->analyticsCache('specialty', function (): array {
+            $names = Specialty::ordered()->get()->keyBy('slug');
 
-        $rows = Member::selectRaw('specialty, COUNT(*) as c')
-            ->groupBy('specialty')
-            ->orderByDesc('c')
-            ->get();
+            $rows = Member::selectRaw('specialty, COUNT(*) as c')
+                ->groupBy('specialty')
+                ->orderByDesc('c')
+                ->get();
 
-        $labels = [];
-        $data = [];
-        foreach ($rows as $row) {
-            $labels[] = optional($names->get($row->specialty))->name ?? ($row->specialty ?: 'Unspecified');
-            $data[] = (int) $row->c;
-        }
+            $labels = [];
+            $data = [];
+            foreach ($rows as $row) {
+                $labels[] = optional($names->get($row->specialty))->name
+                    ?? ($row->specialty ?: __('analytics.common.unspecified'));
+                $data[] = (int) $row->c;
+            }
 
-        return [
-            'datasets' => [[
-                'label' => 'Members',
-                'data' => $data,
-                'backgroundColor' => '#593E2D',
-            ]],
-            'labels' => $labels,
-        ];
+            return [
+                'datasets' => [[
+                    'label' => __('analytics.common.members'),
+                    'data' => $data,
+                    'backgroundColor' => '#593E2D',
+                ]],
+                'labels' => $labels,
+            ];
+        });
     }
 
     protected function getOptions(): array
     {
         // Horizontal bars read better with many categories.
-        return [
+        return $this->analyticsBaseOptions([
             'indexAxis' => 'y',
             'plugins' => ['legend' => ['display' => false]],
-        ];
+        ]);
     }
 }

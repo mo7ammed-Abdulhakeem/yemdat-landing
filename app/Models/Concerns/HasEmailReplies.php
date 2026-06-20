@@ -15,16 +15,18 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 trait HasEmailReplies
 {
     public const STATUS_NEW = 'new';
+
     public const STATUS_REPLIED = 'replied';
+
     public const STATUS_CLOSED = 'closed';
 
     /** @return array<string, string> value => label */
     public static function statusOptions(): array
     {
         return [
-            self::STATUS_NEW => 'New',
-            self::STATUS_REPLIED => 'Replied',
-            self::STATUS_CLOSED => 'Closed',
+            self::STATUS_NEW => __('global.status_new'),
+            self::STATUS_REPLIED => __('global.status_replied'),
+            self::STATUS_CLOSED => __('global.status_closed'),
         ];
     }
 

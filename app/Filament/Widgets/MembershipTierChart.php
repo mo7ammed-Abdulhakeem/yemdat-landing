@@ -4,20 +4,21 @@ namespace App\Filament\Widgets;
 
 use App\Filament\Widgets\Concerns\InteractsWithAnalytics;
 use App\Models\Member;
+use App\Models\MembershipTier;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Contracts\Support\Htmlable;
 
-class TopCountriesChart extends ChartWidget
+class MembershipTierChart extends ChartWidget
 {
     use InteractsWithAnalytics;
 
-    protected int|string|array $columnSpan = ['default' => 'full', 'md' => 1, 'xl' => 2];
+    protected int|string|array $columnSpan = ['default' => 'full', 'md' => 1, 'xl' => 1];
 
-    protected ?string $maxHeight = '260px';
+    protected ?string $maxHeight = '220px';
 
     public function getHeading(): string|Htmlable|null
     {
-        return __('analytics.charts.countries.heading');
+        return __('analytics.charts.tiers.heading');
     }
 
     public function getDescription(): string|Htmlable|null
@@ -27,27 +28,28 @@ class TopCountriesChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'bar';
+        return 'doughnut';
     }
 
     protected function getData(): array
     {
-        return $this->analyticsCache('countries', function (): array {
-            $rows = Member::selectRaw("COALESCE(NULLIF(country, ''), 'unspecified') as country, COUNT(*) as c")
-                ->groupBy('country')
+        return $this->analyticsCache('tiers', function (): array {
+            $names = MembershipTier::all()->keyBy('slug');
+
+            $rows = Member::selectRaw("COALESCE(NULLIF(membership_type, ''), 'unspecified') as t, COUNT(*) as c")
+                ->groupBy('t')
                 ->orderByDesc('c')
-                ->limit(10)
-                ->pluck('c', 'country');
+                ->pluck('c', 't');
 
             $labels = $rows->keys()
-                ->map(fn (string $c): string => strtolower($c) === 'unspecified' ? __('analytics.common.unspecified') : $c)
+                ->map(fn (string $t): string => optional($names->get($t))->name
+                    ?? ($t === 'unspecified' ? __('analytics.common.unspecified') : $t))
                 ->all();
 
             return [
                 'datasets' => [[
-                    'label' => __('analytics.common.members'),
                     'data' => $rows->values()->all(),
-                    'backgroundColor' => '#2B6CB0',
+                    'backgroundColor' => ['#593E2D', '#F2CB57', '#C88D16', '#6B5847', '#2F855A'],
                 ]],
                 'labels' => $labels,
             ];
@@ -57,8 +59,7 @@ class TopCountriesChart extends ChartWidget
     protected function getOptions(): array
     {
         return $this->analyticsBaseOptions([
-            'indexAxis' => 'y',
-            'plugins' => ['legend' => ['display' => false]],
+            'plugins' => ['legend' => ['position' => 'bottom']],
         ]);
     }
 }
