@@ -37,6 +37,10 @@ class MemberInfolist
                         TextEntry::make('education_level')
                             ->label('Education level')
                             ->placeholder('—'),
+                        TextEntry::make('specialty')
+                            ->label('University Major')
+                            ->formatStateUsing(fn ($state, $record) => $record->specialty_label)
+                            ->placeholder('—'),
                         TextEntry::make('linkedin_url')
                             ->label('LinkedIn profile')
                             ->url(fn ($record) => $record->linkedin_url, shouldOpenInNewTab: true)
@@ -55,10 +59,6 @@ class MemberInfolist
                         TextEntry::make('events_count')
                             ->label('Registered events')
                             ->getStateUsing(fn ($record) => $record->events()->count()),
-                        TextEntry::make('specialty')
-                            ->label('Specialty')
-                            ->formatStateUsing(fn ($state, $record) => $record->specialty_label)
-                            ->placeholder('—'),
                         TextEntry::make('bio')
                             ->label('Bio')
                             ->placeholder('—')

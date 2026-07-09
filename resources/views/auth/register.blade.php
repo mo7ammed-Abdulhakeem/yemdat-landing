@@ -31,7 +31,7 @@
                 @php
                     // Re-open the wizard on the step that holds the first validation error.
                     $step1Fields = ['full_name', 'email', 'password', 'password_confirmation'];
-                    $step2Fields = ['phone_code', 'phone_number', 'country', 'gender', 'education_level'];
+                    $step2Fields = ['phone_code', 'phone_number', 'country', 'gender', 'education_level', 'specialty', 'specialty_other'];
                     $errorStep = $errors->hasAny($step1Fields) ? 1 : ($errors->hasAny($step2Fields) ? 2 : ($errors->any() ? 3 : 1));
                 @endphp
 
@@ -65,7 +65,7 @@
                     </div>
 
                     <!-- ───────── Step 2: Contact ───────── -->
-                    <div x-show="step === 2" x-cloak class="space-y-6">
+                    <div x-show="step === 2" x-cloak class="space-y-6" x-data="{ specialty: '{{ old('specialty') }}' }">
                         <h3 class="text-xl font-bold text-primary border-b border-gray-100 pb-2">
                             {{ app()->getLocale() == 'ar' ? 'بيانات التواصل' : 'Contact Information' }}
                         </h3>
@@ -111,15 +111,8 @@
                             <option value="PhD" {{ old('education_level') == 'PhD' ? 'selected' : '' }}>{{ __('membership.edu_phd') }}</option>
                             <option value="Other" {{ old('education_level') == 'Other' ? 'selected' : '' }}>{{ __('membership.edu_other') }}</option>
                         </x-ui.select>
-                    </div>
 
-                    <!-- ───────── Step 3: Membership ───────── -->
-                    <div x-show="step === 3" x-cloak class="space-y-6" x-data="{ specialty: '{{ old('specialty') }}' }">
-                        <h3 class="text-xl font-bold text-primary border-b border-gray-100 pb-2">
-                            {{ app()->getLocale() == 'ar' ? 'بيانات العضوية' : 'Membership Details' }}
-                        </h3>
-
-                        <!-- Specialty (TomSelect — searchable) -->
+                        <!-- University Major (TomSelect — searchable) -->
                         <x-ui.select name="specialty" id="specialty-select" :label="__('membership.label_speciality')" :required="true" x-model="specialty">
                             <option value="" disabled {{ old('specialty') ? '' : 'selected' }}>{{ __('membership.select_speciality') }}</option>
                             @foreach($specialties as $s)
@@ -127,10 +120,17 @@
                             @endforeach
                         </x-ui.select>
 
-                        <!-- Other Specialty -->
+                        <!-- Other Major -->
                         <div x-show="specialty === 'other'" style="display: none;">
                             <x-ui.input name="specialty_other" :label="__('membership.specialty_other')" :placeholder="__('membership.specialty_placeholder')" />
                         </div>
+                    </div>
+
+                    <!-- ───────── Step 3: Membership ───────── -->
+                    <div x-show="step === 3" x-cloak class="space-y-6">
+                        <h3 class="text-xl font-bold text-primary border-b border-gray-100 pb-2">
+                            {{ app()->getLocale() == 'ar' ? 'بيانات العضوية' : 'Membership Details' }}
+                        </h3>
 
                         <!-- Membership Type (pre-selected from a tier card, if any) -->
                         <x-ui.select name="membership_type" :label="__('membership.label_membership_type')" :required="true">

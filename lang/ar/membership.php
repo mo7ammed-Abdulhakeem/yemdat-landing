@@ -37,8 +37,8 @@ return [
     'label_country' => 'الدولة',
     'select_country' => 'اختر الدولة',
     'label_speciality' => 'التخصص الجامعي',
-    'select_speciality' => 'اختر التخصص',
-    'specialty_other' => 'تخصص آخر',
+    'select_speciality' => 'اختر تخصصك الجامعي',
+    'specialty_other' => 'تخصص جامعي آخر',
     'specialty_placeholder' => 'يرجى تحديد تخصصك',
 
     'education_level' => 'المستوى التعليمي',

@@ -50,7 +50,7 @@ class MembersTable
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('specialty')
-                    ->label('Specialty')
+                    ->label('University Major')
                     ->formatStateUsing(fn ($state, $record) => $record->specialty_label)
                     ->toggleable(),
                 TextColumn::make('phone_number')
@@ -84,7 +84,7 @@ class MembersTable
                 SelectFilter::make('gender')
                     ->options(['Male' => 'Male', 'Female' => 'Female']),
                 SelectFilter::make('specialty')
-                    ->label('Specialty')
+                    ->label('University Major')
                     ->options(fn () => Specialty::ordered()->pluck('name_en', 'slug')),
                 TernaryFilter::make('email_verified_at')
                     ->label('Email verified')
@@ -127,7 +127,7 @@ class MembersTable
             ->color('gray')
             ->action(fn ($records) => CsvExport::download(
                 'members-'.now()->format('Y-m-d').'.csv',
-                ['Full name', 'Email', 'Membership', 'Gender', 'Phone', 'Country', 'Specialty', 'Education', 'LinkedIn', 'Bio', 'Email verified at', 'Unsubscribed at', 'Joined'],
+                ['Full name', 'Email', 'Membership', 'Gender', 'Phone', 'Country', 'University Major', 'Education', 'LinkedIn', 'Bio', 'Email verified at', 'Unsubscribed at', 'Joined'],
                 $records->map(fn (Member $m) => [
                     $m->full_name,
                     $m->email,

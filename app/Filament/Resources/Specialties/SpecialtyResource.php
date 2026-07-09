@@ -32,7 +32,11 @@ class SpecialtyResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $navigationLabel = 'Specialties';
+    protected static ?string $navigationLabel = 'University Majors';
+
+    protected static ?string $modelLabel = 'University Major';
+
+    protected static ?string $pluralModelLabel = 'University Majors';
 
     public static function form(Schema $schema): Schema
     {

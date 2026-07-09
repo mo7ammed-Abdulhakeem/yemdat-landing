@@ -84,6 +84,29 @@ class MemberRegistrationTest extends TestCase
         Mail::assertSent(SignupOtpEmail::class);
     }
 
+    public function test_register_page_shows_university_major_label(): void
+    {
+        $this->get(route('register'))
+            ->assertOk()
+            ->assertSee('University Major');
+    }
+
+    public function test_invalid_university_major_reopens_step_two(): void
+    {
+        Mail::fake();
+        $this->tier();
+
+        // The wizard bakes the "first error step" into the form's x-data. A specialty error
+        // must reopen Step 2 (where University Major renders), not Step 3.
+        $response = $this->from(route('register'))
+            ->followingRedirects()
+            ->post(route('register.post'), $this->validPayload(['specialty' => 'not-a-real-slug']));
+
+        $response->assertOk()
+            ->assertSee('step: 2', false);
+        Mail::assertNothingSent();
+    }
+
     public function test_registration_validates_input(): void
     {
         Mail::fake();

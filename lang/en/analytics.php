@@ -129,7 +129,7 @@ return [
             'heading' => 'Top countries',
         ],
         'specialty' => [
-            'heading' => 'Members by specialty',
+            'heading' => 'Members by university major',
         ],
         'top_events' => [
             'heading' => 'Top events by registrations',

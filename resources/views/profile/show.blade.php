@@ -26,7 +26,7 @@
                     'phone_number'    => $ar ? 'رقم الهاتف' : 'Phone number',
                     'country'         => $ar ? 'البلد' : 'Country',
                     'gender'          => $ar ? 'الجنس' : 'Gender',
-                    'specialty'       => $ar ? 'التخصص' : 'Specialty',
+                    'specialty'       => $ar ? 'التخصص الجامعي' : 'University Major',
                     'education_level' => $ar ? 'المستوى التعليمي' : 'Education level',
                     'bio'             => $ar ? 'النبذة التعريفية' : 'Bio',
                     'linkedin_url'    => $ar ? 'حساب لينكدإن' : 'LinkedIn profile',
@@ -193,7 +193,7 @@
                             <dd class="text-base text-gray-900 font-medium">{{ $member->education_level }}</dd>
                         </div>
                         <div>
-                            <dt class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">{{ app()->getLocale() == 'ar' ? 'التخصص' : 'Specialty' }}</dt>
+                            <dt class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">{{ app()->getLocale() == 'ar' ? 'التخصص الجامعي' : 'University Major' }}</dt>
                             <dd class="text-base text-gray-900 font-medium">
                                 {{ $member->specialty_label }}
                             </dd>

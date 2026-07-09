@@ -63,17 +63,17 @@ class MemberForm
                             ->options(fn () => MembershipTier::orderBy('sort_order')->pluck('name_en', 'slug'))
                             ->searchable()
                             ->required(),
+                        TextInput::make('education_level')
+                            ->default(null),
                         Select::make('specialty')
-                            ->label('Specialty')
+                            ->label('University Major')
                             ->options(fn () => Specialty::active()->ordered()->pluck('name_en', 'slug'))
                             ->searchable()
                             ->live()
                             ->required(),
                         TextInput::make('specialty_other')
-                            ->label('Specialty (other detail)')
+                            ->label('University Major (other detail)')
                             ->visible(fn ($get) => $get('specialty') === 'other')
-                            ->default(null),
-                        TextInput::make('education_level')
                             ->default(null),
                         TextInput::make('linkedin_url')
                             ->label('LinkedIn profile')

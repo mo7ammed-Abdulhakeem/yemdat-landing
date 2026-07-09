@@ -22,7 +22,7 @@ class ListMembers extends ListRecords
                 ->color('gray')
                 ->action(fn () => CsvExport::download(
                     'members-'.now()->format('Y-m-d').'.csv',
-                    ['Full name', 'Email', 'Membership', 'Gender', 'Phone', 'Country', 'Specialty', 'Education', 'LinkedIn', 'Bio', 'Email verified at', 'Unsubscribed at', 'Joined'],
+                    ['Full name', 'Email', 'Membership', 'Gender', 'Phone', 'Country', 'University Major', 'Education', 'LinkedIn', 'Bio', 'Email verified at', 'Unsubscribed at', 'Joined'],
                     Member::query()->with('specialtyOption')->orderBy('created_at')->lazy()->map(fn (Member $m) => [
                         $m->full_name,
                         $m->email,
