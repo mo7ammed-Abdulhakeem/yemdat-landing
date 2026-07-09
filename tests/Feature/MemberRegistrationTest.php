@@ -123,6 +123,28 @@ class MemberRegistrationTest extends TestCase
         Mail::assertNothingSent();
     }
 
+    public function test_email_belonging_to_a_staff_user_does_not_block_member_signup(): void
+    {
+        Mail::fake();
+        $this->tier();
+
+        // The email exists as an admin/staff User (separate guard). A former member
+        // whose email is also a staff/trainer account must still be able to register.
+        \App\Models\User::create([
+            'name' => 'Staff Member',
+            'email' => 'new@example.com',
+            'password' => Hash::make('password1234'),
+            'role' => 'admin',
+        ]);
+
+        $response = $this->from(route('register'))
+            ->post(route('register.post'), $this->validPayload());
+
+        $response->assertRedirect(route('verification.notice'));
+        $response->assertSessionHasNoErrors();
+        Mail::assertSent(SignupOtpEmail::class);
+    }
+
     public function test_duplicate_email_is_rejected(): void
     {
         Mail::fake();
